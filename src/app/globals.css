@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+@import "../styles/tokens.css";
+@import "tailwindcss";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #050505;
+  color: #FFFFFF;
+  height: 100%;
+  overflow: hidden;
+}
+
+:root {
+  --font-display: "Teko", Impact, "Arial Narrow", sans-serif;
+  --font-body: "Barlow Condensed", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.font-body {
+  font-family: var(--font-body), sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.text-poster {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 0.92;
+  font-weight: 600;
+}
+
+.district-rgb {
+  background: linear-gradient(90deg, #FF4D6D, #00D4FF, #A855F7, #FF4D6D);
+  background-size: 300% 100%;
+  animation: district-rgb-shift 4s linear infinite;
+}
+
+@keyframes district-rgb-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}

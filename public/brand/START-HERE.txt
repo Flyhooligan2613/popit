@@ -1,0 +1,28 @@
+POP'IT BRAND FILES - START HERE
+================================
+
+YOU ONLY NEED TO WORK IN THIS FOLDER:
+
+  C:\Users\FLYGOON\popit\public\brand\
+
+LOGO FILES  -->  put in the "logo" folder:
+  - popit-mark.png   (P icon only, transparent background)
+  - popit-mark.svg
+  - popit-wordmark.svg
+  - popit-logo.png
+
+WELCOME BACKGROUND  -->  put in the "animation" folder:
+  - welcome-hero.jpg   (concert / crowd photo)
+
+HOW TO ADD FILES:
+  1. Double-click OPEN-BRAND-FOLDER.bat on your Desktop or in the popit folder
+  2. Drag your exported files into the logo or animation folder
+  3. Double-click UPDATE-BRAND.bat
+  4. Refresh browser at http://localhost:3000 (Ctrl+Shift+R)
+
+You do NOT need to use code or terminal for normal updates.
+Just drag files + double-click UPDATE-BRAND.bat
+
+Same folders also exist on your Desktop at:
+  Desktop\popit\public\brand\
+(Either location works after running UPDATE-BRAND.bat)

@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "description": "POP'IT intro animation references official SVG assets only",
+  "assets": {
+    "mark": "/brand/logo/popit-mark.svg",
+    "wordmark": "/brand/logo/popit-wordmark.svg",
+    "full": "/brand/logo/popit-logo.svg"
+  },
+  "phases": {
+    "void": { "startMs": 0 },
+    "lens": { "startMs": 800 },
+    "focus": { "startMs": 1400 },
+    "energy": { "startMs": 3000 },
+    "formation": { "startMs": 5400 },
+    "settled": { "startMs": 7800 },
+    "tagline": { "startMs": 8600 },
+    "hold": { "startMs": 9800 },
+    "dissolve": { "startMs": 10800 }
+  },
+  "splashTotalMs": 12400,
+  "animateTargets": {
+    "mark": "#popit-mark",
+    "wordmark": "#popit-wordmark",
+    "full": "#popit-logo"
+  }
+}

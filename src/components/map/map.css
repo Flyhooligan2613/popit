@@ -1,0 +1,100 @@
+@keyframes cinematic-water {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes cinematic-headlight {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes heat-wave-rise {
+  0% { transform: translateY(0) scaleX(1); opacity: 0.5; }
+  100% { transform: translateY(-24px) scaleX(1.15); opacity: 0; }
+}
+
+@keyframes energy-ray-rise {
+  0% { stroke-dashoffset: 20; opacity: 0.15; }
+  50% { opacity: 0.85; }
+  100% { stroke-dashoffset: 0; opacity: 0.1; }
+}
+
+@keyframes electric-spark {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-16px); opacity: 0; }
+}
+
+@keyframes firework-pop {
+  0% { transform: scale(0.3); opacity: 0; }
+  40% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes lens-flare-sweep {
+  0%, 100% { opacity: 0; transform: translateX(-8px); }
+  50% { opacity: 0.8; transform: translateX(8px); }
+}
+
+@keyframes camera-flash-pop {
+  0%, 88%, 100% { opacity: 0; }
+  90% { opacity: 0.95; }
+  93% { opacity: 0; }
+}
+
+@keyframes city-beacon {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes hud-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes map-flyover-drift {
+  0%, 100% { transform: scale(1.02) translate(0, 0); }
+  50% { transform: scale(1.05) translate(-4px, -2px); }
+}
+
+.cinematic-water { animation: cinematic-water 5s ease-in-out infinite; }
+.cinematic-headlight { animation: cinematic-headlight 2.5s ease-in-out infinite; }
+.heat-wave-rise { animation: heat-wave-rise 2.8s ease-out infinite; }
+.energy-ray-rise {
+  stroke-dasharray: 20;
+  animation: energy-ray-rise 1.6s ease-in-out infinite;
+}
+.electric-spark { animation: electric-spark 1.1s ease-out infinite; }
+.firework-pop { animation: firework-pop 2.2s ease-out infinite; transform-origin: center; }
+.lens-flare-sweep { animation: lens-flare-sweep 2.5s ease-in-out infinite; }
+.camera-flash-pop { animation: camera-flash-pop 3.5s ease-in-out infinite; }
+.city-beacon { animation: city-beacon 2s ease-in-out infinite; }
+.map-flyover-drift { animation: map-flyover-drift 24s ease-in-out infinite; }
+
+@keyframes venue-neon-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes world-crowd-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes world-spotlight {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes world-confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-24px) rotate(180deg); opacity: 0; }
+}
+
+.venue-neon-pulse { animation: venue-neon-pulse 2s ease-in-out infinite; }
+.world-crowd-bob { animation: world-crowd-bob 1.8s ease-in-out infinite; }
+.world-spotlight { animation: world-spotlight 2.5s ease-in-out infinite; }
+.world-confetti { animation: world-confetti 2s ease-out infinite; }
+
+.world-sky {
+  background: linear-gradient(180deg, #0a0618 0%, #050505 100%);
+}

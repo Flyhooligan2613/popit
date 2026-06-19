@@ -1,0 +1,69 @@
+{
+  "name": "POP'IT Official Color Palette",
+  "version": "1.0.0",
+  "colors": {
+    "ignite": {
+      "primary": "#FF4D6D",
+      "warm": "#FF7A00",
+      "description": "The energy that starts it all"
+    },
+    "volt": {
+      "primary": "#A855F7",
+      "deep": "#7C3AED",
+      "description": "The electric buzz of now"
+    },
+    "burst": {
+      "primary": "#00D4FF",
+      "deep": "#0099FF",
+      "description": "The moment that goes everywhere"
+    },
+    "neutral": {
+      "black": "#050505",
+      "white": "#FFFFFF"
+    },
+    "surface": {
+      "base": "#050505",
+      "raised": "#0A0A0A",
+      "overlay": "#111111",
+      "elevated": "#161616"
+    },
+    "border": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "default": "rgba(255, 255, 255, 0.12)",
+      "strong": "rgba(255, 255, 255, 0.20)",
+      "focus": "rgba(168, 85, 247, 0.45)"
+    },
+    "hover": {
+      "surface": "rgba(255, 255, 255, 0.04)",
+      "border": "rgba(255, 255, 255, 0.28)",
+      "ignite": "rgba(255, 77, 109, 0.12)",
+      "volt": "rgba(168, 85, 247, 0.12)",
+      "burst": "rgba(0, 212, 255, 0.12)"
+    },
+    "glow": {
+      "ignite": "rgba(255, 77, 109, 0.35)",
+      "igniteWarm": "rgba(255, 122, 0, 0.30)",
+      "volt": "rgba(168, 85, 247, 0.30)",
+      "burst": "rgba(0, 212, 255, 0.28)",
+      "brand": "rgba(168, 85, 247, 0.22)"
+    }
+  },
+  "gradients": {
+    "brand": {
+      "css": "linear-gradient(90deg, #FF7A00 0%, #FF4D6D 25%, #A855F7 55%, #00D4FF 100%)",
+      "stops": ["#FF7A00", "#FF4D6D", "#A855F7", "#00D4FF"]
+    },
+    "logo": {
+      "css": "linear-gradient(135deg, #0099FF 0%, #A855F7 35%, #FF4D6D 65%, #FF7A00 100%)",
+      "stops": ["#0099FF", "#A855F7", "#FF4D6D", "#FF7A00"]
+    },
+    "popping": {
+      "css": "linear-gradient(90deg, #00D4FF 0%, #A855F7 50%, #FF4D6D 100%)",
+      "stops": ["#00D4FF", "#A855F7", "#FF4D6D"]
+    },
+    "apostrophe": {
+      "css": "linear-gradient(180deg, #FF7A00 0%, #FF4D6D 100%)",
+      "stops": ["#FF7A00", "#FF4D6D"]
+    }
+  }
+}

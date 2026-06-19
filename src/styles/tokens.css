@@ -1,0 +1,19 @@
+:root {
+  --ignite-pink: #FF4D6D;
+  --ignite-orange: #FF7A00;
+  --volt-purple: #A855F7;
+  --volt-violet: #7C3AED;
+  --burst-blue: #00D4FF;
+  --burst-cyan: #0099FF;
+  --background: #050505;
+  --surface: #0A0A0A;
+  --surface-hover: #141414;
+  --border: rgba(255,255,255,0.08);
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255,255,255,0.72);
+  --text-muted: rgba(255,255,255,0.40);
+  --gradient-primary: linear-gradient(90deg, #FF4D6D, #A855F7, #00D4FF);
+  --gradient-bolt: linear-gradient(180deg, #FF7A00 0%, #FF4D6D 100%);
+  --font-display: "Teko", Impact, sans-serif;
+  --font-body: "Barlow Condensed", sans-serif;
+}

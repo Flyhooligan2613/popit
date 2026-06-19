@@ -1,0 +1,78 @@
+@keyframes hype-flow {
+  0% { stroke-dashoffset: 120; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes hype-shimmer {
+  0% { transform: translateX(-100%); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+
+@keyframes hype-vibrate {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-0.6px); }
+  75% { transform: translateY(0.6px); }
+}
+
+@keyframes hype-ember-rise {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  100% { transform: translateY(-18px) scale(0.3); opacity: 0; }
+}
+
+@keyframes hype-pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.02); opacity: 0.15; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+@keyframes pulse-billboard-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes pulse-fog-drift {
+  0%, 100% { opacity: 0.6; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(20px); }
+}
+
+@keyframes pulse-city-shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes pulse-animated-border {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes city-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.008); }
+}
+
+@keyframes skyline-window {
+  0%, 100% { opacity: 0.1; }
+  45% { opacity: 0.55; }
+  55% { opacity: 0.2; }
+}
+
+@keyframes traffic-streak {
+  0% { transform: translateX(-100%); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateX(400%); opacity: 0; }
+}
+
+.hype-bolt-vibrate { animation: hype-vibrate 0.12s ease-in-out infinite; }
+.hype-flow-dash { animation: hype-flow linear infinite; }
+.hype-shimmer { animation: hype-shimmer linear infinite; }
+.hype-ember { animation: hype-ember-rise ease-out infinite; }
+.hype-pulse-ring { animation: hype-pulse-ring ease-in-out infinite; }
+
+.pulse-billboard-scroll { animation: pulse-billboard-scroll 28s linear infinite; }
+.pulse-fog-drift { animation: pulse-fog-drift 12s ease-in-out infinite; }
+.pulse-city-shimmer { animation: pulse-city-shimmer 14s linear infinite; }
+.pulse-animated-border { animation: pulse-animated-border 3s ease-in-out infinite; }
+.city-breathe { animation: city-breathe 8s ease-in-out infinite; }
+.skyline-window { animation: skyline-window 4s ease-in-out infinite; }
+.traffic-streak { animation: traffic-streak 3s linear infinite; }
