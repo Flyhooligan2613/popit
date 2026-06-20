@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import OpeningCameraLens from "./OpeningCameraLens";
+import PopitBrandLogo from "./PopitBrandLogo";
 
 const BURST = "#FF4D6D";
 const VOLT = "#A855F7";
@@ -17,21 +17,21 @@ const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
   delay: i * 0.03,
 }));
 
-type Phase = "black" | "lens" | "glow" | "particles" | "shutter" | "tagline" | "exit";
+type Phase = "black" | "logo" | "glow" | "particles" | "pulse" | "hold" | "exit";
 
 const PHASE_MS: Record<Phase, number> = {
   black: 400,
-  lens: 1400,
+  logo: 1400,
   glow: 1500,
   particles: 1600,
-  shutter: 900,
-  tagline: 1800,
+  pulse: 900,
+  hold: 1800,
   exit: 700,
 };
 
 type AppStartupSplashProps = {
   onComplete?: () => void;
-  /** Minimal loader — lens only, no tagline or redirect choreography */
+  /** Minimal loader — P logo only, no tagline */
   minimal?: boolean;
 };
 
@@ -40,19 +40,18 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
   onCompleteRef.current = onComplete;
 
   const [phase, setPhase] = useState<Phase>("black");
-  const [aperture, setAperture] = useState(0.12);
   const [glowIntensity, setGlowIntensity] = useState(0);
   const [showParticles, setShowParticles] = useState(false);
-  const [showTagline, setShowTagline] = useState(false);
+  const [logoPulse, setLogoPulse] = useState(false);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
     if (minimal) {
-      const t = setTimeout(() => setPhase("lens"), 80);
+      const t = setTimeout(() => setPhase("logo"), 80);
       return () => clearTimeout(t);
     }
 
-    const sequence: Phase[] = ["black", "lens", "glow", "particles", "shutter", "tagline", "exit"];
+    const sequence: Phase[] = ["black", "logo", "glow", "particles", "pulse", "hold", "exit"];
     let elapsed = 0;
     const timers: ReturnType<typeof setTimeout>[] = [];
 
@@ -64,11 +63,10 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
           setPhase(step);
           if (step === "glow") setGlowIntensity(1);
           if (step === "particles") setShowParticles(true);
-          if (step === "shutter") {
-            setAperture(0.82);
-            setTimeout(() => setAperture(0.32), 420);
+          if (step === "pulse") {
+            setLogoPulse(true);
+            setTimeout(() => setLogoPulse(false), 420);
           }
-          if (step === "tagline") setShowTagline(true);
           if (step === "exit") setExiting(true);
         }, elapsed)
       );
@@ -84,27 +82,23 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
     return () => timers.forEach(clearTimeout);
   }, [minimal]);
 
-  const lensVisible = phase !== "black";
-  const lensOpacity = lensVisible ? (exiting ? 0 : 1) : 0;
+  const logoVisible = phase !== "black";
+  const logoOpacity = logoVisible ? (exiting ? 0 : 1) : 0;
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#000000]"
-      style={{ background: "#000000" }}
-    >
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#000000]">
       <AnimatePresence>
-        {lensVisible && (
+        {logoVisible && (
           <motion.div
-            key="lens-wrap"
+            key="logo-wrap"
             initial={{ opacity: 0, scale: 0.72 }}
-            animate={{ opacity: lensOpacity, scale: exiting ? 1.04 : 1 }}
+            animate={{ opacity: logoOpacity, scale: exiting ? 1.04 : logoPulse ? 1.08 : 1 }}
             transition={{
               opacity: { duration: exiting ? 0.65 : 1.2, ease: "easeInOut" },
-              scale: { duration: exiting ? 0.65 : 1.4, ease: [0.16, 1, 0.3, 1] },
+              scale: { duration: exiting ? 0.65 : logoPulse ? 0.42 : 1.4, ease: [0.16, 1, 0.3, 1] },
             }}
             className="relative flex flex-col items-center"
           >
-            {/* Ambient glow rings — Burst + Volt + Ignite */}
             {glowIntensity > 0 && (
               <>
                 <motion.div
@@ -139,9 +133,11 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
               </>
             )}
 
-            {/* Outward particles */}
             {showParticles && (
-              <div className="pointer-events-none absolute left-1/2 top-1/2" style={{ transform: "translate(-50%, -50%)" }}>
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2"
+                style={{ transform: "translate(-50%, -50%)" }}
+              >
                 {PARTICLES.map(({ color, angle, dist, size, delay }, i) => {
                   const rad = (angle * Math.PI) / 180;
                   return (
@@ -169,38 +165,11 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
               </div>
             )}
 
-            <OpeningCameraLens
-              size={200}
-              aperture={aperture}
-              glow={glowIntensity > 0}
-              glowIntensity={glowIntensity}
-            />
+            <PopitBrandLogo markWidth={340} markHeight={480} showWordmark={false} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {!minimal && (
-        <AnimatePresence>
-          {showTagline && !exiting && (
-            <motion.p
-              key="tagline"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
-              className="pointer-events-none absolute text-center font-semibold tracking-[0.28em] text-white/80"
-              style={{
-                bottom: "28%",
-                fontSize: "clamp(0.65rem, 2.8vw, 0.82rem)",
-                fontFamily: "system-ui, -apple-system, sans-serif",
-                textShadow: `0 0 24px ${BURST}44`,
-              }}
-            >
-              SEE WHAT&apos;S POPPING.
-            </motion.p>
-          )}
-        </AnimatePresence>
-      )}
     </div>
   );
 }

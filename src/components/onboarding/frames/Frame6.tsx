@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import OpeningCameraLens from "@/components/brand/OpeningCameraLens";
+import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 
 const SLIDES = [
   "https://images.unsplash.com/photo-1768053919038-4340b9333e00?w=1080&q=80",
@@ -40,7 +40,7 @@ export default function Frame6({ onNext }: { onNext: () => void }) {
       <div style={{ position: "absolute", inset: 0, zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", padding: "52px 28px" }}>
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
-          <OpeningCameraLens size={88} aperture={0.28} glow glowIntensity={0.85} />
+          <PopitBrandLogo markWidth={120} markHeight={170} showWordmark={false} />
         </motion.div>
 
         <motion.div style={{ textAlign: "center" }} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.9 }}>

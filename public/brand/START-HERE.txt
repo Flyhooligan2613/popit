@@ -1,13 +1,18 @@
-POP'IT official brand assets
-===========================
+POP'IT brand assets
+===================
 
-Logo (camera lens only):
+In-app P logo (splash + onboarding):
+  public/brand/logo/popit-mark.svg   ← preferred
+  public/brand/logo/popit-mark.png   ← temporary fallback until SVG is ready
+
+Load order at runtime:
+  1. popit-mark.svg
+  2. popit-mark.png (if SVG missing)
+  3. inline SVG component (if both missing)
+
+App icon / PWA / favicon (camera lens only):
   public/icons/popit-lens-master.svg
-
-PWA / favicon icons (generated):
   npm run icons
 
 Startup splash:
   src/components/brand/AppStartupSplash.tsx
-
-Do NOT use legacy popit-mark assets — they have been removed.

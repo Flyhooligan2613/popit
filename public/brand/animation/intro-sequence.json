@@ -1,9 +1,14 @@
 {
-  "version": 2,
+  "version": 3,
   "brand": "POP'IT",
-  "logo": "/icons/popit-lens-master.svg",
+  "appIcon": "/icons/popit-lens-master.svg",
+  "inAppMark": {
+    "primary": "/brand/logo/popit-mark.svg",
+    "fallback": "/brand/logo/popit-mark.png"
+  },
   "startup": {
     "background": "#000000",
+    "opening": "OpeningCameraLens",
     "sequence": [
       "black",
       "lens-fade-in",
@@ -15,6 +20,11 @@
     ],
     "tagline": "SEE WHAT'S POPPING.",
     "component": "AppStartupSplash"
+  },
+  "onboarding": {
+    "lensFrames": [2, 3, 4],
+    "brandRevealFrame": 5,
+    "inAppLogo": "PopitBrandLogo"
   },
   "colors": {
     "burst": "#FF4D6D",

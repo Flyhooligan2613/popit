@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import OpeningCameraLens from "@/components/brand/OpeningCameraLens";
+import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import IdentityPicker from "@/components/onboarding/IdentityPicker";
 import type { IdentityType } from "@/lib/identity/types";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
@@ -123,7 +123,7 @@ export default function Frame7({ onNext }: { onNext: () => void }) {
       <div style={{ width: "100%", maxWidth: 380, display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
 
         <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <OpeningCameraLens size={72} aperture={0.25} glow glowIntensity={0.8} />
+          <PopitBrandLogo markWidth={100} markHeight={140} showWordmark={false} />
           <div style={{ textAlign: "center" }}>
             <p style={{ color: "#FF4D6D", fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", margin: "0 0 8px", fontFamily: "system-ui, sans-serif" }}>
               {step === "account"
