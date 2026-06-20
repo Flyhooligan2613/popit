@@ -78,7 +78,9 @@ function PopWorldVenuePanel({ business, onClose }: PopWorldVenuePanelProps) {
                   />
                   <div className="flex-1">
                     <HypeLabel energy={energy} />
-                    <HypeLevel energy={energy} className="mt-1" />
+                    <div className="mt-1">
+                      <HypeLevel energy={energy} seed={business.slug} />
+                    </div>
                   </div>
                 </div>
 
