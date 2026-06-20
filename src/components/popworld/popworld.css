@@ -1,0 +1,276 @@
+.popworld-engine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.popworld-map-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.popworld-map-wrap .mapboxgl-map {
+  font-family: system-ui, sans-serif;
+}
+
+.popworld-map-wrap .mapboxgl-canvas {
+  filter: saturate(1.12) contrast(1.06);
+}
+
+/* Cinematic overlays */
+.popworld-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 2;
+}
+
+.popworld-particles {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.popworld-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.5);
+  left: calc(10% + (var(--i) * 3.5%));
+  top: calc(20% + (var(--i) * 2.2%));
+  animation: popworld-drift 8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.35s);
+  opacity: 0.35;
+  box-shadow: 0 0 6px rgba(255, 77, 109, 0.4);
+}
+
+@keyframes popworld-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+  50% { transform: translate(12px, -18px) scale(1.4); opacity: 0.55; }
+}
+
+.popworld-phase {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transition: opacity 1.2s ease;
+}
+
+.popworld-phase__glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  background: radial-gradient(ellipse 80% 60% at 50% 55%, rgba(255, 77, 109, 0.08), transparent 70%);
+}
+
+.popworld-phase--lights-on .popworld-phase__glow,
+.popworld-phase--venues-glow .popworld-phase__glow,
+.popworld-phase--alive .popworld-phase__glow {
+  opacity: 1;
+  animation: popworld-bloom 3s ease-in-out infinite;
+}
+
+@keyframes popworld-bloom {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* HUD */
+.popworld-hud {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 16px 88px;
+}
+
+.popworld-hud__header {
+  pointer-events: auto;
+}
+
+.popworld-hud__eyebrow {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0, 212, 255, 0.75);
+  margin-bottom: 4px;
+}
+
+.popworld-hud__title {
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.9);
+  margin: 0 0 4px;
+}
+
+.popworld-hud__sub {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.popworld-hud__phase {
+  margin-top: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 122, 0, 0.7);
+  min-height: 1em;
+  transition: opacity 0.4s;
+}
+
+.popworld-hud__chips {
+  pointer-events: auto;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-top: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.popworld-hud__chips::-webkit-scrollbar {
+  display: none;
+}
+
+.popworld-hud__chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(12px);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.popworld-hud__chip--active {
+  border-color: rgba(255, 77, 109, 0.6);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.25);
+}
+
+.popworld-hud__chip-energy {
+  display: inline-block;
+  margin-left: 6px;
+  color: rgba(0, 212, 255, 0.9);
+}
+
+/* Missing token */
+.popworld-missing-token {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 30%, #180a20, #030303 75%);
+}
+
+.popworld-missing-token__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+.popworld-missing-token__body {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 320px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.popworld-missing-token__body code {
+  color: rgba(0, 212, 255, 0.9);
+  font-size: 0.8rem;
+}
+
+.popworld-missing-token__link {
+  color: #ff4d6d;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Venue panel expansion */
+.popworld-venue-panel {
+  position: fixed;
+  bottom: 72px;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.popworld-venue-panel__expand {
+  max-height: 72vh;
+  overflow-y: auto;
+}
+
+.popworld-venue-panel__media {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.popworld-venue-panel__media-item {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: flex-end;
+  padding: 6px;
+}
+
+.popworld-venue-panel__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.popworld-venue-panel__stat {
+  text-align: center;
+  padding: 10px 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.popworld-venue-panel__stat-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.popworld-venue-panel__stat-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  margin-top: 2px;
+}

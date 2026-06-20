@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const TABS = [
   { href: "/pulse", label: "Your City", id: "pulse" },
-  { href: "/map", label: "Live Map", id: "map" },
+  { href: "/map", label: "POP WORLD", id: "map" },
 ] as const;
 
 export default function AppTabBar() {

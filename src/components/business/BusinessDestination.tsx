@@ -39,7 +39,7 @@ function BusinessDestination({ business }: { business: VerifiedBusiness }) {
             href="/map"
             className="rounded-full border border-white/10 px-3 py-1.5 font-body text-xs text-white/50"
           >
-            ← Live Map
+            ← POP WORLD
           </Link>
           <Link
             href="/pulse"

@@ -148,7 +148,7 @@ function CityDistricts() {
           onClick={() => router.push("/map")}
           className="font-body text-[0.65rem] text-[#00D4FF]/70"
         >
-          Open Live Map →
+          Open POP WORLD →
         </button>
       </div>
 
