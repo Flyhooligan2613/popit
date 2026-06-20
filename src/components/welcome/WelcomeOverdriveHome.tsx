@@ -57,8 +57,6 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
 
   const current = SCENE_SLIDES[slide];
   const cityLine = city ? `In ${city.toUpperCase()}` : "Near You";
-  const venueScrollMs = state.isOverdrive ? 3800 : 5200 - energyNorm * 1200;
-  const trendingScrollMs = state.isOverdrive ? 4200 : 5800 - energyNorm * 1000;
   const contentVisible = introReady && !showIntro;
 
   useEffect(() => {
@@ -252,11 +250,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
           reducedMotion={!!reducedMotion}
         />
 
-        <WhatsPoppingNow
-          creators={TRENDING_CREATORS}
-          autoScrollMs={trendingScrollMs}
-          reducedMotion={!!reducedMotion}
-        />
+        <WhatsPoppingNow creators={TRENDING_CREATORS} reducedMotion={!!reducedMotion} />
 
         <div className="popit-category-grid popit-category-grid-v2" role="list" aria-label="Explore modes">
           {CATEGORY_CARDS.map((card, i) => (
@@ -272,7 +266,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
           ))}
         </div>
 
-        <LiveVenueCards venues={LIVE_VENUE_CARDS} autoScrollMs={venueScrollMs} reducedMotion={!!reducedMotion} />
+        <LiveVenueCards venues={LIVE_VENUE_CARDS} />
 
         <CityPulse channels={pulse} reducedMotion={!!reducedMotion} />
 

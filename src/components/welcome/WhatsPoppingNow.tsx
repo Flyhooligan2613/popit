@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import type { TrendingCreator } from "./types";
 
 type WhatsPoppingNowProps = {
   creators: TrendingCreator[];
-  autoScrollMs: number;
   reducedMotion: boolean;
 };
 
@@ -15,25 +13,7 @@ function formatCount(n: number): string {
   return String(n);
 }
 
-export default function WhatsPoppingNow({ creators, autoScrollMs, reducedMotion }: WhatsPoppingNowProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    if (reducedMotion || creators.length <= 1) return;
-    const el = scrollerRef.current;
-    if (!el) return;
-
-    const tick = () => {
-      indexRef.current = (indexRef.current + 1) % creators.length;
-      const card = el.children[indexRef.current] as HTMLElement | undefined;
-      card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-    };
-
-    const t = setInterval(tick, autoScrollMs);
-    return () => clearInterval(t);
-  }, [autoScrollMs, reducedMotion, creators.length]);
-
+export default function WhatsPoppingNow({ creators, reducedMotion }: WhatsPoppingNowProps) {
   return (
     <section className="whats-popping" aria-label="What's popping right now">
       <header className="whats-popping-header">
@@ -42,7 +22,7 @@ export default function WhatsPoppingNow({ creators, autoScrollMs, reducedMotion 
         </h2>
       </header>
 
-      <div ref={scrollerRef} className="whats-popping-scroll" role="list">
+      <div className="whats-popping-scroll" role="list">
         {creators.map((creator, i) => (
           <motion.article
             key={creator.id}

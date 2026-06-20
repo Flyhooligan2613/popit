@@ -1,33 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import type { VenueCard } from "./types";
 
 type LiveVenueCardsProps = {
   venues: VenueCard[];
-  autoScrollMs: number;
-  reducedMotion: boolean;
 };
 
-export default function LiveVenueCards({ venues, autoScrollMs, reducedMotion }: LiveVenueCardsProps) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const indexRef = useRef(0);
-
-  useEffect(() => {
-    if (reducedMotion || venues.length <= 1) return;
-    const el = scrollerRef.current;
-    if (!el) return;
-
-    const tick = () => {
-      indexRef.current = (indexRef.current + 1) % venues.length;
-      const card = el.children[indexRef.current] as HTMLElement | undefined;
-      card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-    };
-
-    const t = setInterval(tick, autoScrollMs);
-    return () => clearInterval(t);
-  }, [autoScrollMs, reducedMotion, venues.length]);
-
+export default function LiveVenueCards({ venues }: LiveVenueCardsProps) {
   return (
     <section className="venue-feed" aria-label="Live venue activity">
       <div className="venue-feed-header">
@@ -40,7 +19,7 @@ export default function LiveVenueCards({ venues, autoScrollMs, reducedMotion }: 
         </span>
       </div>
 
-      <div ref={scrollerRef} className="venue-feed-scroll" role="list">
+      <div className="venue-feed-scroll" role="list">
         {venues.map((venue) => (
           <article key={venue.id} className="venue-card" role="listitem">
             <div className="venue-card-top">
