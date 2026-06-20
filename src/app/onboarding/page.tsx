@@ -110,6 +110,8 @@ export default function OnboardingPage() {
       style={{
         position: "fixed",
         inset: 0,
+        height: "100dvh",
+        maxHeight: "100dvh",
         background: "#000000",
         overflow: "hidden",
       }}
