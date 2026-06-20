@@ -17,10 +17,10 @@ import Frame11 from "@/components/onboarding/frames/Frame11";
 
 const AUTO_ADVANCE_MS: Record<number, number> = {
   1: 1400,
-  2: 2800,
-  3: 2400,
-  4: 2800,
-  5: 3400,
+  2: 2600,
+  3: 2200,
+  4: 2600,
+  5: 4800,
 };
 
 function resolveStartFrame(): number {
