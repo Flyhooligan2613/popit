@@ -53,6 +53,7 @@ export default function OnboardingPage() {
   }, []);
 
   const advance = () => setFrame((current) => Math.min(current + 1, 11));
+  const goBack = () => setFrame((current) => Math.max(current - 1, 1));
 
   useEffect(() => {
     if (frame < 1 || frame > 5) return;
@@ -76,6 +77,7 @@ export default function OnboardingPage() {
       case 6:
         return (
           <Frame6
+            onBack={goBack}
             onJoin={() => {
               setAuthMode("signup");
               advance();
@@ -87,11 +89,11 @@ export default function OnboardingPage() {
           />
         );
       case 7:
-        return <Frame7 initialMode={authMode} onNext={advance} />;
+        return <Frame7 initialMode={authMode} onNext={advance} onBack={goBack} />;
       case 8:
-        return <Frame8 onNext={advance} />;
+        return <Frame8 onNext={advance} onBack={goBack} />;
       case 9:
-        return <Frame9 onNext={advance} />;
+        return <Frame9 onNext={advance} onBack={goBack} />;
       case 10:
         return <Frame10 onNext={advance} />;
       case 11:

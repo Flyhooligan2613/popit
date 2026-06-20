@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { MapPin, Camera, ImageIcon, Mic, Bell } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import BackNavButton from "@/components/nav/BackNavButton";
 
 const PERMISSIONS: {
   id: string;
@@ -60,9 +61,20 @@ const PERMISSIONS: {
   },
 ];
 
-export default function Frame9({ onNext }: { onNext: () => void }) {
+export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
   return (
     <div className="absolute inset-0 overflow-y-auto bg-[#050505]">
+      {onBack && (
+        <div
+          className="fixed z-20"
+          style={{
+            top: "max(0.75rem, env(safe-area-inset-top, 0px))",
+            left: "max(1rem, env(safe-area-inset-left, 0px))",
+          }}
+        >
+          <BackNavButton onClick={onBack} />
+        </div>
+      )}
       <div
         className="pointer-events-none fixed inset-0 z-0"
         style={{

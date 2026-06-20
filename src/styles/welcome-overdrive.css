@@ -53,6 +53,13 @@
   gap: 0.75rem;
 }
 
+.popit-home-top-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 /* City status panel — top-left balance */
 .city-status-panel {
   display: flex;

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import IdentityPicker from "@/components/onboarding/IdentityPicker";
+import BackNavButton from "@/components/nav/BackNavButton";
 import type { IdentityType } from "@/lib/identity/types";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
 import { signUpWithEmail, signInWithEmail, isSupabaseConfigured } from "@/lib/supabase/auth";
@@ -11,9 +12,11 @@ import { markOnboardingComplete } from "@/lib/session";
 
 export default function Frame7({
   onNext,
+  onBack,
   initialMode = "signup",
 }: {
   onNext: () => void;
+  onBack?: () => void;
   initialMode?: "signup" | "signin";
 }) {
   const router = useRouter();
@@ -123,8 +126,29 @@ export default function Frame7({
     setError(null);
   };
 
+  const handleBack = () => {
+    if (step === "identity") {
+      setStep("account");
+      setError(null);
+      return;
+    }
+    onBack?.();
+  };
+
   return (
     <div style={{ position: "absolute", inset: 0, background: "#050505", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 28px" }}>
+      {onBack && (
+        <div
+          style={{
+            position: "fixed",
+            top: "max(0.75rem, env(safe-area-inset-top, 0px))",
+            left: "max(1rem, env(safe-area-inset-left, 0px))",
+            zIndex: 20,
+          }}
+        >
+          <BackNavButton onClick={handleBack} />
+        </div>
+      )}
 
       <div style={{ width: "100%", maxWidth: 380, display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
 

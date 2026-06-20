@@ -80,4 +80,5 @@ export type GlobeHotspot = {
 export type WelcomeHomeProps = {
   onJoin: () => void;
   onSignIn: () => void;
+  onBack?: () => void;
 };

@@ -15,6 +15,7 @@ import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
+import BackNavButton from "@/components/nav/BackNavButton";
 import { CATEGORY_CARDS, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
@@ -38,7 +39,7 @@ function hapticTap() {
   }
 }
 
-export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomeProps) {
+export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: WelcomeHomeProps) {
   const reducedMotion = useReducedMotion();
   const timePeriod = useTimeOfDay();
   const [showIntro, setShowIntro] = useState(false);
@@ -188,7 +189,10 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
         transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
       >
         <header className="popit-home-top popit-home-top-balanced">
-          <CityStatusPanel city={city} />
+          <div className="popit-home-top-left">
+            {onBack && <BackNavButton onClick={onBack} className="popit-home-back" />}
+            <CityStatusPanel city={city} />
+          </div>
           <LiveNowBadge exploringCount={displayExploring} />
         </header>
 

@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import BackNavButton from "@/components/nav/BackNavButton";
 import { saveUserInterests } from "@/lib/city/personalizedCity";
 import { Gamepad2, Trophy, Music2, Plane, Camera, UtensilsCrossed, Car, Cpu, TrendingUp, Clapperboard, Dumbbell, Shirt, Film, Moon, Footprints, PawPrint } from "lucide-react";
 
@@ -23,7 +24,7 @@ const INTERESTS = [
   { id: "pets",          label: "Pets",          Icon: PawPrint },
 ];
 
-export default function Frame8({ onNext }: { onNext: () => void }) {
+export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
   const [sel, setSel] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setSel(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const count = sel.size;
@@ -36,6 +37,18 @@ export default function Frame8({ onNext }: { onNext: () => void }) {
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#050505", overflowY: "auto" }}>
+      {onBack && (
+        <div
+          style={{
+            position: "fixed",
+            top: "max(0.75rem, env(safe-area-inset-top, 0px))",
+            left: "max(1rem, env(safe-area-inset-left, 0px))",
+            zIndex: 20,
+          }}
+        >
+          <BackNavButton onClick={onBack} />
+        </div>
+      )}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse at 50% 0%, rgba(255,77,109,0.07) 0%, transparent 55%)", zIndex: 0 }} />
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "56px 20px 200px", position: "relative", zIndex: 1 }}>
