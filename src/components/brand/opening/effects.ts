@@ -91,6 +91,19 @@ export function hapticLensAppear(mobile: boolean) {
   vibrate(12);
 }
 
+export function getLogoRocketImpactMs(mobile: boolean) {
+  return mobile ? 680 : 760;
+}
+
+export function getLogoRocketStartY(mobile: boolean) {
+  return mobile ? "92vh" : "72vh";
+}
+
+export function hapticRocketLaunch(mobile: boolean) {
+  if (!mobile) return;
+  vibrate([8, 12, 16]);
+}
+
 export function hapticFocusSnap(mobile: boolean) {
   if (!mobile) return;
   vibrate([18, 40, 22]);

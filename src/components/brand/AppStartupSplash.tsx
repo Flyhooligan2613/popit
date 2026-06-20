@@ -6,6 +6,7 @@ import OpeningLensStage1 from "./opening/OpeningLensStage1";
 import OpeningLensStage2 from "./opening/OpeningLensStage2";
 import OpeningLensStage3 from "./opening/OpeningLensStage3";
 import LogoBurstStage from "./opening/LogoBurstStage";
+import { detectMobileDevice, getLogoRocketImpactMs } from "./opening/effects";
 
 /** Stage 1 → lens · Stage 2 → focus · Stage 3 → swirls · Stage 4 → logo explosion */
 type Stage = "black" | "lens1" | "lens2" | "lens3" | "logoBurst" | "exit";
@@ -49,7 +50,8 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
         setTimeout(() => {
           setStage(step);
           if (step === "logoBurst") {
-            timers.push(setTimeout(() => setBurst(true), 1400));
+            const impactMs = typeof window !== "undefined" ? getLogoRocketImpactMs(detectMobileDevice()) : 760;
+            timers.push(setTimeout(() => setBurst(true), impactMs));
           }
           if (step === "exit") setExiting(true);
         }, elapsed)

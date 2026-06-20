@@ -9,21 +9,25 @@ import {
   buildBurstParticles,
   buildConfetti,
   getAftershockKeyframes,
+  getLogoRocketImpactMs,
+  getLogoRocketStartY,
   getShakeKeyframes,
   hapticBurstAftershock,
   hapticBurstImpact,
+  hapticRocketLaunch,
   useOpeningMobile,
   useResponsiveLogoWidth,
 } from "./effects";
 
 type LogoBurstStageProps = {
+  /** When omitted, burst fires when the logo rocket slams into frame */
   burstDelay?: number;
   burstAt?: boolean;
   className?: string;
 };
 
 export default function LogoBurstStage({
-  burstDelay = 1400,
+  burstDelay,
   burstAt,
   className = "",
 }: LogoBurstStageProps) {
@@ -33,10 +37,21 @@ export default function LogoBurstStage({
   const confetti = buildConfetti(mobile ? 180 : 140);
   const particles = buildBurstParticles(mobile ? 44 : 36);
 
+  const impactMs = getLogoRocketImpactMs(mobile);
+  const rocketMs = impactMs / 1000;
+  const startY = getLogoRocketStartY(mobile);
+  const faceScale = mobile ? 1.38 : 1.32;
+
   const [burst, setBurst] = useState(false);
   const [shake, setShake] = useState(0);
+  const [rocketing, setRocketing] = useState(true);
   const firedRef = useRef(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => {
+    hapticRocketLaunch(mobile);
+    setRocketing(true);
+  }, [mobile]);
 
   useEffect(() => () => timersRef.current.forEach(clearTimeout), []);
 
@@ -49,6 +64,7 @@ export default function LogoBurstStage({
         firedRef.current = false;
         setBurst(false);
         setShake(0);
+        setRocketing(true);
         return;
       }
       if (firedRef.current) return;
@@ -57,15 +73,17 @@ export default function LogoBurstStage({
       return;
     }
 
+    const delay = burstDelay ?? impactMs;
     const timer = setTimeout(() => {
       if (firedRef.current) return;
       firedRef.current = true;
       fireBurst();
-    }, burstDelay);
+    }, delay);
     timersRef.current.push(timer);
-  }, [burstAt, burstDelay]);
+  }, [burstAt, burstDelay, impactMs]);
 
   function fireBurst() {
+    setRocketing(false);
     setBurst(true);
     setShake(1);
     hapticBurstImpact(mobile);
@@ -89,14 +107,32 @@ export default function LogoBurstStage({
 
   return (
     <motion.div
-      className={`relative flex h-full w-full items-center justify-center ${className}`}
+      className={`relative flex h-full w-full items-center justify-center overflow-hidden ${className}`}
       animate={shakeKeyframes}
       transition={
         shake ? { duration: shake === 1 ? (mobile ? 0.82 : 0.72) : mobile ? 0.52 : 0.48, ease: "easeOut" } : { duration: 0.2 }
       }
-      style={{ isolation: "isolate" }}
+      style={{ isolation: "isolate", perspective: 1100 }}
     >
       <MobileAmbientPulse active={!burst} intensity="high" />
+
+      {/* Bottom emergence glow — rises from inside the screen */}
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1]"
+        initial={{ opacity: 0, scaleY: 0.4 }}
+        animate={
+          burst
+            ? { opacity: 0, scaleY: 1.2 }
+            : { opacity: [0, 0.75, 0.45, 0.2], scaleY: [0.4, 1, 1.15, 0.9] }
+        }
+        transition={{ duration: burst ? 0.25 : rocketMs, ease: "easeOut" }}
+        style={{
+          height: mobile ? "48vh" : "38vh",
+          transformOrigin: "bottom center",
+          background:
+            "linear-gradient(to top, rgba(255,77,109,0.55) 0%, rgba(168,85,247,0.28) 35%, rgba(0,212,255,0.12) 60%, transparent 100%)",
+        }}
+      />
 
       {burst && <LogoBurstExplosion mobile={mobile} />}
 
@@ -162,21 +198,77 @@ export default function LogoBurstStage({
         )}
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.15, rotate: -420 }}
-          animate={{
-            opacity: 1,
-            scale: burst ? [1, mobile ? 1.22 : 1.18, 0.98, 1.04, 1] : 1,
-            rotate: 0,
+          initial={{
+            opacity: 0,
+            y: startY,
+            scale: 0.18,
+            rotate: -780,
+            rotateX: mobile ? 34 : 22,
+            filter: "blur(10px)",
           }}
+          animate={
+            burst
+              ? {
+                  opacity: 1,
+                  y: [0, mobile ? -18 : -12, 5, 0],
+                  scale: [faceScale, mobile ? 1.44 : 1.38, 0.96, 1.03, 1],
+                  rotate: [0, -8, 5, 0],
+                  rotateX: [0, -10, 2, 0],
+                  filter: "blur(0px)",
+                }
+              : rocketing
+                ? {
+                    opacity: [0, 0.5, 1, 1],
+                    y: 0,
+                    scale: [0.18, 0.55, 0.95, faceScale],
+                    rotate: 0,
+                    rotateX: 0,
+                    filter: ["blur(10px)", "blur(4px)", "blur(1px)", "blur(0px)"],
+                  }
+                : {
+                    opacity: 1,
+                    y: 0,
+                    scale: faceScale,
+                    rotate: 0,
+                    rotateX: 0,
+                    filter: "blur(0px)",
+                  }
+          }
           transition={{
-            opacity: { duration: 0.4 },
+            opacity: { duration: rocketing ? 0.22 : 0.15 },
+            y: burst
+              ? { duration: 0.42, ease: "easeOut" }
+              : { duration: rocketMs, ease: [0.22, 0.98, 0.32, 1] },
             scale: burst
-              ? { duration: 0.85, times: [0, 0.25, 0.5, 0.75, 1], ease: "easeOut" }
-              : { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
-            rotate: { duration: 1.6, ease: [0.34, 1.2, 0.55, 1] },
+              ? { duration: 0.75, times: [0, 0.18, 0.45, 0.72, 1], ease: "easeOut" }
+              : { duration: rocketMs, ease: [0.1, 0.95, 0.25, 1] },
+            rotate: burst
+              ? { duration: 0.45, ease: "easeOut" }
+              : { duration: rocketMs * 0.94, ease: [0.35, 0.01, 0.14, 1] },
+            rotateX: { duration: rocketMs, ease: [0.2, 0.9, 0.3, 1] },
+            filter: { duration: rocketMs * 0.85 },
           }}
           className="relative z-[4]"
+          style={{ transformStyle: "preserve-3d" }}
         >
+          {/* Speed trail while rocketing up */}
+          {rocketing && !burst && (
+            <motion.div
+              className="pointer-events-none absolute left-1/2 top-[88%] -translate-x-1/2"
+              initial={{ opacity: 0, scaleY: 0.2 }}
+              animate={{ opacity: [0, 0.85, 0.5], scaleY: [0.2, 2.2, 1.4] }}
+              transition={{ duration: rocketMs, ease: "easeOut" }}
+              style={{
+                width: logoWidth * 0.55,
+                height: logoHeight * 1.4,
+                background:
+                  "linear-gradient(to top, transparent 0%, rgba(255,77,109,0.65) 25%, rgba(168,85,247,0.45) 55%, rgba(0,212,255,0.2) 80%, transparent 100%)",
+                filter: "blur(10px)",
+                borderRadius: "50%",
+              }}
+            />
+          )}
+
           <PopitBrandLogo markWidth={logoWidth} markHeight={logoHeight} showWordmark={false} />
         </motion.div>
       </div>

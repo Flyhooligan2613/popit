@@ -8,7 +8,7 @@ export default function Frame5() {
       className="absolute inset-0 flex items-center justify-center bg-[#050505]"
       style={{ minHeight: "100dvh", touchAction: "none" }}
     >
-      <LogoBurstStage burstDelay={1400} />
+      <LogoBurstStage />
     </div>
   );
 }
