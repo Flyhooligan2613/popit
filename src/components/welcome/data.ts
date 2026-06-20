@@ -1,4 +1,4 @@
-import type { ActivityItem, PulseChannel, SceneSlide } from "./types";
+import type { ActivityItem, GlobeHotspot, PulseChannel, SceneSlide, TrendingCreator } from "./types";
 
 /** Modular data layer — swap for API hooks later */
 export const SCENE_SLIDES: SceneSlide[] = [
@@ -229,6 +229,79 @@ export const CATEGORY_CARDS = [
   { key: "events" as const, icon: "🎉", label: "Events", stat: "340+ Tonight", theme: "card-events" },
   { key: "trending" as const, icon: "🔥", label: "Trending", stat: "128+ Now", theme: "card-trending" },
   { key: "nearby" as const, icon: "📍", label: "Nearby", stat: "12 Cities", theme: "card-nearby" },
+];
+
+/** Globe hotspot positions — future zoom targets (Miami, Atlanta, NYC, etc.) */
+export const GLOBE_HOTSPOTS: GlobeHotspot[] = [
+  { id: "miami", city: "Miami", x: 68, y: 62 },
+  { id: "atlanta", city: "Atlanta", x: 62, y: 48 },
+  { id: "nyc", city: "New York", x: 72, y: 42 },
+  { id: "la", city: "Los Angeles", x: 22, y: 50 },
+  { id: "chicago", city: "Chicago", x: 58, y: 40 },
+  { id: "houston", city: "Houston", x: 52, y: 56 },
+];
+
+export const TRENDING_CREATORS: TrendingCreator[] = [
+  {
+    id: "t1",
+    username: "@miamifoodie",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80&auto=format&fit=crop",
+    verified: true,
+    category: "Food",
+    likes: 12400,
+    comments: 842,
+    saves: 3200,
+    followersToday: 540,
+    trending: true,
+  },
+  {
+    id: "t2",
+    username: "@nightshift.mia",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&auto=format&fit=crop",
+    verified: true,
+    category: "Nightlife",
+    likes: 9800,
+    comments: 612,
+    saves: 2100,
+    followersToday: 420,
+    trending: true,
+  },
+  {
+    id: "t3",
+    username: "@atl.events",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80&auto=format&fit=crop",
+    verified: false,
+    category: "Events",
+    likes: 7600,
+    comments: 489,
+    saves: 1800,
+    followersToday: 310,
+    trending: true,
+  },
+  {
+    id: "t4",
+    username: "@heatwatch",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80&auto=format&fit=crop",
+    verified: true,
+    category: "Sports",
+    likes: 11200,
+    comments: 920,
+    saves: 2900,
+    followersToday: 680,
+    trending: true,
+  },
+  {
+    id: "t5",
+    username: "@popit.creator",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80&auto=format&fit=crop",
+    verified: true,
+    category: "Creator",
+    likes: 18500,
+    comments: 1240,
+    saves: 4500,
+    followersToday: 890,
+    trending: true,
+  },
 ];
 
 export function energyTierFromValue(energy: number) {

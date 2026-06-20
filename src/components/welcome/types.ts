@@ -56,6 +56,27 @@ export type CityEnergyState = {
   isOnFire: boolean;
 };
 
+export type TrendingCreator = {
+  id: string;
+  username: string;
+  avatar: string;
+  verified: boolean;
+  category: string;
+  likes: number;
+  comments: number;
+  saves: number;
+  followersToday: number;
+  trending: boolean;
+};
+
+export type GlobeHotspot = {
+  id: string;
+  city: string;
+  /** 0–100 position on globe projection */
+  x: number;
+  y: number;
+};
+
 export type WelcomeHomeProps = {
   onJoin: () => void;
   onSignIn: () => void;

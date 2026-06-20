@@ -6,14 +6,16 @@ import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import AmbientField from "./AmbientField";
 import CategoryCard from "./CategoryCard";
-import CityCore from "./CityCore";
 import CityEnergyMeter from "./CityEnergyMeter";
 import CityPulse from "./CityPulse";
+import CityStatusPanel from "./CityStatusPanel";
+import HolographicGlobe from "./HolographicGlobe";
 import LiveNowBadge from "./LiveNowBadge";
 import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
-import { CATEGORY_CARDS, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
+import WhatsPoppingNow from "./WhatsPoppingNow";
+import { CATEGORY_CARDS, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
 import { useTimeOfDay } from "./useTimeOfDay";
@@ -56,6 +58,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
   const current = SCENE_SLIDES[slide];
   const cityLine = city ? `In ${city.toUpperCase()}` : "Near You";
   const venueScrollMs = state.isOverdrive ? 3800 : 5200 - energyNorm * 1200;
+  const trendingScrollMs = state.isOverdrive ? 4200 : 5800 - energyNorm * 1000;
   const contentVisible = introReady && !showIntro;
 
   useEffect(() => {
@@ -186,7 +189,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
         animate={{ opacity: contentVisible ? 1 : 0 }}
         transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
       >
-        <header className="popit-home-top">
+        <header className="popit-home-top popit-home-top-balanced">
+          <CityStatusPanel city={city} />
           <LiveNowBadge exploringCount={displayExploring} />
         </header>
 
@@ -234,12 +238,23 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
           </AnimatePresence>
         </section>
 
-        <CityCore energy={displayEnergy} tier={state.tier} reducedMotion={!!reducedMotion} />
+        <HolographicGlobe
+          energyNorm={energyNorm}
+          tier={state.tier}
+          reducedMotion={!!reducedMotion}
+          focusCity={city}
+        />
 
         <CityEnergyMeter
           value={displayEnergy}
           label={state.label}
           tier={state.tier}
+          reducedMotion={!!reducedMotion}
+        />
+
+        <WhatsPoppingNow
+          creators={TRENDING_CREATORS}
+          autoScrollMs={trendingScrollMs}
           reducedMotion={!!reducedMotion}
         />
 
