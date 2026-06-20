@@ -143,7 +143,7 @@ export default function PopWorldMap({
         layers: ["popworld-venue-extrusion", "popworld-venue-glow"],
       });
 
-      const feature = features[0];
+      const feature = features[0] as { properties?: Record<string, unknown> } | undefined;
       const venueId = feature?.properties?.id as string | undefined;
       if (venueId) onVenueSelect(venueId);
     },
