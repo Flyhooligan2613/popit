@@ -35,6 +35,7 @@ function resolveStartFrame(): number {
 export default function OnboardingPage() {
   const [frame, setFrame] = useState(1);
   const [ready, setReady] = useState(false);
+  const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -73,9 +74,20 @@ export default function OnboardingPage() {
       case 5:
         return <Frame5 />;
       case 6:
-        return <Frame6 onNext={advance} />;
+        return (
+          <Frame6
+            onJoin={() => {
+              setAuthMode("signup");
+              advance();
+            }}
+            onSignIn={() => {
+              setAuthMode("signin");
+              advance();
+            }}
+          />
+        );
       case 7:
-        return <Frame7 onNext={advance} />;
+        return <Frame7 initialMode={authMode} onNext={advance} />;
       case 8:
         return <Frame8 onNext={advance} />;
       case 9:

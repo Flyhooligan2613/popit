@@ -9,9 +9,15 @@ import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
 import { signUpWithEmail, signInWithEmail, isSupabaseConfigured } from "@/lib/supabase/auth";
 import { markOnboardingComplete } from "@/lib/session";
 
-export default function Frame7({ onNext }: { onNext: () => void }) {
+export default function Frame7({
+  onNext,
+  initialMode = "signup",
+}: {
+  onNext: () => void;
+  initialMode?: "signup" | "signin";
+}) {
   const router = useRouter();
-  const [mode, setMode] = useState<"signup" | "signin">("signup");
+  const [mode, setMode] = useState<"signup" | "signin">(initialMode);
   const [step, setStep] = useState<"account" | "identity">("account");
   const [form, setForm] = useState({ username: "", email: "", password: "", confirm: "" });
   const [identity, setIdentity] = useState<IdentityType | null>(null);

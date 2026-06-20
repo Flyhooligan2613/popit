@@ -44,3 +44,43 @@ html, body {
   0% { background-position: 0% 50%; }
   100% { background-position: 300% 50%; }
 }
+
+.welcome-chip {
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-cta-primary {
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #ff4d6d, #a855f7, #00d4ff);
+  background-size: 200% 100%;
+  box-shadow: 0 0 32px rgba(255, 77, 109, 0.38);
+  animation: welcome-cta-glow 3.5s ease-in-out infinite;
+}
+
+.welcome-cta-primary:hover {
+  box-shadow: 0 0 42px rgba(168, 85, 247, 0.45);
+}
+
+.welcome-cta-primary:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 3px;
+}
+
+@keyframes welcome-cta-glow {
+  0%, 100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 28px rgba(255, 77, 109, 0.35);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-cta-primary {
+    animation: none;
+  }
+}
