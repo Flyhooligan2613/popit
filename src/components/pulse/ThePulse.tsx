@@ -6,14 +6,14 @@ import CityDistricts from "./CityDistricts";
 import PulseHero from "./PulseHero";
 import CityIdentityBar from "./CityIdentityBar";
 import CommentThread from "@/components/comments/CommentThread";
-import { getUserProfile } from "@/lib/identity/userProfile";
+import { getUserProfile, loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 
 export default function ThePulse() {
   const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    setUser(getUserProfile());
+    loadUserProfile().then(setUser);
   }, []);
 
   return (

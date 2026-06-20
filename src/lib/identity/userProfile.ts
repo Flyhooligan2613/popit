@@ -58,3 +58,16 @@ export function getUserProfile(): UserProfile {
     return { ...DEFAULT_USER, identity: getUserIdentity() };
   }
 }
+
+export async function loadUserProfile(): Promise<UserProfile> {
+  if (typeof window === "undefined") return DEFAULT_USER;
+
+  const { loadAuthenticatedProfile, isSupabaseConfigured } = await import("@/lib/supabase/auth");
+
+  if (isSupabaseConfigured()) {
+    const remote = await loadAuthenticatedProfile();
+    if (remote) return remote;
+  }
+
+  return getUserProfile();
+}

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
-import { getUserProfile } from "@/lib/identity/userProfile";
+import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { SEARCH_DIRECTORY } from "@/lib/identity/searchData";
 
@@ -31,7 +31,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (username === "me") {
-      setUser(getUserProfile());
+      loadUserProfile().then(setUser);
       return;
     }
     const found = SEARCH_DIRECTORY.find((r) => r.username === username);

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import PopitMark from "@/components/brand/PopitMark";
 import { useEffect, useState } from "react";
 
 const DURATION_MS = 4200;
@@ -62,14 +62,7 @@ export default function Frame10({ onNext }: { onNext: () => void }) {
               transition={{ duration: 2, repeat: Infinity }}
             />
           )}
-          <Image
-            src="/brand/logo/popit-mark.png"
-            alt="POP'IT"
-            width={80}
-            height={60}
-            className="object-contain"
-            priority
-          />
+          <PopitMark size={96} />
         </motion.div>
       </motion.div>
 

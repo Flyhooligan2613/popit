@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import PopitLogo from "@/components/brand/PopitLogo";
 
 const ENERGY_COLORS = ["#FF4D6D", "#FF7A00", "#A855F7", "#00D4FF", "#7C3AED", "#0099FF"];
 
@@ -154,34 +154,11 @@ export default function Frame5() {
           style={{ position: "relative", zIndex: 3 }}
         >
           <motion.div
-            animate={burst ? { scale: [1, 1.12, 1] } : {}}
+            animate={burst ? { scale: [1, 1.08, 1] } : {}}
             transition={burst ? { duration: 0.5, ease: "easeOut" } : {}}
           >
-            <Image src="/brand/logo/popit-mark.png" alt="POP'IT" width={320} height={240} style={{ objectFit: "contain" }} priority />
+            <PopitLogo variant="stacked" markSize={220} wordmarkSize="hero" />
           </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.6, duration: 0.8 }}
-          style={{ display: "flex", alignItems: "center", marginTop: -8 }}
-        >
-          <div style={{ display: "flex", alignItems: "center", fontSize: "1.6rem", fontWeight: 900, fontFamily: "system-ui, sans-serif", letterSpacing: "0.08em", fontStyle: "italic" }}>
-            <span style={{ color: "rgba(255,255,255,0.85)" }}>POP</span>
-            <span
-              style={{
-                background: "var(--gradient-bolt)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                filter: "drop-shadow(0 0 12px rgba(255,122,0,0.45))",
-              }}
-            >
-              &apos;
-            </span>
-            <span style={{ color: "rgba(255,255,255,0.85)" }}>IT</span>
-          </div>
         </motion.div>
       </div>
     </div>

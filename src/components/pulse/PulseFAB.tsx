@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
+import PopitMark from "@/components/brand/PopitMark";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import PopitIcon from "./PopitIcon";
@@ -112,14 +112,7 @@ export default function PulseFAB() {
             animate={{ rotate: open ? 180 : 0, scale: open ? 0.9 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 22 }}
           >
-            <Image
-              src="/brand/logo/popit-mark.png"
-              alt="POP'IT"
-              width={34}
-              height={34}
-              className="object-contain"
-              priority
-            />
+            <PopitMark size={40} glow={false} />
           </motion.div>
         </motion.button>
       </div>

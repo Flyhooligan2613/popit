@@ -14,10 +14,13 @@ export function isOnboardingComplete(): boolean {
 }
 
 /** Clears saved session so the full journey can run again. */
-export function resetAppSession() {
+export async function resetAppSession() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(ONBOARDING_KEY);
   localStorage.removeItem(INTERESTS_KEY);
   localStorage.removeItem(IDENTITY_KEY);
   localStorage.removeItem(USER_KEY);
+
+  const { signOut } = await import("@/lib/supabase/auth");
+  await signOut();
 }

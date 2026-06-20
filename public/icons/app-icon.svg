@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="POP'IT">
+  <rect width="512" height="512" fill="#050505"/>
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF"/>
+      <stop offset="35%" stop-color="#A855F7"/>
+      <stop offset="65%" stop-color="#FF4D6D"/>
+      <stop offset="100%" stop-color="#FF7A00"/>
+    </linearGradient>
+    <radialGradient id="glass" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </radialGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A00"/>
+      <stop offset="100%" stop-color="#FF4D6D"/>
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="200" fill="url(#ring)"/>
+  <circle cx="256" cy="256" r="168" fill="url(#glass)" stroke="rgba(255,255,255,0.12)" stroke-width="6"/>
+  <text x="256" y="290" text-anchor="middle" font-family="system-ui, sans-serif" font-size="140" font-weight="900" font-style="italic" fill="#FFFFFF">P</text>
+  <rect x="330" y="148" width="28" height="72" rx="8" fill="url(#bolt)"/>
+</svg>
