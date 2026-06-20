@@ -6,28 +6,31 @@ import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import AmbientField from "./AmbientField";
 import CategoryCard from "./CategoryCard";
+import CityCore from "./CityCore";
 import CityEnergyMeter from "./CityEnergyMeter";
 import CityPulse from "./CityPulse";
-import LiveActivityCenter from "./LiveActivityCenter";
 import LiveNowBadge from "./LiveNowBadge";
+import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
-import { CATEGORY_CARDS, LIVE_ACTIVITY_FEED, SCENE_SLIDES } from "./data";
+import { CATEGORY_CARDS, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
+import { useTimeOfDay } from "./useTimeOfDay";
 
 const SLIDE_MS = 7500;
 const INTRO_EASE = [0.16, 1, 0.3, 1] as const;
 const LOGO_PARTICLES = [
-  { x: -40, y: -26, d: 0 },
-  { x: 44, y: -32, d: 0.5 },
-  { x: -48, y: 18, d: 1 },
-  { x: 50, y: 28, d: 0.3 },
+  { x: -48, y: -32, d: 0 },
+  { x: 52, y: -38, d: 0.45 },
+  { x: -56, y: 22, d: 0.95 },
+  { x: 58, y: 32, d: 0.25 },
+  { x: 0, y: -48, d: 0.7 },
 ];
 
 function hapticTap() {
   try {
-    navigator.vibrate?.(14);
+    navigator.vibrate?.(16);
   } catch {
     /* ignore */
   }
@@ -35,11 +38,13 @@ function hapticTap() {
 
 export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomeProps) {
   const reducedMotion = useReducedMotion();
+  const timePeriod = useTimeOfDay();
   const [showIntro, setShowIntro] = useState(false);
   const [introReady, setIntroReady] = useState(false);
   const [slide, setSlide] = useState(0);
   const [city, setCity] = useState<string | null>(null);
   const [ctaLoading, setCtaLoading] = useState(false);
+  const [surge, setSurge] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [isDesktop, setIsDesktop] = useState(false);
   const joinLock = useRef(false);
@@ -50,7 +55,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
 
   const current = SCENE_SLIDES[slide];
   const cityLine = city ? `In ${city.toUpperCase()}` : "Near You";
-  const marqueeSpeed = state.isOverdrive ? 18 : 26 - energyNorm * 8;
+  const venueScrollMs = state.isOverdrive ? 3800 : 5200 - energyNorm * 1200;
   const contentVisible = introReady && !showIntro;
 
   useEffect(() => {
@@ -127,8 +132,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
     if (!isDesktop || reducedMotion) return;
     const onMove = (e: MouseEvent) => {
       setParallax({
-        x: (e.clientX / window.innerWidth - 0.5) * 16,
-        y: (e.clientY / window.innerHeight - 0.5) * 12,
+        x: (e.clientX / window.innerWidth - 0.5) * 18,
+        y: (e.clientY / window.innerHeight - 0.5) * 14,
       });
     };
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -144,13 +149,15 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
     if (joinLock.current || ctaLoading) return;
     joinLock.current = true;
     hapticTap();
+    setSurge(true);
     setCtaLoading(true);
-    window.setTimeout(onJoin, 560);
+    window.setTimeout(() => setSurge(false), 700);
+    window.setTimeout(onJoin, 580);
   };
 
   return (
     <div
-      className={`popit-home ${state.isOverdrive ? "is-overdrive" : ""} energy-${state.tier}`}
+      className={`popit-home popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
       style={
         {
           "--city-energy": String(energyNorm),
@@ -170,10 +177,11 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
         energyNorm={energyNorm}
         ambientHue={current.ambientHue}
       />
+      <div className="popit-lobby-fog" aria-hidden />
       <AmbientField active={!reducedMotion && contentVisible} intensity={energyNorm} />
 
       <motion.div
-        className="popit-home-content"
+        className="popit-home-content popit-home-content-v2"
         initial={{ opacity: 0 }}
         animate={{ opacity: contentVisible ? 1 : 0 }}
         transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
@@ -183,18 +191,19 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
         </header>
 
         <motion.div
-          className="popit-hero-logo"
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: reducedMotion ? 0 : [0, -4, 0] }}
+          className="popit-hero-logo popit-hero-logo-v2"
+          initial={{ opacity: 0, y: -14 }}
+          animate={{ opacity: 1, y: reducedMotion ? 0 : [0, -5, 0] }}
           transition={{
-            opacity: { duration: 0.5, delay: 0.06 },
+            opacity: { duration: 0.55, delay: 0.05 },
             y: reducedMotion
               ? { duration: 0.3 }
-              : { duration: 5.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
+              : { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.4 },
           }}
         >
           <div className="popit-hero-logo-stage">
             <div className="popit-hero-logo-glow" aria-hidden />
+            <div className="popit-hero-logo-bloom" aria-hidden />
             {!reducedMotion &&
               LOGO_PARTICLES.map((p) => (
                 <span
@@ -204,18 +213,18 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
                   aria-hidden
                 />
               ))}
-            <PopitBrandLogo markWidth={124} markHeight={176} showWordmark={false} />
+            <PopitBrandLogo markWidth={140} markHeight={198} showWordmark={false} />
           </div>
         </motion.div>
 
-        <section className="popit-hero-copy">
+        <section className="popit-hero-copy popit-hero-copy-v2">
           <AnimatePresence mode="wait">
             <motion.div
               key={`${slide}-${city ?? "x"}`}
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: reducedMotion ? 0.2 : 0.52, ease: INTRO_EASE }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
             >
               <p className="popit-hero-kicker font-display">{current.headlineTop}</p>
               <h1 className="popit-hero-accent font-display">{current.headlineAccent}</h1>
@@ -225,6 +234,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
           </AnimatePresence>
         </section>
 
+        <CityCore energy={displayEnergy} tier={state.tier} reducedMotion={!!reducedMotion} />
+
         <CityEnergyMeter
           value={displayEnergy}
           label={state.label}
@@ -232,7 +243,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
           reducedMotion={!!reducedMotion}
         />
 
-        <div className="popit-category-grid" role="list" aria-label="Explore modes">
+        <div className="popit-category-grid popit-category-grid-v2" role="list" aria-label="Explore modes">
           {CATEGORY_CARDS.map((card, i) => (
             <CategoryCard
               key={card.key}
@@ -241,12 +252,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
               stat={card.stat}
               theme={card.theme}
               selected={current.chipKey === card.key}
-              delay={0.2 + i * 0.08}
+              delay={0.18 + i * 0.07}
             />
           ))}
         </div>
 
-        <LiveActivityCenter items={LIVE_ACTIVITY_FEED} speedSec={marqueeSpeed} reducedMotion={!!reducedMotion} />
+        <LiveVenueCards venues={LIVE_VENUE_CARDS} autoScrollMs={venueScrollMs} reducedMotion={!!reducedMotion} />
 
         <CityPulse channels={pulse} reducedMotion={!!reducedMotion} />
 
@@ -261,8 +272,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn }: WelcomeHomePr
             Sign In
           </motion.button>
           <p className="popit-guest-note font-body" aria-disabled="true">
-            Continue as Guest{" "}
-            <span className="popit-guest-soon">Soon</span>
+            Continue as Guest <span className="popit-guest-soon">Soon</span>
           </p>
         </footer>
       </motion.div>

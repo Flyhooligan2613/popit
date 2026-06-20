@@ -15,12 +15,16 @@ export default function StartExploringButton({ loading, isOverdrive, onClick }: 
       onClick={onClick}
       disabled={loading}
       aria-busy={loading}
-      whileTap={{ scale: 0.97 }}
-      className={`popit-start-btn font-display ${loading ? "is-loading" : ""} ${isOverdrive ? "is-overdrive" : ""}`}
+      whileTap={{ scale: 0.96 }}
+      className={`popit-start-btn popit-start-btn-v2 font-display ${loading ? "is-loading" : ""} ${isOverdrive ? "is-overdrive" : ""}`}
     >
       <span className="popit-start-btn-glow" aria-hidden />
+      <span className="popit-start-btn-ripple" aria-hidden />
       <span className="popit-start-btn-particles" aria-hidden>
-        <span /><span /><span />
+        <span />
+        <span />
+        <span />
+        <span />
       </span>
       <span className="popit-start-btn-label">{loading ? "Loading…" : "Start Exploring Free"}</span>
       {!loading && (

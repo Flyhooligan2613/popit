@@ -247,7 +247,17 @@
   transition: background 0.5s ease;
 }
 
-.energy-tier-warm .city-energy-fill {
+.energy-tier-calm .city-energy-fill {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.4);
+}
+
+.energy-tier-active .city-energy-fill {
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.45);
+}
+
+.energy-tier-busy .city-energy-fill {
   background: linear-gradient(90deg, #6366f1, #a855f7);
   box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
 }
@@ -257,6 +267,7 @@
   box-shadow: 0 0 22px rgba(255, 77, 109, 0.5);
 }
 
+.energy-tier-on-fire .city-energy-fill,
 .energy-tier-overdrive .city-energy-fill {
   background: linear-gradient(90deg, #ff4d6d, #ff8a00, #ff4d6d);
   background-size: 200% 100%;
@@ -278,12 +289,14 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
+.energy-tier-on-fire .city-energy-label,
 .energy-tier-overdrive .city-energy-label {
   color: #ffb347;
   text-shadow: 0 0 12px rgba(255, 140, 40, 0.6);
 }
 
 /* Fire effects — NBA 2K takeover style */
+.city-energy.is-ignited .city-energy-track,
 .city-energy.is-on-fire .city-energy-track {
   animation: energy-heat-distort 0.8s ease-in-out infinite alternate;
 }
@@ -942,5 +955,522 @@
 
   .popit-bg-inner.is-ken-burns .popit-bg-image {
     animation: none;
+  }
+}
+
+/* ============================================================
+   PHASE 2 — THE LIVING CITY
+   ============================================================ */
+
+.popit-home-content-v2 {
+  max-width: 30rem;
+  gap: clamp(0.75rem, 2vh, 1.2rem);
+}
+
+.popit-lobby-fog {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(120, 80, 255, 0.06) 0%, transparent 60%);
+  opacity: calc(0.35 + var(--city-energy, 0.5) * 0.4);
+}
+
+.popit-home.is-surging .popit-home-content {
+  animation: interface-surge 0.65s ease-out;
+}
+
+@keyframes interface-surge {
+  0% { filter: brightness(1); transform: scale(1); }
+  35% { filter: brightness(1.15); transform: scale(1.008); }
+  100% { filter: brightness(1); transform: scale(1); }
+}
+
+.popit-home.is-surging .city-core-orb {
+  animation: core-surge 0.65s ease-out !important;
+}
+
+@keyframes core-surge {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.18); filter: brightness(1.3); }
+}
+
+/* Time of day engine */
+.popit-home.time-morning {
+  --time-tint: rgba(255, 200, 120, 0.12);
+  --time-accent: #fbbf24;
+}
+
+.popit-home.time-afternoon {
+  --time-tint: rgba(255, 255, 255, 0.08);
+  --time-accent: #60a5fa;
+}
+
+.popit-home.time-sunset {
+  --time-tint: rgba(255, 140, 60, 0.14);
+  --time-accent: #fb923c;
+}
+
+.popit-home.time-night {
+  --time-tint: rgba(100, 80, 200, 0.12);
+  --time-accent: #818cf8;
+}
+
+.popit-home.time-late-night {
+  --time-tint: rgba(255, 50, 100, 0.1);
+  --time-accent: #ff4d6d;
+}
+
+.popit-home.time-morning .popit-bg-ambient,
+.popit-home.time-afternoon .popit-bg-ambient,
+.popit-home.time-sunset .popit-bg-ambient,
+.popit-home.time-night .popit-bg-ambient,
+.popit-home.time-late-night .popit-bg-ambient {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 90%, var(--time-tint) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 15% 15%, color-mix(in srgb, var(--time-accent) 8%, transparent) 0%, transparent 50%);
+}
+
+/* Hero v2 — larger */
+.popit-hero-logo-v2 .popit-hero-logo-glow {
+  width: clamp(200px, 54vw, 260px);
+  height: clamp(200px, 54vw, 260px);
+}
+
+.popit-hero-logo-v2 .popit-hero-logo-bloom {
+  position: absolute;
+  width: clamp(140px, 38vw, 180px);
+  height: clamp(140px, 38vw, 180px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 68%);
+  filter: blur(12px);
+}
+
+.popit-hero-copy-v2 .popit-hero-kicker {
+  font-size: clamp(1.15rem, 4.2vw + 0.4rem, 1.5rem);
+}
+
+.popit-hero-copy-v2 .popit-hero-accent {
+  font-size: clamp(3rem, 13vw + 0.5rem, 4.75rem);
+}
+
+.popit-hero-copy-v2 .popit-hero-city {
+  font-size: clamp(1.25rem, 4.8vw + 0.3rem, 1.65rem);
+}
+
+.popit-hero-copy-v2 .popit-hero-sub {
+  font-size: clamp(1rem, 3.5vw + 0.2rem, 1.15rem);
+  margin-top: clamp(0.5rem, 1.4vh, 0.75rem);
+}
+
+/* City Core — signature */
+.city-core {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: clamp(5.5rem, 14vh, 7rem);
+  flex-shrink: 0;
+}
+
+.city-core-orb {
+  width: clamp(3.25rem, 10vw, 4.25rem);
+  height: clamp(3.25rem, 10vw, 4.25rem);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0%, var(--scene-hue, #ff4d6d) 35%, #a855f7 70%, #050505 100%);
+  box-shadow:
+    0 0 40px color-mix(in srgb, var(--scene-hue, #ff4d6d) 55%, transparent),
+    0 0 80px rgba(168, 85, 247, 0.25),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+
+.city-core-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  pointer-events: none;
+}
+
+.city-core-ring-outer {
+  width: clamp(5rem, 16vw, 6.5rem);
+  height: clamp(5rem, 16vw, 6.5rem);
+  animation: core-ring-spin 12s linear infinite;
+  opacity: calc(0.35 + var(--core-energy, 0.5) * 0.45);
+}
+
+.city-core-ring-inner {
+  width: clamp(4rem, 13vw, 5.25rem);
+  height: clamp(4rem, 13vw, 5.25rem);
+  animation: core-ring-spin 8s linear infinite reverse;
+  border-color: color-mix(in srgb, var(--scene-hue, #ff4d6d) 40%, transparent);
+}
+
+@keyframes core-ring-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.city-core-orbit {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 8px var(--scene-hue, #ff4d6d);
+}
+
+.city-core-orbit-1 { animation: core-orbit 4s linear infinite; }
+.city-core-orbit-2 { animation: core-orbit 5.5s linear infinite reverse; width: 3px; height: 3px; }
+.city-core-orbit-3 { animation: core-orbit 7s linear infinite; width: 2px; height: 2px; opacity: 0.6; }
+
+@keyframes core-orbit {
+  0% { transform: rotate(0deg) translateX(clamp(2.5rem, 8vw, 3.25rem)) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(clamp(2.5rem, 8vw, 3.25rem)) rotate(-360deg); }
+}
+
+.city-core-label {
+  margin-top: 0.45rem;
+  font-size: clamp(0.625rem, 2.2vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.city-core.is-ignited .city-core-orb {
+  box-shadow:
+    0 0 55px rgba(255, 120, 40, 0.65),
+    0 0 100px rgba(255, 77, 109, 0.35),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* City Energy 2.0 */
+.city-energy-v2 {
+  position: relative;
+  overflow: hidden;
+}
+
+.city-energy-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.06) 50%, transparent 60%);
+  animation: energy-shimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes energy-shimmer {
+  0%, 100% { transform: translateX(-120%); opacity: 0; }
+  50% { transform: translateX(120%); opacity: 1; }
+}
+
+.city-energy-charge {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  animation: energy-charge 2.2s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes energy-charge {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.city-energy-flame {
+  position: absolute;
+  bottom: -2px;
+  width: 8px;
+  height: 12px;
+  border-radius: 50% 50% 20% 20%;
+  background: linear-gradient(to top, #ff6b00, #ffd080, transparent);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.city-energy-flame-1 { right: 6%; animation: flame-flicker 0.55s ease-in-out infinite; }
+.city-energy-flame-2 { right: 14%; animation: flame-flicker 0.7s ease-in-out infinite 0.15s; height: 10px; width: 6px; }
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scaleY(0.85); opacity: 0.7; }
+  50% { transform: scaleY(1.15); opacity: 1; }
+}
+
+.city-energy.is-sparking .city-energy-track {
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 140, 40, 0.2);
+}
+
+/* Category cards v2 */
+.popit-card-v2 {
+  min-height: clamp(5.75rem, 16vh, 7rem);
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+.popit-card-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  pointer-events: none;
+}
+
+.popit-card-reflection {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 40%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.popit-card-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.popit-category-grid-v2 {
+  gap: clamp(0.65rem, 1.6vh, 0.9rem);
+}
+
+/* Venue feed cards */
+.venue-feed {
+  flex-shrink: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: clamp(0.65rem, 1.6vh, 0.85rem) 0 clamp(0.55rem, 1.4vh, 0.75rem);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.venue-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-bottom: 0.55rem;
+  padding-inline: 0.75rem;
+}
+
+.venue-feed-chevron {
+  color: rgba(255, 77, 109, 0.75);
+  font-size: 0.7rem;
+}
+
+.venue-feed-title {
+  font-size: clamp(0.875rem, 3vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.venue-feed-scroll {
+  display: flex;
+  gap: 0.7rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.15rem 0.75rem 0.25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.venue-feed-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.venue-card {
+  flex: 0 0 clamp(11.5rem, 72vw, 14rem);
+  scroll-snap-align: center;
+  padding: clamp(0.65rem, 1.6vh, 0.85rem);
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.35) 100%);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.venue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.38), 0 0 20px rgba(255, 77, 109, 0.12);
+}
+
+.venue-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.venue-card-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.venue-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.venue-card-name {
+  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.venue-card-sub {
+  font-size: clamp(0.6875rem, 2.3vw, 0.8125rem);
+  color: rgba(255, 255, 255, 0.48);
+  margin: 0.15rem 0 0;
+}
+
+.venue-card-dot {
+  margin-inline: 0.25rem;
+}
+
+.venue-card-badge {
+  flex-shrink: 0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 77, 109, 0.4);
+  background: rgba(255, 77, 109, 0.12);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 180, 160, 0.95);
+}
+
+.venue-card-stat {
+  font-size: clamp(0.8125rem, 2.8vw, 0.9375rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0.45rem 0 0;
+}
+
+.venue-card-detail {
+  font-size: clamp(0.6875rem, 2.3vw, 0.8125rem);
+  color: rgba(255, 255, 255, 0.52);
+  margin: 0.2rem 0 0;
+  line-height: 1.35;
+}
+
+/* City Pulse v2 */
+.city-pulse-v2 {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.city-pulse-row-v2 {
+  padding: 0.35rem 0.25rem;
+  border-radius: 0.55rem;
+}
+
+.city-pulse-row-v2.is-hottest {
+  background: rgba(255, 77, 109, 0.06);
+  box-shadow: inset 0 0 20px rgba(255, 77, 109, 0.08);
+}
+
+.city-pulse-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  font-size: clamp(0.625rem, 2.2vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.city-pulse-delta {
+  color: rgba(74, 222, 128, 0.85);
+}
+
+.city-pulse-row-v2.is-hottest .city-pulse-status {
+  color: rgba(255, 180, 140, 0.9);
+}
+
+.city-pulse-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 12px color-mix(in srgb, var(--pulse-accent, #ff4d6d) 25%, transparent);
+  pointer-events: none;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+}
+
+.city-pulse-track {
+  position: relative;
+}
+
+/* Start button v2 */
+.popit-start-btn-v2 {
+  padding: clamp(1.15rem, 3vh, 1.45rem) 1.85rem;
+  font-size: clamp(1.2rem, 4.2vw, 1.45rem);
+}
+
+.popit-start-btn-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25) 0%, transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.popit-start-btn-v2:active .popit-start-btn-ripple {
+  animation: btn-ripple 0.5s ease-out;
+}
+
+@keyframes btn-ripple {
+  0% { opacity: 0.8; transform: scale(0.85); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+.popit-start-btn-particles span:nth-child(4) {
+  right: 28%;
+  bottom: 18%;
+  animation-delay: 2s;
+}
+
+.popit-home.is-on-fire .popit-start-btn-v2,
+.popit-home.is-overdrive .popit-start-btn-v2 {
+  box-shadow:
+    0 10px 48px rgba(255, 100, 40, 0.55),
+    0 0 80px rgba(255, 77, 109, 0.35);
+}
+
+@media (max-height: 800px) {
+  .city-core {
+    height: clamp(4.5rem, 11vh, 5.5rem);
+  }
+
+  .popit-hero-copy-v2 .popit-hero-accent {
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
   }
 }

@@ -1,6 +1,8 @@
 export type CategoryKey = "restaurants" | "events" | "trending" | "nearby";
 
-export type EnergyTier = "cool" | "warm" | "hot" | "overdrive";
+export type EnergyTier = "calm" | "active" | "busy" | "hot" | "on-fire" | "overdrive";
+
+export type TimePeriod = "morning" | "afternoon" | "sunset" | "night" | "late-night";
 
 export type ActivityItem = {
   id: string;
@@ -9,13 +11,26 @@ export type ActivityItem = {
   time: string;
 };
 
+export type VenueCard = {
+  id: string;
+  icon: string;
+  name: string;
+  rating?: string;
+  distance?: string;
+  stat: string;
+  badge?: string;
+  detail?: string;
+};
+
 export type PulseChannel = {
   key: string;
   icon: string;
   label: string;
-  /** 0–100, future: from popularity engine */
   value: number;
+  delta: number;
+  statusLabel: string;
   accent: string;
+  isHottest?: boolean;
 };
 
 export type SceneSlide = {
@@ -33,12 +48,12 @@ export type SceneSlide = {
 };
 
 export type CityEnergyState = {
-  /** 0–100 */
   energy: number;
   tier: EnergyTier;
   label: string;
   exploringCount: number;
   isOverdrive: boolean;
+  isOnFire: boolean;
 };
 
 export type WelcomeHomeProps = {

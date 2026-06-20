@@ -140,22 +140,88 @@ export const SCENE_SLIDES: SceneSlide[] = [
   },
 ];
 
-export const LIVE_ACTIVITY_FEED: ActivityItem[] = [
-  { id: "a1", icon: "🔥", text: "LIV Nightclub almost full", time: "1m" },
-  { id: "a2", icon: "🍕", text: "Joe's Pizza gaining popularity", time: "2m" },
-  { id: "a3", icon: "🎉", text: "Festival begins in 30 minutes", time: "3m" },
-  { id: "a4", icon: "🏀", text: "Heat Watch Party filling fast", time: "4m" },
-  { id: "a5", icon: "🌮", text: "Taco truck exploding on TikTok", time: "5m" },
-  { id: "a6", icon: "☕", text: "Panther Coffee buzzing", time: "6m" },
-  { id: "a7", icon: "🍺", text: "Happy Hour ending soon", time: "7m" },
-  { id: "a8", icon: "🎵", text: "Surprise DJ announced", time: "8m" },
+export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
+  {
+    id: "v1",
+    icon: "🍕",
+    name: "Joe's Pizza",
+    rating: "★★★★★",
+    distance: "1.3 mi",
+    stat: "+540 saves today",
+    badge: "Trending",
+  },
+  {
+    id: "v2",
+    icon: "🎉",
+    name: "LIV Nightclub",
+    stat: "Almost Full",
+    detail: "DJ starts 9:30 PM · 12 minute wait",
+    badge: "Hot",
+  },
+  {
+    id: "v3",
+    icon: "☕",
+    name: "Panther Coffee",
+    stat: "Buzzing",
+    detail: "72 people checked in",
+  },
+  {
+    id: "v4",
+    icon: "🏀",
+    name: "Heat Watch Party",
+    stat: "Starts in 25 min",
+    detail: "VIP filling quickly",
+    badge: "Live",
+  },
+  {
+    id: "v5",
+    icon: "🌮",
+    name: "Wynwood Tacos",
+    rating: "★★★★☆",
+    distance: "0.8 mi",
+    stat: "Exploding on TikTok",
+    badge: "Trending",
+  },
 ];
 
-export const PULSE_CHANNELS: PulseChannel[] = [
-  { key: "restaurants", icon: "🍔", label: "Restaurants", value: 91, accent: "#ff6b35" },
-  { key: "events", icon: "🎉", label: "Events", value: 74, accent: "#a855f7" },
-  { key: "nightlife", icon: "🌃", label: "Nightlife", value: 99, accent: "#6366f1" },
-  { key: "sports", icon: "🏀", label: "Sports", value: 68, accent: "#f97316" },
+export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
+  {
+    key: "restaurants",
+    icon: "🍔",
+    label: "Restaurants",
+    value: 97,
+    delta: 6,
+    statusLabel: "Most Active",
+    accent: "#ff6b35",
+  },
+  {
+    key: "events",
+    icon: "🎉",
+    label: "Events",
+    value: 84,
+    delta: 2,
+    statusLabel: "Concert Night",
+    accent: "#a855f7",
+  },
+  {
+    key: "nightlife",
+    icon: "🌃",
+    label: "Nightlife",
+    value: 99,
+    delta: 4,
+    statusLabel: "Hottest Category",
+    accent: "#6366f1",
+    isHottest: true,
+  },
+  {
+    key: "sports",
+    icon: "🏀",
+    label: "Sports",
+    value: 73,
+    delta: 1,
+    statusLabel: "Game Night",
+    accent: "#f97316",
+  },
 ];
 
 export const CATEGORY_CARDS = [
@@ -166,21 +232,27 @@ export const CATEGORY_CARDS = [
 ];
 
 export function energyTierFromValue(energy: number) {
-  if (energy >= 88) return "overdrive" as const;
-  if (energy >= 65) return "hot" as const;
-  if (energy >= 40) return "warm" as const;
-  return "cool" as const;
+  if (energy >= 92) return "overdrive" as const;
+  if (energy >= 78) return "on-fire" as const;
+  if (energy >= 62) return "hot" as const;
+  if (energy >= 42) return "busy" as const;
+  if (energy >= 22) return "active" as const;
+  return "calm" as const;
 }
 
 export function energyLabelFromTier(tier: ReturnType<typeof energyTierFromValue>) {
   switch (tier) {
     case "overdrive":
+      return "OVERDRIVE";
+    case "on-fire":
       return "ON FIRE";
     case "hot":
-      return "VERY ACTIVE";
-    case "warm":
+      return "HOT";
+    case "busy":
+      return "BUSY";
+    case "active":
       return "ACTIVE";
     default:
-      return "WAKING UP";
+      return "CALM";
   }
 }

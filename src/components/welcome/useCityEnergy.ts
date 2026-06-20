@@ -22,6 +22,7 @@ export function useCityEnergy({
 
   const tier = energyTierFromValue(energy);
   const isOverdrive = tier === "overdrive";
+  const isOnFire = tier === "on-fire" || isOverdrive;
   const displayEnergy = useAnimatedNumber(energy, reducedMotion ? 0 : 800);
   const displayExploring = useAnimatedNumber(exploringCount, reducedMotion ? 0 : 700);
 
@@ -32,8 +33,9 @@ export function useCityEnergy({
       label: energyLabelFromTier(tier),
       exploringCount,
       isOverdrive,
+      isOnFire,
     }),
-    [energy, tier, exploringCount, isOverdrive]
+    [energy, tier, exploringCount, isOverdrive, isOnFire]
   );
 
   useEffect(() => {
@@ -41,10 +43,10 @@ export function useCityEnergy({
 
     const energyTimer = setInterval(() => {
       setEnergy((prev) => {
-        const drift = (Math.random() - 0.42) * 4;
-        return Math.max(55, Math.min(100, prev + drift));
+        const drift = (Math.random() - 0.4) * 5;
+        return Math.max(48, Math.min(100, prev + drift));
       });
-    }, 4500);
+    }, 4200);
 
     const exploreTimer = setInterval(() => {
       setExploringCount((c) => c + Math.floor(Math.random() * 6) + 2);
@@ -52,10 +54,16 @@ export function useCityEnergy({
 
     const pulseTimer = setInterval(() => {
       setPulse((channels) =>
-        channels.map((ch) => ({
-          ...ch,
-          value: Math.max(45, Math.min(100, ch.value + (Math.random() - 0.45) * 6)),
-        }))
+        channels.map((ch) => {
+          const deltaDrift = Math.round((Math.random() - 0.35) * 3);
+          const nextVal = Math.max(45, Math.min(100, ch.value + (Math.random() - 0.45) * 5));
+          return {
+            ...ch,
+            value: nextVal,
+            delta: Math.max(0, ch.delta + deltaDrift),
+            isHottest: ch.key === "nightlife",
+          };
+        })
       );
     }, 5500);
 
