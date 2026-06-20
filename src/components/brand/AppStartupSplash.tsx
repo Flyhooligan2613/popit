@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import OpeningCameraLens from "./OpeningCameraLens";
 import PopitBrandLogo from "./PopitBrandLogo";
 
-const BURST = "#FF4D6D";
-const ENERGY_COLORS = ["#FF4D6D", "#FF7A00", "#A855F7", "#00D4FF", "#7C3AED", "#0099FF"];
+const ENERGY_COLORS = ["#FF4D6D", "#FF7A00", "#A855F7", "#00D4FF", "#7C3AED", "#0099FF", "#FFFFFF"];
 
 const SWIRLS = [
   { color: "#FF4D6D", d: "M -320 -200 C -200 -150 -100 -60 0 0 C 80 50 160 90 240 110", delay: 0 },
@@ -14,46 +13,45 @@ const SWIRLS = [
   { color: "#00D4FF", d: "M -280 230 C -190 170 -100 80 0 0 C 90 -70 180 -150 250 -210", delay: 0.34 },
 ];
 
-const CONFETTI = Array.from({ length: 90 }, (_, i) => ({
+const CONFETTI = Array.from({ length: 140 }, (_, i) => ({
   color: ENERGY_COLORS[i % ENERGY_COLORS.length],
-  angle: (i * 41 + (i % 13) * 27) % 360,
-  dist: 240 + (i % 20) * 32 + Math.floor(i / 20) * 48,
-  fall: 100 + (i % 12) * 48,
-  w: i % 4 === 0 ? 5 + (i % 3) : 3 + (i % 3),
-  h: i % 4 === 0 ? 5 + (i % 3) : 8 + (i % 7) * 2,
+  angle: (i * 37 + (i % 17) * 19) % 360,
+  dist: 320 + (i % 28) * 42 + Math.floor(i / 28) * 56,
+  fall: 120 + (i % 14) * 52,
+  w: i % 5 === 0 ? 6 + (i % 4) : 3 + (i % 4),
+  h: i % 5 === 0 ? 6 + (i % 4) : 10 + (i % 8) * 2,
   round: i % 4 === 1,
-  streak: i % 6 === 0,
-  delay: (i % 30) * 0.01,
-  spin: -220 + (i % 19) * 28,
-  duration: 1.7 + (i % 8) * 0.14,
+  streak: i % 5 === 0,
+  delay: (i % 35) * 0.008,
+  spin: -280 + (i % 23) * 32,
+  duration: 1.9 + (i % 9) * 0.16,
 }));
 
-const BURST_PARTICLES = [
-  { color: "#FF4D6D", angle: 0, dist: 160, size: 8 },
-  { color: "#FF7A00", angle: 25, dist: 200, size: 5 },
-  { color: "#A855F7", angle: 55, dist: 180, size: 10 },
-  { color: "#00D4FF", angle: 85, dist: 220, size: 6 },
-  { color: "#FF4D6D", angle: 115, dist: 190, size: 7 },
-  { color: "#A855F7", angle: 145, dist: 160, size: 5 },
-  { color: "#FF7A00", angle: 175, dist: 210, size: 9 },
-  { color: "#00D4FF", angle: 205, dist: 185, size: 5 },
-  { color: "#FF4D6D", angle: 235, dist: 200, size: 8 },
-  { color: "#A855F7", angle: 265, dist: 155, size: 6 },
-  { color: "#00D4FF", angle: 295, dist: 215, size: 10 },
-  { color: "#FF7A00", angle: 325, dist: 175, size: 5 },
-];
+const BURST_PARTICLES = Array.from({ length: 36 }, (_, i) => ({
+  color: ENERGY_COLORS[i % ENERGY_COLORS.length],
+  angle: (i * 10 + (i % 7) * 8) % 360,
+  dist: 200 + (i % 12) * 38,
+  size: 4 + (i % 6),
+}));
 
-/** Stage 1 → lens fade · Stage 2 → lens focus · Stage 3 → lens + swirls · Stage 4 → logo burst */
-type Stage = "black" | "lens1" | "lens2" | "lens3" | "logoBurst" | "tagline" | "exit";
+const SHOCK_RINGS = [0, 0.12, 0.28, 0.45];
+
+/** Stage 1 → lens · Stage 2 → focus · Stage 3 → swirls · Stage 4 → logo explosion */
+type Stage = "black" | "lens1" | "lens2" | "lens3" | "logoBurst" | "exit";
 
 const STAGE_MS: Record<Stage, number> = {
   black: 400,
   lens1: 2600,
   lens2: 2200,
   lens3: 2600,
-  logoBurst: 3400,
-  tagline: 1400,
-  exit: 600,
+  logoBurst: 4800,
+  exit: 700,
+};
+
+const SHAKE_KEYFRAMES = {
+  x: [0, -18, 22, -16, 14, -12, 10, -8, 6, -4, 2, 0],
+  y: [0, 14, -18, 12, -14, 10, -8, 6, -4, 3, -2, 0],
+  rotate: [0, -1.2, 1.4, -1, 0.8, -0.5, 0.3, 0],
 };
 
 type AppStartupSplashProps = {
@@ -68,6 +66,7 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
   const [stage, setStage] = useState<Stage>("black");
   const [swirlProgress, setSwirlProgress] = useState(0);
   const [burst, setBurst] = useState(false);
+  const [shake, setShake] = useState(false);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
@@ -76,7 +75,7 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
       return () => clearTimeout(t);
     }
 
-    const sequence: Stage[] = ["black", "lens1", "lens2", "lens3", "logoBurst", "tagline", "exit"];
+    const sequence: Stage[] = ["black", "lens1", "lens2", "lens3", "logoBurst", "exit"];
     let elapsed = 0;
     const timers: ReturnType<typeof setTimeout>[] = [];
 
@@ -87,7 +86,11 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
         setTimeout(() => {
           setStage(step);
           if (step === "logoBurst") {
-            setTimeout(() => setBurst(true), 1500);
+            setTimeout(() => {
+              setBurst(true);
+              setShake(true);
+              setTimeout(() => setShake(false), 720);
+            }, 1400);
           }
           if (step === "exit") setExiting(true);
         }, elapsed)
@@ -120,15 +123,114 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
   }, [stage]);
 
   useEffect(() => {
-    if (stage !== "logoBurst") setBurst(false);
+    if (stage !== "logoBurst") {
+      setBurst(false);
+      setShake(false);
+    }
   }, [stage]);
 
   const showLens = stage === "lens1" || stage === "lens2" || stage === "lens3";
-  const showLogo = stage === "logoBurst" || stage === "tagline";
+  const showLogo = stage === "logoBurst";
   const opacity = exiting ? 0 : 1;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
+    <motion.div
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-black"
+      animate={shake ? SHAKE_KEYFRAMES : { x: 0, y: 0, rotate: 0 }}
+      transition={shake ? { duration: 0.72, ease: "easeOut" } : { duration: 0.2 }}
+    >
+      {/* Full-screen mega explosion */}
+      {burst && (
+        <div className="pointer-events-none absolute inset-0 z-[1]">
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.95, 0.4, 0] }}
+            transition={{ duration: 0.55, times: [0, 0.08, 0.35, 1] }}
+            style={{ background: "radial-gradient(circle at 50% 42%, #fff 0%, rgba(255,255,255,0.6) 8%, transparent 45%)" }}
+          />
+
+          <motion.div
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.7, 0] }}
+            transition={{ duration: 1.1, delay: 0.05 }}
+            style={{
+              background:
+                "radial-gradient(ellipse 180% 160% at 50% 42%, rgba(255,77,109,0.75) 0%, rgba(168,85,247,0.45) 30%, rgba(0,212,255,0.2) 55%, transparent 80%)",
+            }}
+          />
+
+          {SHOCK_RINGS.map((delay, i) => (
+            <motion.div
+              key={`ring-${i}`}
+              className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: [0, 2.5 + i * 1.2, 5.5 + i * 1.8], opacity: [0, 0.85, 0] }}
+              transition={{ duration: 1.6 + i * 0.2, delay, ease: [0.08, 0.82, 0.2, 1] }}
+              style={{
+                width: "50vmax",
+                height: "50vmax",
+                border: `3px solid ${ENERGY_COLORS[i % ENERGY_COLORS.length]}`,
+                boxShadow: `0 0 40px ${ENERGY_COLORS[i % ENERGY_COLORS.length]}, inset 0 0 60px rgba(255,255,255,0.15)`,
+              }}
+            />
+          ))}
+
+          <motion.div
+            className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: [0, 2, 6], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.8, ease: [0.1, 0.9, 0.15, 1] }}
+            style={{
+              width: "200vmax",
+              height: "200vmax",
+              borderRadius: "50%",
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,77,109,0.8) 6%, rgba(168,85,247,0.55) 18%, rgba(0,212,255,0.3) 35%, transparent 58%)",
+            }}
+          />
+
+          <motion.div
+            className="absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2"
+            initial={{ scale: 0.2, opacity: 0 }}
+            animate={{ scale: [0.2, 3.5, 7], opacity: [0, 0.65, 0] }}
+            transition={{ duration: 2, ease: [0.12, 0.88, 0.22, 1] }}
+            style={{
+              width: "160vmax",
+              height: "160vmax",
+              borderRadius: "50%",
+              boxShadow:
+                "0 0 200px rgba(255,77,109,0.9), 0 0 400px rgba(168,85,247,0.6), 0 0 600px rgba(0,212,255,0.35), inset 0 0 120px rgba(255,122,0,0.4)",
+              background:
+                "radial-gradient(circle, transparent 38%, rgba(255,77,109,0.4) 44%, rgba(168,85,247,0.25) 50%, transparent 56%)",
+            }}
+          />
+
+          {/* Radial energy streaks */}
+          {Array.from({ length: 24 }).map((_, i) => {
+            const angle = (i * 15) % 360;
+            return (
+              <motion.div
+                key={`streak-${i}`}
+                className="absolute left-1/2 top-[42%] origin-bottom"
+                initial={{ scaleY: 0, opacity: 0 }}
+                animate={{ scaleY: [0, 1.2, 0], opacity: [0, 0.9, 0] }}
+                transition={{ duration: 0.9, delay: i * 0.02, ease: "easeOut" }}
+                style={{
+                  width: 4,
+                  height: "55vmax",
+                  marginLeft: -2,
+                  transform: `rotate(${angle}deg)`,
+                  background: `linear-gradient(to top, transparent, ${ENERGY_COLORS[i % ENERGY_COLORS.length]}, transparent)`,
+                  filter: `drop-shadow(0 0 12px ${ENERGY_COLORS[i % ENERGY_COLORS.length]})`,
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         {showLens && (
           <motion.div
@@ -137,7 +239,7 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
             animate={{ opacity }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative flex items-center justify-center"
+            className="relative z-[2] flex items-center justify-center"
           >
             {stage === "lens1" && (
               <motion.div
@@ -211,64 +313,36 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
             initial={{ opacity: 0 }}
             animate={{ opacity }}
             exit={{ opacity: 0 }}
-            className="relative flex items-center justify-center"
+            className="relative z-[3] flex items-center justify-center"
             style={{ isolation: "isolate" }}
           >
-            {burst && (
-              <>
-                <motion.div
-                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: [0, 1.4, 3.2], opacity: [0, 0.85, 0] }}
-                  transition={{ duration: 1.4, ease: [0.12, 0.9, 0.25, 1] }}
-                  style={{
-                    width: "120vmax",
-                    height: "120vmax",
-                    borderRadius: "50%",
-                    background:
-                      "radial-gradient(circle, rgba(255,255,255,0.55) 0%, rgba(255,77,109,0.75) 8%, rgba(168,85,247,0.5) 28%, rgba(0,212,255,0.25) 48%, transparent 68%)",
-                  }}
-                />
-                <motion.div
-                  className="pointer-events-none absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.5, 0] }}
-                  transition={{ duration: 0.9 }}
-                  style={{
-                    background:
-                      "radial-gradient(ellipse 140% 120% at 50% 42%, rgba(255,77,109,0.55) 0%, rgba(168,85,247,0.3) 35%, rgba(0,212,255,0.12) 55%, transparent 75%)",
-                  }}
-                />
-              </>
-            )}
-
             {burst && (
               <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 {CONFETTI.map((piece, i) => {
                   const rad = (piece.angle * Math.PI) / 180;
                   const endX = Math.cos(rad) * piece.dist;
-                  const endY = Math.sin(rad) * piece.dist * 0.55 + piece.fall;
+                  const endY = Math.sin(rad) * piece.dist * 0.6 + piece.fall;
                   return (
                     <motion.div
                       key={`c-${i}`}
-                      initial={{ x: 0, y: 0, opacity: 0, scale: 0.2, rotate: 0 }}
+                      initial={{ x: 0, y: 0, opacity: 0, scale: 0.1, rotate: 0 }}
                       animate={{
                         x: endX,
                         y: endY,
-                        opacity: [0, 1, 1, 0.6, 0],
-                        scale: [0.2, 1.1, 1, 0.8, 0.3],
+                        opacity: [0, 1, 1, 0.7, 0],
+                        scale: [0.1, 1.3, 1.1, 0.9, 0.2],
                         rotate: piece.spin,
                       }}
-                      transition={{ duration: piece.duration, delay: piece.delay, ease: [0.12, 0.88, 0.42, 1] }}
+                      transition={{ duration: piece.duration, delay: piece.delay, ease: [0.1, 0.85, 0.35, 1] }}
                       style={{
                         position: "absolute",
-                        width: piece.streak ? 2 : piece.w,
-                        height: piece.streak ? piece.h + 12 : piece.round ? piece.w : piece.h,
-                        borderRadius: piece.round ? "50%" : piece.streak ? 99 : 1,
+                        width: piece.streak ? 3 : piece.w,
+                        height: piece.streak ? piece.h + 20 : piece.round ? piece.w : piece.h,
+                        borderRadius: piece.round ? "50%" : piece.streak ? 99 : 2,
                         background: piece.streak
                           ? `linear-gradient(180deg, transparent, ${piece.color}, transparent)`
                           : piece.color,
-                        boxShadow: piece.streak ? "none" : `0 0 10px ${piece.color}`,
+                        boxShadow: piece.streak ? "none" : `0 0 14px ${piece.color}, 0 0 28px ${piece.color}88`,
                       }}
                     />
                   );
@@ -278,21 +352,21 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
                   return (
                     <motion.div
                       key={`p-${i}`}
-                      initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+                      initial={{ x: 0, y: 0, opacity: 1, scale: 1.2 }}
                       animate={{
                         x: Math.cos(rad) * dist,
                         y: Math.sin(rad) * dist,
                         opacity: 0,
-                        scale: 0.1,
+                        scale: 0,
                       }}
-                      transition={{ duration: 1.2, ease: [0.2, 0, 0.5, 1], delay: i * 0.022 }}
+                      transition={{ duration: 1.4, ease: [0.15, 0, 0.45, 1], delay: i * 0.015 }}
                       style={{
                         position: "absolute",
                         width: size,
                         height: size,
                         borderRadius: "50%",
                         background: color,
-                        boxShadow: `0 0 10px ${color}`,
+                        boxShadow: `0 0 16px ${color}, 0 0 32px ${color}`,
                       }}
                     />
                   );
@@ -301,36 +375,27 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
             )}
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.3, rotate: -360 }}
-              animate={{ opacity: 1, scale: burst ? [1, 1.08, 1] : 1, rotate: 0 }}
-              transition={{
-                opacity: { duration: 0.5 },
-                scale: { duration: burst ? 0.5 : 1.5, ease: [0.16, 1, 0.3, 1] },
-                rotate: { duration: 1.5, ease: [0.34, 1.15, 0.64, 1] },
+              initial={{ opacity: 0, scale: 0.15, rotate: -420 }}
+              animate={{
+                opacity: 1,
+                scale: burst ? [1, 1.18, 0.98, 1.04, 1] : 1,
+                rotate: 0,
               }}
-              className="relative z-[3]"
+              transition={{
+                opacity: { duration: 0.4 },
+                scale: burst
+                  ? { duration: 0.85, times: [0, 0.25, 0.5, 0.75, 1], ease: "easeOut" }
+                  : { duration: 1.5, ease: [0.16, 1, 0.3, 1] },
+                rotate: { duration: 1.6, ease: [0.34, 1.2, 0.55, 1] },
+              }}
+              className="relative z-[4]"
             >
               <PopitBrandLogo markWidth={320} markHeight={460} showWordmark={false} />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {stage === "tagline" && !exiting && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="pointer-events-none absolute text-center font-semibold tracking-[0.28em] text-white/75"
-          style={{
-            bottom: "22%",
-            fontSize: "clamp(0.65rem, 2.8vw, 0.82rem)",
-            textShadow: `0 0 20px ${BURST}44`,
-          }}
-        >
-          SEE WHAT&apos;S POPPING.
-        </motion.p>
-      )}
-    </div>
+    </motion.div>
   );
 }
 
