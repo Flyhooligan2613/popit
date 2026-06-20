@@ -15,6 +15,7 @@ import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
+import HeroAssembleText from "./HeroAssembleText";
 import BackNavButton from "@/components/nav/BackNavButton";
 import { CATEGORY_CARDS, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
 import type { WelcomeHomeProps } from "./types";
@@ -225,18 +226,13 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
         <section className="popit-hero-copy popit-hero-copy-v2">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={`${slide}-${city ?? "x"}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
-            >
-              <p className="popit-hero-kicker font-display">{current.headlineTop}</p>
-              <h1 className="popit-hero-accent font-display">{current.headlineAccent}</h1>
-              <p className="popit-hero-city font-display">{cityLine}</p>
-              <p className="popit-hero-sub font-body">{current.subtitle}</p>
-            </motion.div>
+            <HeroAssembleText
+              slideKey={`${slide}-${city ?? "x"}`}
+              top={current.headlineTop}
+              accent={current.headlineAccent}
+              city={cityLine}
+              subtitle={current.subtitle}
+            />
           </AnimatePresence>
         </section>
 
@@ -254,7 +250,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           reducedMotion={!!reducedMotion}
         />
 
-        <WhatsPoppingNow creators={TRENDING_CREATORS} reducedMotion={!!reducedMotion} />
+        <WhatsPoppingNow creators={TRENDING_CREATORS} reducedMotion={!!reducedMotion} energyNorm={energyNorm} />
 
         <div className="popit-category-grid popit-category-grid-v2" role="list" aria-label="Explore modes">
           {CATEGORY_CARDS.map((card, i) => (
@@ -270,7 +266,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           ))}
         </div>
 
-        <LiveVenueCards venues={LIVE_VENUE_CARDS} />
+        <LiveVenueCards venues={LIVE_VENUE_CARDS} reducedMotion={!!reducedMotion} energyNorm={energyNorm} />
 
         <CityPulse channels={pulse} reducedMotion={!!reducedMotion} />
 

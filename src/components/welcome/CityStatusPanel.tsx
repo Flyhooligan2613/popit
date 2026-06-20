@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { TimePeriod } from "./types";
 
@@ -12,7 +13,6 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
-/** Simulated temp by time — replace with weather API later */
 function tempForPeriod(period: TimePeriod, city: string | null): string {
   const base = city?.toLowerCase().includes("miami") ? 82 : 74;
   const offset =
@@ -44,24 +44,31 @@ export default function CityStatusPanel({ city, connected = true }: CityStatusPa
   const temp = tempForPeriod(period, city);
 
   return (
-    <div className="city-status-panel" aria-label={`Connected to ${cityLabel}`}>
-      <div className="city-status-row city-status-city font-body">
+    <motion.div
+      className="connection-card"
+      aria-label={`Connected to ${cityLabel}`}
+      animate={{ boxShadow: ["0 4px 24px rgba(0,0,0,0.25)", "0 6px 32px rgba(0,212,255,0.08)", "0 4px 24px rgba(0,0,0,0.25)"] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <div className="connection-card-scan" aria-hidden />
+      <div className="connection-card-row connection-card-city font-body">
         <span aria-hidden>📍</span>
         <span>{cityLabel}</span>
       </div>
-      <div className="city-status-row city-status-meta font-body">
+      <div className="connection-card-row connection-card-meta font-body">
         <span>{time}</span>
-        <span className="city-status-dot" aria-hidden>
+        <span className="connection-card-sep" aria-hidden>
           ·
         </span>
         <span>{temp}</span>
       </div>
       {connected && (
-        <div className="city-status-connected font-body">
-          <span className="city-status-connected-dot" aria-hidden />
+        <div className="connection-card-linked font-body">
+          <span className="connection-card-pulse" aria-hidden />
+          <span className="connection-card-linked-dot" aria-hidden />
           Connected to City
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

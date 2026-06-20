@@ -24,7 +24,7 @@ export default function WelcomeHeroBackground({
 
   return (
     <div
-      className="popit-bg-stage"
+      className="popit-bg-stage popit-bg-stage-v3"
       aria-hidden
       style={
         {
@@ -44,11 +44,11 @@ export default function WelcomeHeroBackground({
             initial={false}
             animate={{
               opacity: active ? 1 : 0,
-              filter: active ? "blur(0px)" : "blur(6px)",
+              filter: active ? "blur(0px)" : "blur(8px)",
             }}
             transition={{ duration: fadeDuration, ease: [0.42, 0, 0.18, 1] }}
           >
-            <div className={`popit-bg-inner ${active && !reducedMotion ? "is-ken-burns" : ""}`}>
+            <div className={`popit-bg-inner ${active && !reducedMotion ? "is-ken-burns is-cinematic" : ""}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={slide.src}
@@ -63,11 +63,28 @@ export default function WelcomeHeroBackground({
           </motion.div>
         );
       })}
+
       <div className="popit-bg-gradient-base" />
       <div className="popit-bg-gradient-center" />
       <div className="popit-bg-vignette" />
       <div className="popit-bg-rays" />
       <div className="popit-bg-ambient" />
+
+      {!reducedMotion && (
+        <>
+          <div className="popit-bg-fog-drift" />
+          <div className="popit-bg-lens-flare" />
+          <div className="popit-bg-city-shimmer" />
+          <div className="popit-bg-headlight popit-bg-headlight-1" />
+          <div className="popit-bg-headlight popit-bg-headlight-2" />
+          <div className="popit-bg-rain" />
+          <div className="popit-bg-float-particles">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className={`popit-bg-particle popit-bg-particle-${i + 1}`} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

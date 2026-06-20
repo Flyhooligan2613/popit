@@ -11,20 +11,30 @@ type CategoryCardProps = {
   delay: number;
 };
 
+const THEME_FX: Record<string, string> = {
+  "card-restaurants": "fx-warm",
+  "card-events": "fx-neon",
+  "card-trending": "fx-electric",
+  "card-nearby": "fx-radar",
+};
+
 export default function CategoryCard({ icon, label, stat, theme, selected, delay }: CategoryCardProps) {
+  const fx = THEME_FX[theme] ?? "";
+
   return (
     <motion.div
       role="listitem"
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: selected ? 1.04 : 1 }}
       transition={{ delay, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6, scale: selected ? 1.06 : 1.05, rotateX: 2 }}
+      whileHover={{ y: -6, scale: selected ? 1.06 : 1.05 }}
       whileTap={{ scale: 0.94, y: -2 }}
-      className={`popit-card popit-card-v2 ${theme} ${selected ? "is-selected" : ""}`}
+      className={`popit-card popit-card-v3 ${theme} ${fx} ${selected ? "is-selected" : ""}`}
     >
       <span className="popit-card-glass" aria-hidden />
       <span className="popit-card-reflection" aria-hidden />
       <span className="popit-card-fx" aria-hidden />
+      <span className="popit-card-theme-fx" aria-hidden />
       <span className="popit-card-edge" aria-hidden />
       <span className="popit-card-icon" aria-hidden>
         {icon}

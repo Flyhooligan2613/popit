@@ -11,18 +11,26 @@ type CityPulseProps = {
 
 function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMotion: boolean }) {
   const value = useAnimatedNumber(Math.round(channel.value), reducedMotion ? 0 : 900);
+  const delta = useAnimatedNumber(channel.delta, reducedMotion ? 0 : 700);
 
   return (
-    <div className={`city-pulse-row city-pulse-row-v2 ${channel.isHottest ? "is-hottest" : ""}`} data-channel={channel.key}>
+    <div className={`city-pulse-row city-pulse-row-v3 ${channel.isHottest ? "is-hottest" : ""}`} data-channel={channel.key}>
       <div className="city-pulse-row-head">
         <span className="city-pulse-icon" aria-hidden>
           {channel.icon}
         </span>
         <span className="city-pulse-label font-body">{channel.label}</span>
-        <span className="city-pulse-pct font-display">{value}%</span>
+        <motion.span
+          key={value}
+          className="city-pulse-pct font-display"
+          initial={{ opacity: 0.6 }}
+          animate={{ opacity: 1 }}
+        >
+          {value}%
+        </motion.span>
       </div>
       <div className="city-pulse-meta font-body">
-        <span className="city-pulse-delta">▲ +{channel.delta}%</span>
+        <span className="city-pulse-delta">▲ +{delta}%</span>
         <span className="city-pulse-status">
           {channel.isHottest && <span className="city-pulse-hot-tag" aria-hidden>🔥 </span>}
           {channel.statusLabel}
@@ -37,6 +45,8 @@ function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMo
           transition={{ duration: reducedMotion ? 0.15 : 0.85, ease: [0.16, 1, 0.3, 1] }}
         />
         <div className="city-pulse-glow" aria-hidden />
+        <div className="city-pulse-stream" aria-hidden />
+        {!reducedMotion && <span className="city-pulse-spark" aria-hidden />}
       </div>
     </div>
   );
@@ -44,8 +54,11 @@ function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMo
 
 export default function CityPulse({ channels, reducedMotion }: CityPulseProps) {
   return (
-    <section className="city-pulse city-pulse-v2" aria-label="City pulse command center">
-      <h2 className="city-pulse-title font-display">City Pulse</h2>
+    <section className="city-pulse city-pulse-v3" aria-label="City pulse command center">
+      <h2 className="city-pulse-title font-display">
+        <span className="city-pulse-title-dot" aria-hidden />
+        City Pulse
+      </h2>
       <div className="city-pulse-grid">
         {channels.map((channel) => (
           <PulseRow key={channel.key} channel={channel} reducedMotion={reducedMotion} />

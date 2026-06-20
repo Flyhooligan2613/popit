@@ -64,6 +64,7 @@ export type TrendingCreator = {
   category: string;
   likes: number;
   comments: number;
+  shares: number;
   saves: number;
   followersToday: number;
   trending: boolean;
