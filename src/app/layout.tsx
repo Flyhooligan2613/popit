@@ -7,10 +7,33 @@ export const metadata: Metadata = {
   description: "See What's Popping.",
   applicationName: "POP'IT",
   manifest: "/manifest.webmanifest",
+  metadataBase: new URL("https://www.getpopit.com"),
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "POP'IT",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://www.getpopit.com",
+    siteName: "POP'IT",
+    title: "POP'IT",
+    description: "See What's Popping.",
+    images: [
+      {
+        url: "/icons/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "POP'IT camera lens",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "POP'IT",
+    description: "See What's Popping.",
+    images: ["/icons/og-image.png"],
   },
   icons: {
     icon: [

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { resetAppSession } from "@/lib/session";
+import { isOnboardingComplete, resetAppSession } from "@/lib/session";
 import Frame1 from "@/components/onboarding/frames/Frame1";
 import Frame2 from "@/components/onboarding/frames/Frame2";
 import Frame3 from "@/components/onboarding/frames/Frame3";
@@ -23,13 +23,31 @@ const AUTO_ADVANCE_MS: Record<number, number> = {
   5: 3400,
 };
 
+function resolveStartFrame(): number {
+  if (typeof window === "undefined") return 1;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1") {
+    return 6;
+  }
+  return 1;
+}
+
 export default function OnboardingPage() {
   const [frame, setFrame] = useState(1);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("reset") === "1") {
       resetAppSession();
+      sessionStorage.removeItem("popit:splashSeen");
+    }
+
+    setFrame(resolveStartFrame());
+    setReady(true);
+
+    if (isOnboardingComplete()) {
+      window.location.replace("/pulse");
     }
   }, []);
 
@@ -71,12 +89,16 @@ export default function OnboardingPage() {
     }
   };
 
+  if (!ready) {
+    return <div style={{ position: "fixed", inset: 0, background: "#000000" }} />;
+  }
+
   return (
     <div
       style={{
         position: "fixed",
         inset: 0,
-        background: "#050505",
+        background: "#000000",
         overflow: "hidden",
       }}
     >

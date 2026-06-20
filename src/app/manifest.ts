@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "POP'IT",
     short_name: "POP'IT",
     description: "See What's Popping.",
-    start_url: "/pulse",
+    start_url: "/",
     scope: "/",
     display: "standalone",
     orientation: "portrait",

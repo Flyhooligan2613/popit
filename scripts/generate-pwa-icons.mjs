@@ -80,6 +80,16 @@ async function main() {
   fs.writeFileSync(path.join(iconsDir, "icon-512-maskable.png"), maskable);
   console.log("✓ icon-512-maskable.png");
 
+  const ogLens = await sharp(svg).resize(420, 420, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
+  const ogImage = await sharp({
+    create: { width: 1200, height: 630, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 1 } },
+  })
+    .composite([{ input: ogLens, gravity: "center" }])
+    .png()
+    .toBuffer();
+  fs.writeFileSync(path.join(iconsDir, "og-image.png"), ogImage);
+  console.log("✓ og-image.png");
+
   fs.writeFileSync(path.join(appDir, "icon.png"), pngMap.get("favicon-32x32.png"));
   fs.writeFileSync(path.join(appDir, "apple-icon.png"), pngMap.get("apple-touch-icon.png"));
   console.log("✓ src/app/icon.png");

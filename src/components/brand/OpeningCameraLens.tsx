@@ -8,6 +8,8 @@ type OpeningCameraLensProps = {
   /** 0 = closed, 1 = fully open */
   aperture?: number;
   glow?: boolean;
+  /** 0–1 scales Burst / Volt / Ignite glow intensity */
+  glowIntensity?: number;
   className?: string;
 };
 
@@ -15,9 +17,11 @@ function OpeningCameraLens({
   size = 200,
   aperture = 0.35,
   glow = true,
+  glowIntensity = 1,
   className = "",
 }: OpeningCameraLensProps) {
   const bladeHeight = 10 + aperture * 22;
+  const gi = glow ? glowIntensity : 0;
 
   return (
     <motion.div
@@ -27,9 +31,9 @@ function OpeningCameraLens({
         glow
           ? {
               boxShadow: [
-                "0 0 0 2px rgba(255,255,255,0.05), 0 0 18px rgba(80,80,200,0.18)",
-                "0 0 0 2px rgba(255,255,255,0.1), 0 0 50px rgba(255,77,109,0.35), 0 0 80px rgba(168,85,247,0.2)",
-                "0 0 0 2px rgba(255,255,255,0.05), 0 0 18px rgba(80,80,200,0.18)",
+                `0 0 0 2px rgba(255,255,255,0.05), 0 0 ${14 * gi}px rgba(0,212,255,${0.15 * gi}), 0 0 ${22 * gi}px rgba(255,77,109,${0.2 * gi})`,
+                `0 0 0 2px rgba(255,255,255,0.12), 0 0 ${40 * gi}px rgba(255,77,109,${0.45 * gi}), 0 0 ${64 * gi}px rgba(168,85,247,${0.35 * gi}), 0 0 ${90 * gi}px rgba(255,122,0,${0.2 * gi})`,
+                `0 0 0 2px rgba(255,255,255,0.05), 0 0 ${14 * gi}px rgba(0,212,255,${0.15 * gi}), 0 0 ${22 * gi}px rgba(255,77,109,${0.2 * gi})`,
               ],
             }
           : undefined
