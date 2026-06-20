@@ -49,7 +49,7 @@ function PopWorldVenuePanel({ business, onClose }: PopWorldVenuePanelProps) {
                           VERIFIED
                         </span>
                       )}
-                      {business.live && <HypeLiveBadge />}
+                      {business.live && <HypeLiveBadge energy={energy} />}
                     </div>
                     <p className="font-body text-xs text-white/45">{business.tagline}</p>
                     <p className="mt-1 font-body text-[0.65rem] uppercase tracking-[0.16em] text-white/30">
