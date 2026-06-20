@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "icons": "node scripts/generate-pwa-icons.mjs",
+    "build": "npm run icons && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -32,6 +33,7 @@
     "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.3",
     "postcss": "^8.5.3",
+    "sharp": "^0.34.2",
     "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3"
   }

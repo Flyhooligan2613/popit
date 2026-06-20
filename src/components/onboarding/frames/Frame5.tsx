@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import PopitLogo from "@/components/brand/PopitLogo";
+import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 
 const ENERGY_COLORS = ["#FF4D6D", "#FF7A00", "#A855F7", "#00D4FF", "#7C3AED", "#0099FF"];
 
@@ -157,7 +157,7 @@ export default function Frame5() {
             animate={burst ? { scale: [1, 1.08, 1] } : {}}
             transition={burst ? { duration: 0.5, ease: "easeOut" } : {}}
           >
-            <PopitLogo variant="stacked" markSize={220} wordmarkSize="hero" />
+            <PopitBrandLogo markWidth={320} markHeight={240} wordmarkSize="hero" />
           </motion.div>
         </motion.div>
       </div>

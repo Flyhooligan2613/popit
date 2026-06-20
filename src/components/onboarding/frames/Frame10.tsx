@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import PopitMark from "@/components/brand/PopitMark";
+import OpeningCameraLens from "@/components/brand/OpeningCameraLens";
 import { useEffect, useState } from "react";
 
 const DURATION_MS = 4200;
@@ -62,7 +62,7 @@ export default function Frame10({ onNext }: { onNext: () => void }) {
               transition={{ duration: 2, repeat: Infinity }}
             />
           )}
-          <PopitMark size={96} />
+          <OpeningCameraLens size={96} aperture={0.5} />
         </motion.div>
       </motion.div>
 

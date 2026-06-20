@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import PopitMark from "@/components/brand/PopitMark";
+import OpeningCameraLens from "@/components/brand/OpeningCameraLens";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import PopitIcon from "./PopitIcon";
@@ -112,7 +112,7 @@ export default function PulseFAB() {
             animate={{ rotate: open ? 180 : 0, scale: open ? 0.9 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 22 }}
           >
-            <PopitMark size={40} glow={false} />
+            <OpeningCameraLens size={40} aperture={0.4} glow={false} />
           </motion.div>
         </motion.button>
       </div>

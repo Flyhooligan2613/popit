@@ -1,23 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import PwaRegister from "@/components/PwaRegister";
 
 export const metadata: Metadata = {
   title: "POP'IT",
   description: "See What's Popping.",
   applicationName: "POP'IT",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "POP'IT",
   },
   icons: {
-    icon: [{ url: "/icon", sizes: "32x32", type: "image/png" }],
-    apple: [
-      { url: "/apple-icon", sizes: "180x180", type: "image/png" },
-      { url: "/apple-icon", sizes: "180x180", type: "image/png", rel: "apple-touch-icon" },
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/favicon-48x48.png", sizes: "48x48", type: "image/png" },
     ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     other: [
-      { rel: "mask-icon", url: "/icons/app-icon.svg", color: "#FF4D6D" },
+      { rel: "mask-icon", url: "/icons/popit-lens-master.svg", color: "#FF4D6D" },
     ],
   },
   other: {
@@ -43,7 +47,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-body">{children}</body>
+      <body className="font-body">
+        <PwaRegister />
+        {children}
+      </body>
     </html>
   );
 }

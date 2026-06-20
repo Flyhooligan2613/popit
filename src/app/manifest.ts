@@ -2,7 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "POP'IT — Living City Platform",
+    id: "/",
+    name: "POP'IT",
     short_name: "POP'IT",
     description: "See What's Popping.",
     start_url: "/pulse",
@@ -13,30 +14,31 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#050505",
     icons: [
       {
-        src: "/icon",
-        sizes: "32x32",
-        type: "image/png",
-      },
-      {
-        src: "/apple-icon",
-        sizes: "180x180",
+        src: "/icons/favicon-48x48.png",
+        sizes: "48x48",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/192",
+        src: "/icons/icon-192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/512",
+        src: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/512",
+        src: "/icons/icon-512-maskable.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
