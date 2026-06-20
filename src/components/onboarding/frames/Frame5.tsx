@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
+import OpeningCameraLens from "@/components/brand/OpeningCameraLens";
 
 const ENERGY_COLORS = ["#FF4D6D", "#FF7A00", "#A855F7", "#00D4FF", "#7C3AED", "#0099FF"];
 
@@ -157,7 +157,7 @@ export default function Frame5() {
             animate={burst ? { scale: [1, 1.08, 1] } : {}}
             transition={burst ? { duration: 0.5, ease: "easeOut" } : {}}
           >
-            <PopitBrandLogo markWidth={360} markHeight={500} showWordmark={false} />
+            <OpeningCameraLens size={220} aperture={0.32} glow glowIntensity={1} />
           </motion.div>
         </motion.div>
       </div>
