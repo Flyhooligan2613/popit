@@ -1,22 +1,14 @@
 "use client";
 
-import type { CityCareerLevel } from "@/lib/creator-economy/types";
+import PopStatusBadge from "./PopStatusBadge";
+import type { PopStatusLevel } from "@/lib/creator-economy/types";
 
 type CityCareerBadgeProps = {
-  level: CityCareerLevel;
+  level: PopStatusLevel;
   size?: "sm" | "md";
 };
 
+/** @deprecated Prefer PopStatusBadge — kept for existing imports */
 export default function CityCareerBadge({ level, size = "md" }: CityCareerBadgeProps) {
-  return (
-    <span
-      className={`city-career-badge city-career-badge-${size}`}
-      style={{ "--career-accent": level.accent } as React.CSSProperties}
-    >
-      <span className="city-career-badge-icon" aria-hidden>
-        {level.badge}
-      </span>
-      <span className="city-career-badge-label font-body">{level.label}</span>
-    </span>
-  );
+  return <PopStatusBadge level={level} size={size} />;
 }

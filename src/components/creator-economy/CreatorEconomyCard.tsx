@@ -1,6 +1,6 @@
 "use client";
 
-import CityCareerBadge from "@/components/creator-economy/CityCareerBadge";
+import PopStatusBadge from "@/components/creator-economy/PopStatusBadge";
 import CityCareerTrack from "@/components/creator-economy/CityCareerTrack";
 import PopScorePanel from "@/components/creator-economy/PopScorePanel";
 import { buildCreatorEconomyProfile } from "@/lib/creator-economy/buildProfile";
@@ -19,8 +19,11 @@ export default function CreatorEconomyCard({ signals, variant = "personal" }: Cr
   return (
     <section className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 backdrop-blur-sm">
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h3 className="text-poster text-lg uppercase tracking-wider text-white/90">City Career</h3>
-        <CityCareerBadge level={economy.career.level} />
+        <div>
+          <h3 className="text-poster text-lg uppercase tracking-wider text-white/90">POP Status</h3>
+          <p className="font-body mt-0.5 text-[0.65rem] text-white/40">{economy.career.level.tagline}</p>
+        </div>
+        <PopStatusBadge level={economy.career.level} />
       </div>
 
       <PopScorePanel breakdown={economy.popScore} compact />
@@ -51,7 +54,7 @@ export default function CreatorEconomyCard({ signals, variant = "personal" }: Cr
       )}
 
       <p className="font-body mt-3 text-xs text-white/40">
-        {economy.lifetimeImpact.toLocaleString()} community actions influenced · Impact over popularity
+        {economy.lifetimeImpact.toLocaleString()} community actions influenced · POP Score {economy.popScore.score}
       </p>
     </section>
   );

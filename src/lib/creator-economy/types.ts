@@ -23,32 +23,73 @@ export type PopScoreBreakdown = {
   impactIndex: number;
 };
 
-export type CityCareerLevelId =
-  | "explorer"
-  | "contributor"
-  | "creator"
-  | "city-creator"
+/** POP'IT Identity & Status System v1.0 tier ids */
+export type PopStatusId =
+  | "rising"
+  | "rising-creator"
+  | "verified-creator"
   | "elite-creator"
-  | "city-legend"
-  | "pop-legend";
+  | "gold-status"
+  | "diamond"
+  | "icon";
 
-export type CityCareerLevel = {
-  id: CityCareerLevelId;
+/** @deprecated Alias — use PopStatusId */
+export type CityCareerLevelId = PopStatusId;
+
+export type PopStatusRequirements = {
+  minFollowers?: number;
+  minTotalLikes?: number;
+  minPopScore?: number;
+  /** Must have positive account standing (guidelines respected) */
+  requiresGoodStanding?: boolean;
+  /** Awarded by invitation or exceptional achievement — not follower count alone */
+  invitationOnly?: boolean;
+  /** Never auto-awarded from metrics */
+  manualOnly?: boolean;
+  /** Verified business can qualify at this tier */
+  businessEligible?: boolean;
+};
+
+export type PopStatusLevel = {
+  id: PopStatusId;
   label: string;
   tier: number;
-  minXp: number;
   accent: string;
-  badge: string;
+  /** Display glyph — null for no-badge Rising state */
+  badge: string | null;
+  /** Premium animated badge chrome (green/blue/purple/gold/diamond/crown) */
+  hasPremiumBadge: boolean;
   tagline: string;
   unlocks: string[];
+  requirements: PopStatusRequirements;
 };
 
-export type CityCareerState = {
-  level: CityCareerLevel;
-  xp: number;
-  nextLevel: CityCareerLevel | null;
-  progressToNext: number;
+/** @deprecated Alias — use PopStatusLevel */
+export type CityCareerLevel = PopStatusLevel;
+
+export type PopStatusMetrics = {
+  followers: number;
+  totalLikes: number;
+  popScore: number;
+  accountStanding: "good" | "restricted";
+  activeParticipation?: boolean;
+  isVerifiedBusiness?: boolean;
+  isDiamondInvited?: boolean;
+  isIconAwarded?: boolean;
 };
+
+export type PopStatusState = {
+  level: PopStatusLevel;
+  metrics: PopStatusMetrics;
+  nextLevel: PopStatusLevel | null;
+  /** 0–1 progress toward the next auto-awarded tier */
+  progressToNext: number;
+  /** Human-readable gaps for the next tier */
+  nextRequirements: string[];
+};
+
+/** @deprecated Alias — use PopStatusState */
+export type CityCareerState = PopStatusState;
 
 export type MonetizationChannelId =
   | "creator-bonus"
@@ -68,13 +109,13 @@ export type MonetizationChannel = {
   id: MonetizationChannelId;
   label: string;
   description: string;
-  minCareerLevel: CityCareerLevelId;
+  minCareerLevel: PopStatusId;
   icon: string;
 };
 
 export type CreatorEconomyProfile = {
   popScore: PopScoreBreakdown;
-  career: CityCareerState;
+  career: PopStatusState;
   eligibleChannels: MonetizationChannel[];
   lifetimeImpact: number;
 };

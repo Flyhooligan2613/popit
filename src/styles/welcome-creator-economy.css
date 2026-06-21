@@ -346,4 +346,143 @@
   .city-career-track-fill {
     transition: none !important;
   }
+
+  .pop-status-badge.is-animated .pop-status-badge-shine {
+    animation: none !important;
+  }
+}
+
+/* ── POP Status badges v1.0 ── */
+.pop-status-rising-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pop-status-rising-only-sm {
+  font-size: 0.5rem;
+}
+
+.pop-status-rising-star {
+  font-size: 0.6rem;
+  opacity: 0.85;
+}
+
+.pop-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--status-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--status-accent) 14%, rgba(0, 0, 0, 0.45));
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pop-status-badge-sm {
+  padding: 0.2rem 0.48rem;
+}
+
+.pop-status-badge-md {
+  padding: 0.28rem 0.58rem;
+}
+
+.pop-status-badge-lg {
+  padding: 0.35rem 0.72rem;
+}
+
+.pop-status-badge-gem {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--status-accent) 90%, white),
+    var(--status-accent)
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--status-accent) 55%, transparent);
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.35rem;
+  transform: rotate(45deg);
+}
+
+.pop-status-badge-icon.pop-status-badge .pop-status-badge-gem {
+  transform: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--status-accent) 60%, transparent);
+  font-size: 0.65rem;
+}
+
+.pop-status-badge-shine {
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+  opacity: 0;
+}
+
+.pop-status-badge.is-animated .pop-status-badge-shine {
+  animation: pop-status-shine 3.2s ease-in-out infinite;
+}
+
+.pop-status-badge.is-animated {
+  animation: pop-status-glow 2.8s ease-in-out infinite;
+}
+
+.pop-status-badge-label {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--status-accent);
+}
+
+.pop-status-badge-rising-creator { --status-accent: #22c55e; }
+.pop-status-badge-verified-creator { --status-accent: #3b82f6; }
+.pop-status-badge-elite-creator { --status-accent: #a855f7; }
+.pop-status-badge-gold-status { --status-accent: #fbbf24; }
+.pop-status-badge-diamond { --status-accent: #67e8f9; }
+.pop-status-badge-icon { --status-accent: #fcd34d; }
+
+.pop-status-track-rising-creator.is-active .city-career-track-dot,
+.pop-status-track-verified-creator.is-active .city-career-track-dot,
+.pop-status-track-elite-creator.is-active .city-career-track-dot,
+.pop-status-track-gold-status.is-active .city-career-track-dot,
+.pop-status-track-diamond.is-active .city-career-track-dot,
+.pop-status-track-icon.is-active .city-career-track-dot {
+  color: var(--career-accent);
+}
+
+.city-career-track-gaps {
+  margin: 0.28rem 0 0;
+  font-size: 0.46875rem;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.35;
+}
+
+@keyframes pop-status-shine {
+  0%, 72%, 100% { opacity: 0; transform: translateX(-120%) rotate(45deg); }
+  78% { opacity: 0.7; }
+  88% { opacity: 0; transform: translateX(120%) rotate(45deg); }
+}
+
+@keyframes pop-status-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 color-mix(in srgb, var(--status-accent) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 14px color-mix(in srgb, var(--status-accent) 35%, transparent);
+  }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import CityCareerBadge from "@/components/creator-economy/CityCareerBadge";
+import PopStatusBadge from "@/components/creator-economy/PopStatusBadge";
 import CityCareerTrack from "@/components/creator-economy/CityCareerTrack";
 import PopScorePanel from "@/components/creator-economy/PopScorePanel";
 import { useLivePopScore } from "@/components/creator-economy/useLivePopScore";
@@ -18,20 +18,20 @@ export default function CityCareerSection({ reducedMotion, onExplore, onSectionC
   const upcoming = getUpcomingChannels(economy.career.level.id, 2);
 
   return (
-    <section className="city-career-section" aria-label="Build your city career on POP'IT">
+    <section className="city-career-section" aria-label="POP'IT Identity and Status">
       <button type="button" className="city-career-header popit-tap-target" onClick={onSectionClick ?? onExplore}>
         <div className="city-career-header-left">
           <span className="city-career-header-icon" aria-hidden>
-            ✦
+            ◆
           </span>
           <div>
-            <h2 className="city-career-title font-display">Build Your City Career</h2>
+            <h2 className="city-career-title font-display">POP Status</h2>
             <p className="city-career-sub font-body">
-              Earn reputation through impact — not just followers.
+              Achievement over popularity — your journey, not a checkmark.
             </p>
           </div>
         </div>
-        <CityCareerBadge level={economy.career.level} size="sm" />
+        <PopStatusBadge level={economy.career.level} size="sm" animate={!reducedMotion} />
       </button>
 
       <div className="city-career-grid">
@@ -62,11 +62,11 @@ export default function CityCareerSection({ reducedMotion, onExplore, onSectionC
         onClick={onExplore}
         whileTap={{ scale: 0.98 }}
       >
-        Start building your reputation
+        View your status journey
       </motion.button>
 
       <p className="city-career-quote font-body">
-        &ldquo;I don&apos;t just use POP&apos;IT. I built my reputation here.&rdquo;
+        &ldquo;POP&apos;IT recognizes achievement — not just followers.&rdquo;
       </p>
     </section>
   );
