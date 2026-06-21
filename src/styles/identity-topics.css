@@ -1,0 +1,65 @@
+.identity-topic-picker {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--topic-accent, #a855f7) 35%, rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--topic-accent, #a855f7) 12%, rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.03)
+  );
+  padding: 0.85rem 0.9rem 0.95rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.identity-topic-picker__label {
+  display: block;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--topic-accent, #a855f7);
+  margin-bottom: 0.55rem;
+}
+
+.identity-topic-picker__select-wrap {
+  position: relative;
+}
+
+.identity-topic-picker__select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.75rem 2.25rem 0.75rem 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.identity-topic-picker__select:focus {
+  border-color: color-mix(in srgb, var(--topic-accent, #a855f7) 55%, white);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--topic-accent, #a855f7) 22%, transparent);
+}
+
+.identity-topic-picker__select option,
+.identity-topic-picker__select optgroup {
+  background: #0a0a0f;
+  color: #fff;
+}
+
+.identity-topic-picker__chevron {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+}

@@ -8,6 +8,8 @@ export type UserProfile = {
   name: string;
   city: string;
   identity: IdentityType;
+  identityTopic?: string;
+  identityTopicLabel?: string;
   followers: number;
   following: number;
   pulseScore: number;

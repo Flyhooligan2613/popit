@@ -4,8 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import IdentityPicker from "@/components/onboarding/IdentityPicker";
+import IdentityTopicPicker from "@/components/onboarding/IdentityTopicPicker";
 import BackNavButton from "@/components/nav/BackNavButton";
 import type { IdentityType } from "@/lib/identity/types";
+import { getIdentityAccent } from "@/lib/identity/types";
+import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
 import { signUpWithEmail, signInWithEmail, isSupabaseConfigured } from "@/lib/supabase/auth";
 import { markOnboardingComplete } from "@/lib/session";
@@ -24,7 +27,15 @@ export default function Frame7({
   const [step, setStep] = useState<"account" | "identity">("account");
   const [form, setForm] = useState({ username: "", email: "", password: "", confirm: "" });
   const [identity, setIdentity] = useState<IdentityType | null>(null);
+  const [identityTopic, setIdentityTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleIdentitySelect = (id: IdentityType) => {
+    setIdentity(id);
+    setIdentityTopic(null);
+  };
+
+  const canClaimIdentity = Boolean(identity && identityTopic);
   const [error, setError] = useState<string | null>(null);
 
   const validateAccount = () => {
@@ -76,9 +87,11 @@ export default function Frame7({
   };
 
   const handleIdentityNext = async () => {
-    if (!identity) return;
+    if (!identity || !identityTopic) return;
     setError(null);
     setLoading(true);
+
+    const topicLabel = getIdentityTopicLabel(identity, identityTopic) ?? identityTopic;
 
     try {
       if (isSupabaseConfigured()) {
@@ -101,10 +114,14 @@ export default function Frame7({
           setStep("account");
           return;
         }
-      } else {
-        saveUserIdentity(identity);
-        saveUserProfile({ identity });
       }
+
+      saveUserIdentity(identity);
+      saveUserProfile({
+        identity,
+        identityTopic,
+        identityTopicLabel: topicLabel,
+      });
 
       onNext();
     } catch (err) {
@@ -174,7 +191,7 @@ export default function Frame7({
                 ? mode === "signin"
                   ? "Pick up where you left off."
                   : "Join the culture."
-                : "Every identity gets its own handcrafted profile."}
+                : "Pick your lane — every identity has a specialty."}
             </p>
           </div>
         </motion.div>
@@ -231,22 +248,30 @@ export default function Frame7({
           </motion.div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%" }} className="flex flex-col gap-4">
-            <IdentityPicker selected={identity} onSelect={setIdentity} />
+            <IdentityPicker selected={identity} onSelect={handleIdentitySelect} />
+            {identity && (
+              <IdentityTopicPicker
+                identity={identity}
+                selectedTopic={identityTopic}
+                onSelect={setIdentityTopic}
+                accent={getIdentityAccent(identity)}
+              />
+            )}
             <button
               onClick={handleIdentityNext}
-              disabled={!identity || loading}
+              disabled={!canClaimIdentity || loading}
               style={{
                 width: "100%",
                 padding: "17px",
                 borderRadius: 99,
                 border: "none",
-                background: identity && !loading ? "linear-gradient(90deg, #FF4D6D, #A855F7, #00D4FF)" : "rgba(255,255,255,0.1)",
+                background: canClaimIdentity && !loading ? "linear-gradient(90deg, #FF4D6D, #A855F7, #00D4FF)" : "rgba(255,255,255,0.1)",
                 color: "#fff",
                 fontFamily: "system-ui, sans-serif",
                 fontWeight: 700,
                 fontSize: "1rem",
-                cursor: identity && !loading ? "pointer" : "not-allowed",
-                boxShadow: identity && !loading ? "0 0 32px rgba(255,77,109,0.35)" : "none",
+                cursor: canClaimIdentity && !loading ? "pointer" : "not-allowed",
+                boxShadow: canClaimIdentity && !loading ? "0 0 32px rgba(255,77,109,0.35)" : "none",
                 opacity: loading ? 0.7 : 1,
               }}
             >
