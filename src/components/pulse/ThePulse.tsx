@@ -7,7 +7,6 @@ import { getProfileTemplate } from "@/lib/identity/types";
 import LivingCityBackground from "./LivingCityBackground";
 import CityDistricts from "./CityDistricts";
 import CityProfileHero from "./CityProfileHero";
-import CityHubChrome from "./CityHubChrome";
 import CommentThread from "@/components/comments/CommentThread";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
@@ -36,7 +35,7 @@ export default function ThePulse() {
   return (
     <PullToRefresh onRefresh={handleRefresh} className="absolute inset-0 overflow-y-auto">
       <LivingCityBackground />
-      <CityHubChrome user={user}>
+      <div className="city-hub-main app-page-pad">
         <CityProfileHero key={`hero-${feedKey}`} user={user} />
         <CityDistricts key={`districts-${feedKey}`} />
         <div className="mt-5">
@@ -45,7 +44,7 @@ export default function ThePulse() {
         <div className="mt-5">
           <CommentThread key={feedKey} />
         </div>
-      </CityHubChrome>
+      </div>
     </PullToRefresh>
   );
 }

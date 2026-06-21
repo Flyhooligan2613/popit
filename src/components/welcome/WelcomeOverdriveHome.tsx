@@ -4,7 +4,11 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import AppSocialChrome from "@/components/nav/AppSocialChrome";
+import SocialActionSheets from "@/components/social/SocialActionSheets";
 import BackNavButton from "@/components/nav/BackNavButton";
+import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
+import { isOnboardingComplete } from "@/lib/session";
 import AmbientField from "./AmbientField";
 import WelcomeBackgroundMark from "./WelcomeBackgroundMark";
 import CategoryCard from "./CategoryCard";
@@ -79,6 +83,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [signInBusy, setSignInBusy] = useState(false);
   const [weatherOpen, setWeatherOpen] = useState(false);
   const [feedRefreshKey, setFeedRefreshKey] = useState(0);
+  const [loggedInExplore, setLoggedInExplore] = useState(false);
   const joinLock = useRef(false);
   const signInLock = useRef(false);
   const reorganizeRaf = useRef(0);
@@ -89,6 +94,10 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
   const current = SCENE_SLIDES[slide];
   const contentVisible = !showIntro;
+
+  useEffect(() => {
+    setLoggedInExplore(isOnboardingComplete());
+  }, []);
 
   useEffect(() => {
     if (reducedMotion || skipWelcomeIntro) {
@@ -257,10 +266,10 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     await new Promise((resolve) => window.setTimeout(resolve, 650));
   }, [refresh]);
 
-  return (
+  const home = (
     <PullToRefresh
       onRefresh={handleRefresh}
-      className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
+      className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""} ${loggedInExplore ? "app-social-chrome-active" : ""}`}
       style={
         {
           "--city-energy": String(energyNorm),
@@ -286,7 +295,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
       <AmbientField active={!motionLite && contentVisible} intensity={energyNorm} />
 
       <motion.div
-        className="popit-home-content popit-mock-content"
+        className={`popit-home-content popit-mock-content ${loggedInExplore ? "app-page-pad" : ""}`}
         initial={{ opacity: skipWelcomeIntro ? 1 : 0 }}
         animate={{ opacity: contentVisible ? 1 : 0 }}
         transition={{ duration: skipWelcomeIntro || reducedMotion ? 0 : 0.55, ease: INTRO_EASE }}
@@ -395,5 +404,15 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         onClose={() => setWeatherOpen(false)}
       />
     </PullToRefresh>
+  );
+
+  if (!loggedInExplore) return home;
+
+  return (
+    <SocialActionsProvider>
+      <AppSocialChrome />
+      <SocialActionSheets />
+      {home}
+    </SocialActionsProvider>
   );
 }

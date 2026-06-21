@@ -331,8 +331,17 @@
 
 .profile-settings {
   min-height: 100dvh;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   background: #050505;
   padding-bottom: 5rem;
+}
+
+.profile-settings::-webkit-scrollbar {
+  display: none;
 }
 
 .profile-settings__hero {

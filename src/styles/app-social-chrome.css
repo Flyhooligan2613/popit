@@ -1,0 +1,283 @@
+/* Global social chrome — side rails + corner profile */
+.app-social-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.app-social-chrome__dock,
+.app-social-chrome__rail,
+.app-social-chrome__corner-profile {
+  pointer-events: auto;
+}
+
+.app-social-chrome__corner-profile {
+  position: fixed;
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  right: max(0.65rem, env(safe-area-inset-right, 0px));
+  z-index: 41;
+  display: block;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+}
+
+.app-social-chrome__corner-profile:hover {
+  transform: scale(1.06);
+}
+
+.city-hub-rail--left-stack {
+  position: relative;
+  top: auto;
+  right: auto;
+  transform: none;
+  margin-top: 0.55rem;
+  align-items: center;
+}
+
+/* Content padding when chrome is active */
+.app-social-chrome-active .app-page-pad,
+.app-page-pad.popit-home-content {
+  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
+  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
+}
+
+.app-social-chrome-active .city-hub-main.app-page-pad {
+  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
+  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
+}
+
+@media (max-width: 380px) {
+  .app-social-chrome-active .app-page-pad,
+  .app-page-pad.popit-home-content,
+  .app-social-chrome-active .city-hub-main.app-page-pad {
+    padding-left: 3.85rem;
+    padding-right: 3.85rem;
+  }
+}
+
+/* Bottom sheets for social actions */
+.social-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0.75rem max(0.75rem, env(safe-area-inset-bottom, 0px));
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+}
+
+.social-sheet {
+  width: min(100%, 420px);
+  max-height: min(82dvh, 560px);
+  overflow-y: auto;
+  border-radius: 1.25rem 1.25rem 1rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+  padding: 1rem 1rem 1.25rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.social-sheet::-webkit-scrollbar {
+  display: none;
+}
+
+.social-sheet__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.social-sheet__title {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.social-sheet__subtitle {
+  margin: 0.2rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.social-sheet__close {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.social-sheet__notice {
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 193, 77, 0.25);
+  background: rgba(255, 193, 77, 0.08);
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: rgba(255, 220, 160, 0.92);
+}
+
+.social-sheet__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.social-sheet__input,
+.social-sheet__textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.social-sheet__input:focus,
+.social-sheet__textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.social-sheet__primary,
+.social-sheet__secondary {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  border: none;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.social-sheet__primary {
+  background: linear-gradient(135deg, #ff4d6d, #a855f7);
+  color: #fff;
+}
+
+.social-sheet__primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.social-sheet__secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.social-sheet__tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.social-sheet__track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.social-sheet__track.is-selected {
+  border-color: rgba(255, 77, 109, 0.55);
+  background: rgba(255, 77, 109, 0.1);
+}
+
+.social-sheet__track strong {
+  display: block;
+  font-size: 0.88rem;
+}
+
+.social-sheet__track small {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.social-sheet__track-note {
+  color: rgba(255, 193, 77, 0.85) !important;
+}
+
+.social-sheet__track-badge {
+  flex-shrink: 0;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.social-sheet__track.is-selected .social-sheet__track-badge {
+  background: rgba(255, 77, 109, 0.25);
+  color: #ffb3c1;
+}
+
+.social-sheet__track-pill {
+  margin: 0 0 0.65rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.15);
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.social-sheet__copyright {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.75rem 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.social-sheet__copyright input {
+  margin-top: 0.15rem;
+  accent-color: #ff4d6d;
+}

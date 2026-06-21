@@ -13,7 +13,7 @@ function CitySearch() {
   const results = useMemo(() => searchDirectory(query), [query]);
 
   return (
-    <div className="min-h-screen bg-[#050505] pb-24 pt-6">
+    <div className="min-h-screen bg-[#050505] pb-24 pt-6 app-page-pad">
       <div className="px-4">
         <Link
           href="/pulse"

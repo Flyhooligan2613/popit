@@ -13,6 +13,7 @@
 @import "../styles/pull-to-refresh.css";
 @import "../styles/profile-social.css";
 @import "../styles/city-hub.css";
+@import "../styles/app-social-chrome.css";
 @import "tailwindcss";
 
 html {
