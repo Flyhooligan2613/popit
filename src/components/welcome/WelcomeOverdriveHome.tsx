@@ -304,6 +304,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
               label={card.label}
               stat={card.stat}
               theme={card.theme}
+              image={card.image}
               selected={current.chipKey === card.key}
               delay={0.12 + i * 0.06}
             />

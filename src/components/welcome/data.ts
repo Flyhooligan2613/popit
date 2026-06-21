@@ -251,10 +251,38 @@ export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
 ];
 
 export const CATEGORY_CARDS = [
-  { key: "restaurants" as const, icon: "🍽", label: "Restaurants", stat: "2.4K+ Hot Spots", theme: "card-restaurants" },
-  { key: "events" as const, icon: "🎉", label: "Events", stat: "340+ Tonight", theme: "card-events" },
-  { key: "trending" as const, icon: "🔥", label: "Trending", stat: "128+ Now", theme: "card-trending" },
-  { key: "nearby" as const, icon: "📍", label: "Nearby", stat: "12 Cities", theme: "card-nearby" },
+  {
+    key: "restaurants" as const,
+    icon: "🍽",
+    label: "Good Eats",
+    stat: "2.4K+ hot spots",
+    theme: "card-restaurants",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80&auto=format&fit=crop",
+  },
+  {
+    key: "events" as const,
+    icon: "🌃",
+    label: "Nightlife",
+    stat: "340+ tonight",
+    theme: "card-events",
+    image: "https://images.unsplash.com/photo-1571266028245-a0d306aecd97?w=600&q=80&auto=format&fit=crop",
+  },
+  {
+    key: "trending" as const,
+    icon: "🔥",
+    label: "Trending",
+    stat: "128+ blowing up",
+    theme: "card-trending",
+    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80&auto=format&fit=crop",
+  },
+  {
+    key: "nearby" as const,
+    icon: "📍",
+    label: "Nearby",
+    stat: "12 cities live",
+    theme: "card-nearby",
+    image: "https://images.unsplash.com/photo-1449824912920-35a4420c7892?w=600&q=80&auto=format&fit=crop",
+  },
 ];
 
 /** Globe hotspot positions — future zoom targets (Miami, Atlanta, NYC, etc.) */

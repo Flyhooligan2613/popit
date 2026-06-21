@@ -23,12 +23,22 @@ export function IconRestaurants({ className }: IconProps) {
 export function IconEvents({ className }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path d="M8 36h32" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" />
-      <path d="M16 36V22l8-8 8 8v14" stroke="#c084fc" strokeWidth="2" fill="rgba(168,85,247,0.15)" />
-      <path d="M12 14l6-6M36 14l-6-6" stroke="#ff4d6d" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="24" cy="10" r="3" fill="#ff4d6d" filter="url(#glow)" />
+      <ellipse cx="24" cy="38" rx="12" ry="3" fill="rgba(168,85,247,0.3)" />
+      <path
+        d="M18 14h12l-1.5 18H19.5L18 14z"
+        fill="url(#night-glass)"
+        stroke="#c084fc"
+        strokeWidth="1.2"
+      />
+      <path d="M20 18h8v2H20v-2z" fill="#ff4d6d" opacity="0.85" />
+      <circle cx="24" cy="12" r="2.5" fill="#00d4ff" filter="url(#night-glow)" />
+      <path d="M10 8l3-2M38 8l-3-2" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
       <defs>
-        <filter id="glow">
+        <linearGradient id="night-glass" x1="18" y1="14" x2="30" y2="32">
+          <stop stopColor="#6366f1" />
+          <stop offset="1" stopColor="#a855f7" />
+        </linearGradient>
+        <filter id="night-glow">
           <feGaussianBlur stdDeviation="2" result="b" />
           <feMerge>
             <feMergeNode in="b" />

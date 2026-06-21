@@ -314,6 +314,127 @@
   overflow: hidden;
 }
 
+/* Photo category tiles */
+.popit-card-photo {
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+  min-height: unset;
+  background: #0a0a10;
+}
+
+.popit-card-photo-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.popit-card-photo-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.06);
+  filter: saturate(1.12) contrast(1.05);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .popit-card-photo-bg img {
+    animation: category-photo-drift 14s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes category-photo-drift {
+  from { transform: scale(1.04) translate(0, 0); }
+  to { transform: scale(1.14) translate(-2%, -1.5%); }
+}
+
+.popit-card-photo-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(0, 0, 0, 0.15) 38%,
+    rgba(0, 0, 0, 0.72) 72%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+}
+
+.popit-card-photo-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.popit-card-mock.card-restaurants .popit-card-photo-glow {
+  background: radial-gradient(ellipse 90% 60% at 50% 100%, rgba(255, 120, 40, 0.35), transparent 70%);
+}
+
+.popit-card-mock.card-events .popit-card-photo-glow {
+  background: radial-gradient(ellipse 90% 60% at 50% 100%, rgba(168, 85, 247, 0.38), transparent 70%);
+}
+
+.popit-card-mock.card-trending .popit-card-photo-glow {
+  background: radial-gradient(ellipse 90% 60% at 50% 100%, rgba(0, 212, 255, 0.32), transparent 70%);
+}
+
+.popit-card-mock.card-nearby .popit-card-photo-glow {
+  background: radial-gradient(ellipse 90% 60% at 50% 100%, rgba(34, 197, 94, 0.32), transparent 70%);
+}
+
+.popit-card-photo .popit-card-glass,
+.popit-card-photo .popit-card-theme-fx {
+  z-index: 2;
+  opacity: 0.35;
+}
+
+.popit-card-photo .popit-card-edge {
+  z-index: 4;
+}
+
+.popit-card-photo .popit-card-light-sweep,
+.popit-card-photo .popit-card-portal-particles {
+  z-index: 3;
+}
+
+.popit-card-icon-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(2rem, 8vw, 2.35rem);
+  height: clamp(2rem, 8vw, 2.35rem);
+  border-radius: 0.65rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.popit-card-photo .popit-category-svg {
+  width: clamp(1.35rem, 5.5vw, 1.65rem);
+  height: clamp(1.35rem, 5.5vw, 1.65rem);
+}
+
+.popit-card-photo-content {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  padding: 0.55rem 0.65rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12rem;
+  margin-top: auto;
+}
+
 .popit-card-mock.card-restaurants {
   border-color: rgba(255, 138, 0, 0.45);
   box-shadow: 0 0 24px rgba(255, 107, 53, 0.15);
@@ -344,8 +465,33 @@
   letter-spacing: 0.1em;
 }
 
+.popit-card-photo .popit-card-label {
+  font-size: clamp(0.9375rem, 3.6vw, 1.125rem);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 700;
+  line-height: 1.05;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
 .popit-card-mock .popit-card-stat {
   display: none;
+}
+
+.popit-card-photo .popit-card-stat {
+  display: block;
+  font-size: clamp(0.625rem, 2.2vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+}
+
+.popit-card-photo.is-selected {
+  box-shadow:
+    0 0 28px var(--card-glow, rgba(255, 255, 255, 0.15)),
+    0 12px 36px rgba(0, 0, 0, 0.45);
 }
 
 /* ── Live Activity photo cards ── */
