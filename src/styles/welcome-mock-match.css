@@ -604,9 +604,9 @@
 }
 
 .popit-start-btn-mock .popit-start-btn-label {
-  font-size: clamp(1.05rem, 4vw, 1.25rem);
+  font-size: clamp(0.9375rem, 3.6vw, 1.125rem);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 .popit-start-btn-sub {
@@ -779,7 +779,7 @@
 .weather-sheet {
   position: fixed;
   left: 50%;
-  bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   z-index: 121;
   width: min(92vw, 22rem);

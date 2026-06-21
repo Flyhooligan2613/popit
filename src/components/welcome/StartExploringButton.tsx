@@ -6,9 +6,17 @@ type StartExploringButtonProps = {
   loading: boolean;
   isOverdrive: boolean;
   onClick: () => void;
+  label?: string;
+  loadingLabel?: string;
 };
 
-export default function StartExploringButton({ loading, isOverdrive, onClick }: StartExploringButtonProps) {
+export default function StartExploringButton({
+  loading,
+  isOverdrive,
+  onClick,
+  label = "Start Exploring",
+  loadingLabel = "Loading…",
+}: StartExploringButtonProps) {
   const reducedMotion = useReducedMotion();
 
   return (
@@ -32,7 +40,7 @@ export default function StartExploringButton({ loading, isOverdrive, onClick }: 
       <span className="popit-start-btn-sweep" aria-hidden />
       <span className="popit-start-btn-ripple" aria-hidden />
       <span className="popit-start-btn-inner">
-        <span className="popit-start-btn-label">{loading ? "Loading…" : "Start Exploring"}</span>
+        <span className="popit-start-btn-label">{loading ? loadingLabel : label}</span>
         <span className="popit-start-btn-sub font-body">Discover · Connect · Experience</span>
       </span>
       {!loading && (

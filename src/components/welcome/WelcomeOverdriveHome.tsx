@@ -14,7 +14,6 @@ import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WeatherReportSheet from "./WeatherReportSheet";
 import WhatsPoppingNow from "./WhatsPoppingNow";
 import CityCareerSection from "./CityCareerSection";
-import WelcomeBottomNav from "./WelcomeBottomNav";
 import WelcomeHeroSection from "./WelcomeHeroSection";
 import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
 import type { WelcomeHomeProps } from "./types";
@@ -188,18 +187,6 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     },
     [onJoin]
   );
-
-  const handleStartExploring = () => {
-    if (joinLock.current || ctaLoading) return;
-    joinLock.current = true;
-    hapticTap();
-    setCtaLoading(true);
-    navigateFromWelcome(WELCOME_TAB_ROUTES.create, onJoin);
-    window.setTimeout(() => {
-      setCtaLoading(false);
-      joinLock.current = false;
-    }, 900);
-  };
 
   const handleCategory = (key: CategoryKey) => goTo(categoryRoute(key));
   const handleVenue = (venue: VenueCard) => goTo(venueRoute(venue.id));
@@ -375,18 +362,10 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           loading={ctaLoading}
           isOverdrive={state.isOverdrive}
           signInBusy={signInBusy}
-          onSignUp={handleJoin}
-          onStartExploring={handleStartExploring}
+          onPrimary={handleJoin}
           onSignIn={handleSignIn}
         />
       </motion.div>
-
-      <WelcomeBottomNav
-        onCreate={() => goTo(WELCOME_TAB_ROUTES.create)}
-        onExplore={() => goTo(WELCOME_TAB_ROUTES.explore)}
-        onInbox={() => goTo(WELCOME_TAB_ROUTES.inbox)}
-        onProfile={() => goTo(WELCOME_TAB_ROUTES.profile)}
-      />
 
       <WeatherReportSheet
         open={weatherOpen}
