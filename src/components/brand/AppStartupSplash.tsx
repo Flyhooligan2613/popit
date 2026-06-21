@@ -2,22 +2,20 @@
 
 import { memo, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import OpeningLensStage1 from "./opening/OpeningLensStage1";
-import OpeningLensStage2 from "./opening/OpeningLensStage2";
 import OpeningLensStage3 from "./opening/OpeningLensStage3";
 import LogoBurstStage from "./opening/LogoBurstStage";
 import { detectMobileDevice, getLogoRocketImpactMs } from "./opening/effects";
 
-/** Stage 1 → lens · Stage 2 → focus · Stage 3 → swirls · Stage 4 → logo explosion */
+/** Stage 3 → swirls · logo explosion → landing */
 type Stage = "black" | "lens1" | "lens2" | "lens3" | "logoBurst" | "exit";
 
 const STAGE_MS: Record<Stage, number> = {
-  black: 400,
-  lens1: 2600,
-  lens2: 2200,
-  lens3: 2600,
-  logoBurst: 4800,
-  exit: 700,
+  black: 0,
+  lens1: 0,
+  lens2: 0,
+  lens3: 2000,
+  logoBurst: 2600,
+  exit: 350,
 };
 
 type AppStartupSplashProps = {
@@ -29,7 +27,7 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const [stage, setStage] = useState<Stage>("black");
+  const [stage, setStage] = useState<Stage>("lens3");
   const [burst, setBurst] = useState(false);
   const [exiting, setExiting] = useState(false);
 
@@ -39,7 +37,7 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
       return () => clearTimeout(t);
     }
 
-    const sequence: Stage[] = ["black", "lens1", "lens2", "lens3", "logoBurst", "exit"];
+    const sequence: Stage[] = ["lens3", "logoBurst", "exit"];
     let elapsed = 0;
     const timers: ReturnType<typeof setTimeout>[] = [];
 
@@ -75,18 +73,16 @@ function AppStartupSplash({ onComplete, minimal = false }: AppStartupSplashProps
       style={{ minHeight: "100dvh", touchAction: "none" }}
     >
       <AnimatePresence mode="wait">
-        {(stage === "lens1" || stage === "lens2" || stage === "lens3") && (
+        {stage === "lens3" && (
           <motion.div
-            key="lens-stages"
+            key="lens-swirl"
             initial={{ opacity: 0 }}
             animate={{ opacity }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.35 }}
             className="absolute inset-0 z-[2]"
           >
-            {stage === "lens1" && <OpeningLensStage1 />}
-            {stage === "lens2" && <OpeningLensStage2 />}
-            {stage === "lens3" && <OpeningLensStage3 idPrefix="splash" />}
+            <OpeningLensStage3 idPrefix="splash" swirlDuration={2000} />
           </motion.div>
         )}
 

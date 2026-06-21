@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { isOnboardingComplete, resetAppSession } from "@/lib/session";
-import Frame1 from "@/components/onboarding/frames/Frame1";
-import Frame2 from "@/components/onboarding/frames/Frame2";
-import Frame3 from "@/components/onboarding/frames/Frame3";
 import Frame4 from "@/components/onboarding/frames/Frame4";
 import Frame5 from "@/components/onboarding/frames/Frame5";
 import Frame6 from "@/components/onboarding/frames/Frame6";
@@ -15,25 +12,35 @@ import Frame9 from "@/components/onboarding/frames/Frame9";
 import Frame10 from "@/components/onboarding/frames/Frame10";
 import Frame11 from "@/components/onboarding/frames/Frame11";
 
-const AUTO_ADVANCE_MS: Record<number, number> = {
-  1: 1400,
-  2: 2600,
-  3: 2200,
-  4: 2600,
-  5: 4800,
+/** Intro: frame 4 (swirls) → frame 5 (logo burst) → frame 6 (landing) */
+const INTRO_AUTO_MS: Record<number, number> = {
+  4: 2000,
+  5: 2600,
 };
 
 function resolveStartFrame(): number {
-  if (typeof window === "undefined") return 1;
+  if (typeof window === "undefined") return 4;
   const params = new URLSearchParams(window.location.search);
   if (params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1") {
     return 6;
   }
-  return 1;
+  return 4;
+}
+
+function nextIntroFrame(current: number): number {
+  if (current === 4) return 5;
+  if (current === 5) return 6;
+  return Math.min(current + 1, 11);
+}
+
+function prevFrame(current: number): number {
+  if (current === 6) return 5;
+  if (current === 5) return 4;
+  return Math.max(current - 1, 4);
 }
 
 export default function OnboardingPage() {
-  const [frame, setFrame] = useState(1);
+  const [frame, setFrame] = useState(4);
   const [ready, setReady] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
 
@@ -52,24 +59,19 @@ export default function OnboardingPage() {
     }
   }, []);
 
-  const advance = () => setFrame((current) => Math.min(current + 1, 11));
-  const goBack = () => setFrame((current) => Math.max(current - 1, 1));
+  const advance = () => setFrame((current) => (current <= 5 ? nextIntroFrame(current) : Math.min(current + 1, 11)));
+  const goBack = () => setFrame((current) => prevFrame(current));
 
   useEffect(() => {
-    if (frame < 1 || frame > 5) return;
+    const delay = INTRO_AUTO_MS[frame];
+    if (delay == null) return;
 
-    const timeout = setTimeout(advance, AUTO_ADVANCE_MS[frame]);
+    const timeout = setTimeout(advance, delay);
     return () => clearTimeout(timeout);
   }, [frame]);
 
   const renderFrame = () => {
     switch (frame) {
-      case 1:
-        return <Frame1 />;
-      case 2:
-        return <Frame2 />;
-      case 3:
-        return <Frame3 />;
       case 4:
         return <Frame4 />;
       case 5:
@@ -124,7 +126,7 @@ export default function OnboardingPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.0, ease: "easeInOut" }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
           style={{ position: "absolute", inset: 0 }}
         >
           {renderFrame()}
