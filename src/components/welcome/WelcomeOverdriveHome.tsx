@@ -194,6 +194,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           exploringCount={displayExploring}
           minuteGain={minuteGain}
           avatarUrls={LIVE_AVATAR_STACK}
+          onExplore={() => handleJoin()}
         />
 
         <CityEnergyMeter

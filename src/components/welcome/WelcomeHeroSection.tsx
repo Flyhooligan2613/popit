@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import CityStatusPanel from "./CityStatusPanel";
 import HeroAssembleText from "./HeroAssembleText";
 import HeroParticleField from "./HeroParticleField";
-import HolographicGlobe from "./HolographicGlobe";
+import TheSignal from "./TheSignal";
 import LiveNowBadge from "./LiveNowBadge";
 import WelcomeHeaderBrand from "./WelcomeHeaderBrand";
 import type { EnergyTier, SceneSlide } from "./types";
@@ -20,6 +20,7 @@ type WelcomeHeroSectionProps = {
   exploringCount: number;
   minuteGain: number;
   avatarUrls: string[];
+  onExplore?: () => void;
 };
 
 export default function WelcomeHeroSection({
@@ -31,6 +32,7 @@ export default function WelcomeHeroSection({
   exploringCount,
   minuteGain,
   avatarUrls,
+  onExplore,
 }: WelcomeHeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const scrollProgress = useHeroScrollProgress(heroRef);
@@ -77,13 +79,13 @@ export default function WelcomeHeroSection({
         </AnimatePresence>
       </div>
 
-      <div className="hero-v2-globe-wrap">
-        <HolographicGlobe
+      <div className="hero-v2-signal-wrap">
+        <TheSignal
           energyNorm={energyNorm}
           tier={tier}
           reducedMotion={reducedMotion}
-          focusCity={city}
-          large
+          city={city}
+          onNodeOpen={onExplore}
         />
       </div>
     </section>
