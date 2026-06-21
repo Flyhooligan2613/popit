@@ -1,99 +1,77 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState } from "react";
-import type { TrendingCreator } from "./types";
+import { AnimatePresence } from "framer-motion";
+import { useCallback, useState } from "react";
+import PoppingCardView from "./PoppingCardView";
+import PoppingQuickPreview from "./PoppingQuickPreview";
+import WhatsPoppingHeader from "./WhatsPoppingHeader";
+import type { PoppingCard } from "./popping/types";
+import { usePoppingFeed } from "./popping/usePoppingFeed";
 import { useHorizontalMarquee } from "./useHorizontalMarquee";
 import { useScrollCenterScale } from "./useScrollCenterScale";
 
 type WhatsPoppingNowProps = {
-  creators: TrendingCreator[];
+  city?: string | null;
   reducedMotion: boolean;
   energyNorm?: number;
+  onCardAction?: (card: PoppingCard) => void;
 };
 
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
-  return String(n);
-}
-
-export default function WhatsPoppingNow({ creators, reducedMotion, energyNorm = 0.5 }: WhatsPoppingNowProps) {
+export default function WhatsPoppingNow({
+  city = "Miami",
+  reducedMotion,
+  energyNorm = 0.5,
+  onCardAction,
+}: WhatsPoppingNowProps) {
   const [paused, setPaused] = useState(false);
-  const speed = 0.3 + energyNorm * 0.2;
+  const [preview, setPreview] = useState<PoppingCard | null>(null);
+  const cards = usePoppingFeed(city, reducedMotion);
+
+  const speed = 0.28 + energyNorm * 0.18;
   const viewportRef = useHorizontalMarquee({
     speed: reducedMotion ? 0 : speed,
-    paused,
-    enabled: !reducedMotion && creators.length > 1,
+    paused: paused || !!preview,
+    enabled: !reducedMotion && cards.length > 1,
   });
 
-  useScrollCenterScale(viewportRef, ".whats-popping-card-mock", !reducedMotion);
+  useScrollCenterScale(viewportRef, ".popping-card-s2", !reducedMotion);
 
-  const loop = [...creators, ...creators];
+  const handleTap = useCallback(
+    (card: PoppingCard) => {
+      onCardAction?.(card);
+    },
+    [onCardAction]
+  );
+
+  const loop = [...cards, ...cards];
 
   return (
-    <section className="whats-popping whats-popping-mock whats-popping-polish" aria-label="What's popping right now">
-      <header className="whats-popping-header">
-        <h2 className="whats-popping-title font-display">
-          <span className="whats-popping-fire" aria-hidden>
-            🔥
-          </span>
-          What&apos;s Popping Right Now
-        </h2>
-      </header>
+    <section className="whats-popping-s2" aria-label="What's popping right now">
+      <WhatsPoppingHeader reducedMotion={reducedMotion} />
 
       <div
         ref={viewportRef}
-        className="whats-popping-scroll"
+        className="popping-carousel-s2"
         role="list"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={() => setPaused(true)}
         onTouchEnd={() => setPaused(false)}
       >
-        {loop.map((creator, i) => {
-          const rank = (i % creators.length) + 1;
-          return (
-            <motion.article
-              key={`${creator.id}-${i}`}
-              role="listitem"
-              className="whats-popping-card whats-popping-card-mock"
-              whileHover={{ y: -6 }}
-            >
-              <span className="whats-popping-rank-badge font-display" aria-label={`Rank ${rank}`}>
-                <span aria-hidden>🔥</span> #{rank}
-              </span>
-              <div className="whats-popping-avatar-wrap">
-                <div className="whats-popping-avatar-ring" aria-hidden />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={creator.avatar} alt="" className="whats-popping-avatar" loading="lazy" decoding="async" />
-              </div>
-
-              <div className="whats-popping-info">
-                <div className="whats-popping-name-row">
-                  <h3 className="whats-popping-username font-display">{creator.username}</h3>
-                  {creator.verified && (
-                    <span className="whats-popping-verified" aria-label="Verified">
-                      ✓
-                    </span>
-                  )}
-                </div>
-                <p className="whats-popping-category font-body">{creator.category} Creator</p>
-                <p className="whats-popping-followers font-body">
-                  ↗ +{formatCount(creator.followersToday)} followers today
-                </p>
-
-                <div className="whats-popping-stats font-body">
-                  <span>❤️ {formatCount(creator.likes)}</span>
-                  <span>💬 {formatCount(creator.comments)}</span>
-                  <span>↗ {formatCount(creator.shares)}</span>
-                </div>
-
-                {creator.trending && <span className="whats-popping-trending-badge font-body">Trending</span>}
-              </div>
-            </motion.article>
-          );
-        })}
+        {loop.map((card, i) => (
+          <PoppingCardView
+            key={`${card.id}-${i}`}
+            card={{ ...card, rank: (i % cards.length) + 1 }}
+            reducedMotion={reducedMotion}
+            onTap={() => handleTap(card)}
+            onLongPress={() => setPreview(card)}
+          />
+        ))}
       </div>
+
+      <AnimatePresence>
+        {preview && <PoppingQuickPreview card={preview} onClose={() => setPreview(null)} />}
+      </AnimatePresence>
     </section>
   );
 }

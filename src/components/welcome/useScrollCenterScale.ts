@@ -20,7 +20,7 @@ export function useScrollCenterScale(
         const rect = card.getBoundingClientRect();
         const cardCenter = rect.left + rect.width / 2;
         const dist = Math.abs(cardCenter - viewportCenter);
-        const scale = Math.max(0.9, 1.04 - dist / 420);
+        const scale = Math.max(0.92, 1.06 - dist / 380);
         card.style.transform = `scale(${scale.toFixed(3)})`;
       });
       raf = requestAnimationFrame(tick);

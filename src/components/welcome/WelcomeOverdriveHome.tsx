@@ -14,7 +14,7 @@ import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
 import WelcomeBottomNav from "./WelcomeBottomNav";
 import WelcomeHeroSection from "./WelcomeHeroSection";
-import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
+import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
 import { useTimeOfDay } from "./useTimeOfDay";
@@ -205,7 +205,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           cityName={city}
         />
 
-        <WhatsPoppingNow creators={TRENDING_CREATORS} reducedMotion={!!reducedMotion} energyNorm={energyNorm} />
+        <WhatsPoppingNow
+          city={city}
+          reducedMotion={!!reducedMotion}
+          energyNorm={energyNorm}
+          onCardAction={() => handleJoin()}
+        />
 
         <div className="popit-category-grid popit-category-grid-mock" role="list" aria-label="Explore modes">
           {CATEGORY_CARDS.map((card, i) => (
