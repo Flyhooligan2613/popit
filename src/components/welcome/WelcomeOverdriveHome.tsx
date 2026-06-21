@@ -271,7 +271,6 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         cinematic={!mobileLite}
       />
       <div className="popit-lobby-fog" aria-hidden />
-      <WelcomeBackgroundMark />
       <AmbientField active={!motionLite && contentVisible} intensity={energyNorm} />
 
       <motion.div
@@ -280,6 +279,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         animate={{ opacity: contentVisible ? 1 : 0 }}
         transition={{ duration: skipWelcomeIntro || reducedMotion ? 0 : 0.55, ease: INTRO_EASE }}
       >
+        <WelcomeBackgroundMark />
         {onBack && (
           <div className="welcome-back-float">
             <BackNavButton onClick={onBack} />
