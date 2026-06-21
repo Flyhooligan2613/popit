@@ -186,11 +186,28 @@
 
 /* ── City Energy flame bar ── */
 .city-energy-mock {
+  --energy-vibrance: 1;
+  --energy-pct: 100;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0.85rem;
   padding: 0.65rem 0.75rem;
   background: rgba(8, 8, 14, 0.55);
   backdrop-filter: blur(12px);
+  filter: saturate(calc(0.45 + var(--energy-vibrance) * 0.55));
+  transition: filter 0.9s ease, box-shadow 0.9s ease, border-color 0.9s ease;
+}
+
+.city-energy-mock.is-blazing {
+  border-color: rgba(255, 110, 30, calc(0.22 + var(--energy-vibrance) * 0.28));
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 calc(18px + var(--energy-vibrance) * 22px) rgba(255, 90, 0, calc(0.18 + var(--energy-vibrance) * 0.32)),
+    inset 0 1px 0 rgba(255, 200, 120, calc(0.08 + var(--energy-vibrance) * 0.12));
+}
+
+.city-energy-mock.is-cooling {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.32);
 }
 
 .city-energy-mock .city-energy-header {
@@ -204,8 +221,9 @@
   font-size: clamp(0.625rem, 2.2vw, 0.75rem);
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: #ff8a00;
-  text-shadow: 0 0 12px rgba(255, 138, 0, 0.4);
+  color: color-mix(in srgb, #ff8a00 calc(var(--energy-vibrance) * 100%), #94a3b8);
+  text-shadow: 0 0 calc(12px * var(--energy-vibrance)) rgba(255, 138, 0, calc(0.15 + var(--energy-vibrance) * 0.35));
+  transition: color 0.8s ease, text-shadow 0.8s ease;
 }
 
 .city-energy-mock .city-energy-value {
@@ -220,22 +238,115 @@
 }
 
 .city-energy-fill-flame {
-  background: linear-gradient(90deg, #ff4d00, #ff8a00, #ffd080, #ff6b00);
-  background-size: 200% 100%;
-  animation: energy-charge-fire 2s linear infinite;
+  background: linear-gradient(90deg, #ff2200, #ff6b00, #ffd080, #ff4d00, #ff8800);
+  background-size: 220% 100%;
+  animation: energy-charge-fire calc(2.4s - var(--energy-vibrance) * 1.1s) linear infinite;
   border-radius: 9999px;
-  box-shadow: 0 0 16px rgba(255, 138, 0, 0.55);
+  box-shadow:
+    0 0 calc(8px + var(--energy-vibrance) * 20px) rgba(255, 100, 0, calc(0.25 + var(--energy-vibrance) * 0.45)),
+    0 0 calc(2px + var(--energy-vibrance) * 6px) rgba(255, 220, 120, calc(0.2 + var(--energy-vibrance) * 0.5));
+  transition: box-shadow 0.9s ease, filter 0.9s ease;
+}
+
+.city-energy-mock.is-blazing .city-energy-fill-flame {
+  background: linear-gradient(90deg, #ff0044, #ff5500, #ffcc00, #ff2200, #ff7700, #ff0044);
+  background-size: 240% 100%;
+  animation: energy-charge-fire calc(1.1s - var(--energy-vibrance) * 0.35s) linear infinite;
+}
+
+.city-energy-mock.is-cooling .city-energy-fill-flame {
+  background: linear-gradient(90deg, #475569, #6366f1, #3b82f6);
+  background-size: 100% 100%;
+  animation: none;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.28);
+  filter: saturate(0.75);
 }
 
 .city-energy-mock.is-lit .city-energy-fill-flame {
-  box-shadow: 0 0 24px rgba(255, 100, 0, 0.75);
+  box-shadow:
+    0 0 calc(20px + var(--energy-vibrance) * 16px) rgba(255, 80, 0, 0.85),
+    0 0 8px rgba(255, 200, 80, 0.65);
 }
 
 .city-energy-status {
   margin: 0.45rem 0 0;
   font-size: clamp(0.625rem, 2.2vw, 0.75rem);
-  color: rgba(255, 255, 255, 0.52);
+  color: color-mix(in srgb, rgba(255, 255, 255, 0.72) calc(var(--energy-vibrance) * 100%), rgba(255, 255, 255, 0.38));
   line-height: 1.35;
+  transition: color 0.8s ease;
+}
+
+.city-energy-mock.is-cooling .city-energy-shimmer,
+.city-energy-mock.is-cooling .city-energy-flow,
+.city-energy-mock.is-cooling .city-energy-stream {
+  opacity: calc(0.15 + var(--energy-vibrance) * 0.35);
+}
+
+.city-energy-mock.is-blazing .city-energy-shimmer {
+  opacity: calc(0.45 + var(--energy-vibrance) * 0.45);
+}
+
+.city-energy-mock.is-blazing .city-energy-spark {
+  opacity: calc(0.4 + var(--energy-vibrance) * 0.6);
+}
+
+.city-energy-mock.is-cooling .city-energy-spark,
+.city-energy-mock.is-cooling .city-energy-flame,
+.city-energy-mock.is-cooling .city-energy-heat {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.city-energy-mock .city-energy-flame {
+  opacity: calc(0.45 + var(--energy-vibrance) * 0.55);
+  transition: opacity 0.8s ease;
+}
+
+.city-energy-mock.is-blazing .city-energy-flame {
+  height: 16px;
+  filter: blur(0.5px) saturate(calc(0.8 + var(--energy-vibrance) * 0.4));
+}
+
+.city-energy-flame-3 {
+  right: 22%;
+  height: 14px;
+  width: 7px;
+  animation: flame-flicker 0.62s ease-in-out infinite 0.28s;
+}
+
+.city-energy-ember {
+  position: absolute;
+  top: -6px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffd080;
+  box-shadow: 0 0 6px rgba(255, 180, 60, 0.9);
+  pointer-events: none;
+  opacity: calc(0.35 + var(--energy-vibrance) * 0.65);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .city-energy-ember-1 {
+    left: 28%;
+    animation: energy-ember-rise 1.8s ease-out infinite;
+  }
+
+  .city-energy-ember-2 {
+    left: 52%;
+    animation: energy-ember-rise 2.1s ease-out infinite 0.45s;
+  }
+
+  .city-energy-ember-3 {
+    left: 74%;
+    animation: energy-ember-rise 1.6s ease-out infinite 0.9s;
+  }
+}
+
+@keyframes energy-ember-rise {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-14px) scale(0.4); opacity: 0; }
 }
 
 .city-energy-mock .city-energy-label {

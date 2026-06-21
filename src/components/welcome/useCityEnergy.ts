@@ -13,7 +13,7 @@ type UseCityEnergyOptions = {
 
 export function useCityEnergy({
   reducedMotion,
-  initialEnergy = 98,
+  initialEnergy = 100,
   initialExploring = 3590,
 }: UseCityEnergyOptions) {
   const [energy, setEnergy] = useState(initialEnergy);
@@ -44,7 +44,8 @@ export function useCityEnergy({
 
     const energyTimer = setInterval(() => {
       setEnergy((prev) => {
-        const drift = (Math.random() - 0.4) * 5;
+        // Bias downward so the meter opens blazing, then cools over time
+        const drift = (Math.random() - 0.58) * 4.5;
         return Math.max(48, Math.min(100, prev + drift));
       });
     }, 6000);
