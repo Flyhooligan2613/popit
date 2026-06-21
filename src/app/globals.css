@@ -9,6 +9,10 @@
 @import "../styles/welcome-creator-economy.css";
 @import "tailwindcss";
 
+html {
+  font-size: 108%;
+}
+
 html, body {
   margin: 0;
   padding: 0;

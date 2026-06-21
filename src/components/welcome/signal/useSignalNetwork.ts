@@ -79,20 +79,28 @@ export function useSignalNetwork({ reducedMotion, hubMode, reorganizeT }: UseSig
     }
 
     let raf = 0;
-    const loop = () => {
+    let lastPaint = 0;
+    const PAINT_MS = 50;
+
+    const loop = (now: number) => {
       orbitalRef.current = orbitalRef.current.map((b) => tickOrbit(b));
-      const pullId = discoveryIdRef.current;
-      setBubbles(
-        orbitalRef.current.map((b) => ({
-          ...b,
-          ...orbitPosition(
-            b,
-            hubModeRef.current,
-            reorganizeRef.current,
-            b.id === pullId ? 1 : 0
-          ),
-        }))
-      );
+
+      if (now - lastPaint >= PAINT_MS) {
+        lastPaint = now;
+        const pullId = discoveryIdRef.current;
+        setBubbles(
+          orbitalRef.current.map((b) => ({
+            ...b,
+            ...orbitPosition(
+              b,
+              hubModeRef.current,
+              reorganizeRef.current,
+              b.id === pullId ? 1 : 0
+            ),
+          }))
+        );
+      }
+
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -102,21 +110,21 @@ export function useSignalNetwork({ reducedMotion, hubMode, reorganizeT }: UseSig
   useEffect(() => {
     if (reducedMotion) return;
 
-    const broadcastTimer = setInterval(triggerBroadcast, 4800);
+    const broadcastTimer = setInterval(triggerBroadcast, 6200);
     triggerBroadcast();
 
     const statTimer = setInterval(() => {
       orbitalRef.current = orbitalRef.current.map((b) =>
-        Math.random() > 0.5 ? bumpBubbleStats(b) : b
+        Math.random() > 0.55 ? bumpBubbleStats(b) : b
       );
-    }, 3400);
+    }, 5200);
 
     const discoveryTimer = setInterval(() => {
       const target = orbitalRef.current[Math.floor(Math.random() * orbitalRef.current.length)];
       if (!target) return;
       setDiscoveryId(target.id);
       window.setTimeout(() => setDiscoveryId(null), 3200);
-    }, 6200);
+    }, 8500);
 
     const evolveTimer = setInterval(() => {
       const prev = orbitalRef.current;

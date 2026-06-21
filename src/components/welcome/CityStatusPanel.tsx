@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { TimePeriod } from "./types";
 
 type CityStatusPanelProps = {
@@ -11,6 +10,14 @@ type CityStatusPanelProps = {
 
 function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+
+function periodFromHour(h: number): TimePeriod {
+  if (h >= 5 && h < 11) return "morning";
+  if (h >= 11 && h < 17) return "afternoon";
+  if (h >= 17 && h < 20) return "sunset";
+  if (h >= 20) return "night";
+  return "late-night";
 }
 
 function tempForPeriod(period: TimePeriod, city: string | null): string {
@@ -25,35 +32,37 @@ function shortCityName(city: string | null): string {
   return city;
 }
 
-export default function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
+function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
   const [time, setTime] = useState("--:--");
-  const [period, setPeriod] = useState<TimePeriod>("night");
+  const [period, setPeriod] = useState<TimePeriod>(() => periodFromHour(new Date().getHours()));
 
   useEffect(() => {
+    let timeoutId = 0;
+
     const tick = () => {
       const now = new Date();
       setTime(formatTime(now));
-      const h = now.getHours();
-      if (h >= 5 && h < 11) setPeriod("morning");
-      else if (h >= 11 && h < 17) setPeriod("afternoon");
-      else if (h >= 17 && h < 20) setPeriod("sunset");
-      else if (h >= 20) setPeriod("night");
-      else setPeriod("late-night");
+      setPeriod((prev) => {
+        const next = periodFromHour(now.getHours());
+        return prev === next ? prev : next;
+      });
+
+      const msUntilNextMinute =
+        (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 50;
+      timeoutId = window.setTimeout(tick, msUntilNextMinute);
     };
+
     tick();
-    const t = setInterval(tick, 30_000);
-    return () => clearInterval(t);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   const cityShort = shortCityName(city);
   const temp = tempForPeriod(period, city);
 
   return (
-    <motion.div
-      className="connection-card connection-card-mock connection-card-polish"
+    <div
+      className="connection-card connection-card-mock connection-card-polish connection-card-stable"
       aria-label={`Connected to ${cityShort}`}
-      animate={{ boxShadow: ["0 4px 24px rgba(0,0,0,0.25)", "0 6px 32px rgba(0,212,255,0.12)", "0 4px 24px rgba(0,0,0,0.25)"] }}
-      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
       <div className="connection-card-scan" aria-hidden />
       <p className="connection-card-pin font-display">
@@ -68,6 +77,8 @@ export default function CityStatusPanel({ city, connected = true }: CityStatusPa
           Connected
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
+
+export default memo(CityStatusPanel);

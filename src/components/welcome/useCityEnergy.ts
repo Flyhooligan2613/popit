@@ -47,12 +47,12 @@ export function useCityEnergy({
         const drift = (Math.random() - 0.4) * 5;
         return Math.max(48, Math.min(100, prev + drift));
       });
-    }, 4200);
+    }, 6000);
 
     const exploreTimer = setInterval(() => {
       setExploringCount((c) => c + 1 + Math.floor(Math.random() * 3));
       setMinuteGain((m) => m + 1 + Math.floor(Math.random() * 2));
-    }, 4200);
+    }, 6000);
 
     const pulseTimer = setInterval(() => {
       setPulse((channels) =>
@@ -67,7 +67,7 @@ export function useCityEnergy({
           };
         })
       );
-    }, 5500);
+    }, 7500);
 
     const minuteReset = setInterval(() => {
       setMinuteGain(8 + Math.floor(Math.random() * 14));

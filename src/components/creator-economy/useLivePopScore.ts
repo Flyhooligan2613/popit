@@ -30,7 +30,7 @@ export function useLivePopScore(reducedMotion: boolean): CreatorEconomyProfile {
           accountAuthenticity: 0.82,
         });
       });
-    }, 4200);
+    }, 7500);
 
     return () => clearInterval(timer);
   }, [reducedMotion]);

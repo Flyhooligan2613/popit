@@ -130,6 +130,25 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .connection-card-stable {
+    animation: connection-card-glow 4s ease-in-out infinite;
+  }
+}
+
+@keyframes connection-card-glow {
+  0%, 100% {
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 6px 32px rgba(0, 212, 255, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
 .connection-card-polish .connection-card-pin {
   font-size: clamp(0.75rem, 2.8vw, 0.875rem);
   font-weight: 700;

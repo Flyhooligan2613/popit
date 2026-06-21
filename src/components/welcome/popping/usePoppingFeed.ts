@@ -23,7 +23,7 @@ export function usePoppingFeed(city: string | null, reducedMotion: boolean) {
 
     const statTimer = setInterval(() => {
       setCards((prev) => prev.map(bumpCardStats));
-    }, 3200);
+    }, 5500);
 
     const rotateTimer = setInterval(() => {
       setCards((prev) => {
@@ -32,7 +32,7 @@ export function usePoppingFeed(city: string | null, reducedMotion: boolean) {
         const fresh = nextRotatedCard(prev, cityLabel);
         return reindexRanks([...tail, fresh]).slice(0, DECK_SIZE);
       });
-    }, 9000);
+    }, 12000);
 
     return () => {
       clearInterval(statTimer);
