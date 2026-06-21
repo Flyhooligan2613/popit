@@ -7,6 +7,7 @@ import { SIGNAL_CATEGORY_COLOR } from "./signal/types";
 type SignalBubbleCardProps = {
   bubble: SignalBubble;
   illuminated: boolean;
+  discovered?: boolean;
   selected: boolean;
   reducedMotion: boolean;
   onTap: () => void;
@@ -15,6 +16,7 @@ type SignalBubbleCardProps = {
 export default function SignalBubbleCard({
   bubble,
   illuminated,
+  discovered = false,
   selected,
   reducedMotion,
   onTap,
@@ -25,7 +27,7 @@ export default function SignalBubbleCard({
   return (
     <motion.button
       type="button"
-      className={`signal-bubble signal-bubble-${bubble.category} ${illuminated ? "is-illuminated" : ""} ${selected ? "is-selected" : ""}`}
+      className={`signal-bubble signal-bubble-${bubble.category} ${illuminated ? "is-illuminated" : ""} ${discovered ? "is-discovered" : ""} ${selected ? "is-selected" : ""}`}
       style={
         {
           left: `${bubble.x}%`,

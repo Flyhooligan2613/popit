@@ -1,3 +1,12 @@
+export type SignalHubPhase =
+  | "inviting"
+  | "pulsing"
+  | "transforming"
+  | "reorganizing"
+  | "connected";
+
+export type SignalHubMode = "invite" | "user";
+
 /** Live activity categories — extensible for future API feeds */
 export type SignalCategory =
   | "restaurant"

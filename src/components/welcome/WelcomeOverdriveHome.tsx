@@ -16,11 +16,21 @@ import WelcomeBottomNav from "./WelcomeBottomNav";
 import WelcomeHeroSection from "./WelcomeHeroSection";
 import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
 import type { WelcomeHomeProps } from "./types";
+import type { SignalHubPhase } from "./signal/types";
 import { useCityEnergy } from "./useCityEnergy";
 import { useTimeOfDay } from "./useTimeOfDay";
 
 const SLIDE_MS = 9000;
 const INTRO_EASE = [0.16, 1, 0.3, 1] as const;
+const DEMO_USER_AVATAR = LIVE_AVATAR_STACK[0];
+
+const CONNECT_PHASE_MS = {
+  auth: 420,
+  pulse: 680,
+  transform: 820,
+  reorganize: 1400,
+  connected: 900,
+} as const;
 
 function hapticTap() {
   try {
@@ -41,7 +51,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [surge, setSurge] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [isDesktop, setIsDesktop] = useState(false);
+  const [hubPhase, setHubPhase] = useState<SignalHubPhase>("inviting");
+  const [reorganizeT, setReorganizeT] = useState(0);
+  const [signInBusy, setSignInBusy] = useState(false);
   const joinLock = useRef(false);
+  const signInLock = useRef(false);
+  const reorganizeRaf = useRef(0);
 
   const { state, pulse, displayEnergy, displayExploring, minuteGain, energyNorm } = useCityEnergy({
     reducedMotion: !!reducedMotion,
@@ -147,6 +162,58 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     window.setTimeout(onJoin, 580);
   };
 
+  const runReorganize = useCallback((durationMs: number) => {
+    if (reorganizeRaf.current) cancelAnimationFrame(reorganizeRaf.current);
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setReorganizeT(eased);
+      if (t < 1) {
+        reorganizeRaf.current = requestAnimationFrame(tick);
+      }
+    };
+    reorganizeRaf.current = requestAnimationFrame(tick);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (reorganizeRaf.current) cancelAnimationFrame(reorganizeRaf.current);
+    };
+  }, []);
+
+  const handleSignIn = useCallback(() => {
+    if (signInLock.current || signInBusy) return;
+    signInLock.current = true;
+    setSignInBusy(true);
+    hapticTap();
+
+    if (reducedMotion) {
+      setHubPhase("connected");
+      setReorganizeT(1);
+      window.setTimeout(() => {
+        setSignInBusy(false);
+        onSignIn();
+      }, 480);
+      return;
+    }
+
+    const { auth, pulse, transform, reorganize, connected } = CONNECT_PHASE_MS;
+    let elapsed = 0;
+
+    window.setTimeout(() => setHubPhase("pulsing"), (elapsed += auth));
+    window.setTimeout(() => setHubPhase("transforming"), (elapsed += pulse));
+    window.setTimeout(() => {
+      setHubPhase("reorganizing");
+      runReorganize(reorganize);
+    }, (elapsed += transform));
+    window.setTimeout(() => setHubPhase("connected"), (elapsed += reorganize));
+    window.setTimeout(() => {
+      setSignInBusy(false);
+      onSignIn();
+    }, (elapsed += connected));
+  }, [onSignIn, reducedMotion, runReorganize, signInBusy]);
+
   return (
     <div
       className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
@@ -194,6 +261,9 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           exploringCount={displayExploring}
           minuteGain={minuteGain}
           avatarUrls={LIVE_AVATAR_STACK}
+          hubPhase={hubPhase}
+          userAvatar={hubPhase === "inviting" || hubPhase === "pulsing" ? null : DEMO_USER_AVATAR}
+          reorganizeT={reorganizeT}
           onExplore={() => handleJoin()}
         />
 
@@ -235,11 +305,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           <StartExploringButton loading={ctaLoading} isOverdrive={state.isOverdrive} onClick={handleJoin} />
           <motion.button
             type="button"
-            onClick={onSignIn}
-            whileTap={{ scale: 0.98 }}
-            className="popit-signin-btn popit-signin-btn-mock font-body"
+            onClick={handleSignIn}
+            disabled={signInBusy}
+            whileTap={{ scale: signInBusy ? 1 : 0.98 }}
+            className={`popit-signin-btn popit-signin-btn-mock font-body ${signInBusy ? "is-connecting" : ""}`}
           >
-            Sign In To Your Account
+            {signInBusy ? "Connecting…" : "Sign In To Your Account"}
           </motion.button>
         </footer>
       </motion.div>

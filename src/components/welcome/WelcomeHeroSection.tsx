@@ -7,8 +7,8 @@ import HeroAssembleText from "./HeroAssembleText";
 import HeroParticleField from "./HeroParticleField";
 import TheSignal from "./TheSignal";
 import LiveNowBadge from "./LiveNowBadge";
-import WelcomeHeaderBrand from "./WelcomeHeaderBrand";
 import type { EnergyTier, SceneSlide } from "./types";
+import type { SignalHubPhase } from "./signal/types";
 import { useHeroScrollProgress } from "./useHeroScrollProgress";
 
 type WelcomeHeroSectionProps = {
@@ -20,6 +20,9 @@ type WelcomeHeroSectionProps = {
   exploringCount: number;
   minuteGain: number;
   avatarUrls: string[];
+  hubPhase?: SignalHubPhase;
+  userAvatar?: string | null;
+  reorganizeT?: number;
   onExplore?: () => void;
 };
 
@@ -32,6 +35,9 @@ export default function WelcomeHeroSection({
   exploringCount,
   minuteGain,
   avatarUrls,
+  hubPhase = "inviting",
+  userAvatar,
+  reorganizeT = 0,
   onExplore,
 }: WelcomeHeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
@@ -64,8 +70,6 @@ export default function WelcomeHeroSection({
         />
       </header>
 
-      <WelcomeHeaderBrand variant="hero" />
-
       <div className="hero-v2-copy">
         <AnimatePresence mode="wait">
           <HeroAssembleText
@@ -85,6 +89,9 @@ export default function WelcomeHeroSection({
           tier={tier}
           reducedMotion={reducedMotion}
           city={city}
+          hubPhase={hubPhase}
+          userAvatar={userAvatar}
+          reorganizeT={reorganizeT}
           onNodeOpen={onExplore}
         />
       </div>

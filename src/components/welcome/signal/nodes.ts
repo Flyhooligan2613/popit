@@ -1,16 +1,17 @@
+import type { OrbitalBubble } from "./orbit";
 import type { SignalBubble, SignalCategory } from "./types";
 
 type BubbleTemplate = Omit<SignalBubble, "id" | "x" | "y" | "z" | "scale">;
 
-const SLOT_LAYOUT: { x: number; y: number; z: number; scale: number }[] = [
-  { x: 14, y: 72, z: -50, scale: 0.82 },
-  { x: 32, y: 64, z: 20, scale: 1.05 },
-  { x: 54, y: 78, z: -30, scale: 0.9 },
-  { x: 78, y: 66, z: 10, scale: 1 },
-  { x: 62, y: 50, z: 35, scale: 1.12 },
-  { x: 38, y: 48, z: -15, scale: 0.88 },
-  { x: 22, y: 54, z: 25, scale: 0.95 },
-  { x: 48, y: 38, z: -40, scale: 0.78 },
+const ORBIT_SLOTS: { angle: number; radius: number; speed: number; wobble: number; weight: number }[] = [
+  { angle: 0.4, radius: 38, speed: 0.0022, wobble: 3.5, weight: 0.3 },
+  { angle: 1.8, radius: 32, speed: 0.0028, wobble: 2.8, weight: 0.7 },
+  { angle: 3.1, radius: 42, speed: 0.0019, wobble: 4.2, weight: 0.2 },
+  { angle: 4.5, radius: 28, speed: 0.0032, wobble: 2.2, weight: 0.85 },
+  { angle: 5.6, radius: 36, speed: 0.0025, wobble: 3.8, weight: 0.5 },
+  { angle: 0.9, radius: 44, speed: 0.0017, wobble: 4.5, weight: 0.15 },
+  { angle: 2.4, radius: 30, speed: 0.003, wobble: 2.5, weight: 0.65 },
+  { angle: 3.9, radius: 40, speed: 0.0021, wobble: 3.2, weight: 0.4 },
 ];
 
 const POOL: BubbleTemplate[] = [
@@ -88,23 +89,6 @@ const POOL: BubbleTemplate[] = [
     liveCount: 12400,
     image: "https://images.unsplash.com/photo-1529156069898-ec4995fe363f?w=400&q=80&auto=format&fit=crop",
   },
-  {
-    category: "promotion",
-    icon: "🌮",
-    title: "Wynwood Tacos",
-    status: "Happy hour live",
-    detail: "Ends in 1 hr",
-    distance: "0.8 mi",
-    image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&q=80&auto=format&fit=crop",
-  },
-  {
-    category: "event",
-    icon: "🎉",
-    title: "Bayfront Concert",
-    status: "Filling fast",
-    detail: "Doors in 30 min",
-    image: "https://images.unsplash.com/photo-1459749411175-367ad7899a91?w=400&q=80&auto=format&fit=crop",
-  },
 ];
 
 let idSeq = 0;
@@ -125,25 +109,63 @@ function pickAny(excludeTitles: string[]): BubbleTemplate {
   return pool[Math.floor(Math.random() * pool.length)] ?? POOL[0];
 }
 
-export function buildInitialField(): SignalBubble[] {
-  return SLOT_LAYOUT.map((slot, i) => ({
-    id: nextId(),
-    ...POOL[i % POOL.length],
-    ...slot,
-  }));
+export function buildInitialField(): OrbitalBubble[] {
+  return ORBIT_SLOTS.map((slot, i) => {
+    const template = POOL[i % POOL.length];
+    return {
+      id: nextId(),
+      ...template,
+      x: 50,
+      y: 50,
+      z: -20 + slot.weight * 40,
+      scale: 0.82 + slot.weight * 0.28,
+      orbitAngle: slot.angle + Math.random() * 0.3,
+      orbitRadius: slot.radius + (Math.random() - 0.5) * 4,
+      orbitSpeed: slot.speed * (0.85 + Math.random() * 0.3) * (Math.random() > 0.5 ? 1 : -1),
+      wobblePhase: Math.random() * Math.PI * 2,
+      wobbleAmp: slot.wobble,
+      personalWeight: slot.weight,
+    };
+  });
 }
 
-export function spawnBubble(slot: { x: number; y: number; z: number; scale: number }, excludeTitles: string[]): SignalBubble {
+export function spawnBubble(slot: Partial<OrbitalBubble>, excludeTitles: string[]): OrbitalBubble {
   const template = pickAny(excludeTitles);
-  return { id: nextId(), ...template, ...slot };
+  const angle = Math.random() * Math.PI * 2;
+  const radius = 28 + Math.random() * 16;
+  return {
+    id: nextId(),
+    ...template,
+    x: 50,
+    y: 50,
+    z: -15 + Math.random() * 30,
+    scale: 0.85 + Math.random() * 0.2,
+    orbitAngle: angle,
+    orbitRadius: radius,
+    orbitSpeed: 0.002 * (Math.random() > 0.5 ? 1 : -1),
+    wobblePhase: Math.random() * Math.PI * 2,
+    wobbleAmp: 2 + Math.random() * 3,
+    personalWeight: Math.random(),
+    ...slot,
+  };
 }
 
-export function rotateBubbleContent(bubble: SignalBubble): SignalBubble {
+export function rotateNodeActivity(bubble: OrbitalBubble): OrbitalBubble {
   const next = pickAlt(bubble.category, bubble.title);
-  return { ...bubble, ...next, id: bubble.id, x: bubble.x, y: bubble.y, z: bubble.z, scale: bubble.scale };
+  return {
+    ...bubble,
+    ...next,
+    id: bubble.id,
+    orbitAngle: bubble.orbitAngle,
+    orbitRadius: bubble.orbitRadius,
+    orbitSpeed: bubble.orbitSpeed,
+    wobblePhase: bubble.wobblePhase,
+    wobbleAmp: bubble.wobbleAmp,
+    personalWeight: bubble.personalWeight,
+  };
 }
 
-export function bumpBubbleStats(bubble: SignalBubble): SignalBubble {
+export function bumpBubbleStats(bubble: OrbitalBubble): OrbitalBubble {
   if (bubble.liveCount == null) return bubble;
   const bump = 1 + Math.floor(Math.random() * 5);
   const nextCount = bubble.liveCount + bump;
@@ -167,6 +189,6 @@ function formatShort(n: number): string {
 
 export function bubbleDistanceFromHub(bubble: SignalBubble): number {
   const dx = bubble.x - 50;
-  const dy = bubble.y - 35;
+  const dy = bubble.y - 40;
   return Math.sqrt(dx * dx + dy * dy);
 }
