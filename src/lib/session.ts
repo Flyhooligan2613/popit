@@ -2,6 +2,7 @@ const ONBOARDING_KEY = "popit:onboardingComplete";
 const INTERESTS_KEY = "popit:interests";
 const IDENTITY_KEY = "popit:identity";
 const USER_KEY = "popit:user";
+const LOCAL_AUTH_KEY = "popit:credentials";
 
 export function markOnboardingComplete() {
   if (typeof window === "undefined") return;
@@ -20,6 +21,7 @@ export async function resetAppSession() {
   localStorage.removeItem(INTERESTS_KEY);
   localStorage.removeItem(IDENTITY_KEY);
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(LOCAL_AUTH_KEY);
 
   const { signOut } = await import("@/lib/supabase/auth");
   await signOut();

@@ -10,8 +10,15 @@ import type { IdentityType } from "@/lib/identity/types";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
-import { signUpWithEmail, signInWithEmail, isSupabaseConfigured } from "@/lib/supabase/auth";
+import { signUpWithEmail, signInWithIdentifier } from "@/lib/supabase/auth";
 import { markOnboardingComplete } from "@/lib/session";
+import type { LoginMethod } from "@/lib/auth/localAuth";
+
+const LOGIN_METHODS: { id: LoginMethod; label: string; placeholder: string }[] = [
+  { id: "email", label: "Email", placeholder: "Email address" },
+  { id: "username", label: "Username", placeholder: "Username" },
+  { id: "phone", label: "Phone", placeholder: "Phone number" },
+];
 
 export default function Frame7({
   onNext,
@@ -25,10 +32,19 @@ export default function Frame7({
   const router = useRouter();
   const [mode, setMode] = useState<"signup" | "signin">(initialMode);
   const [step, setStep] = useState<"account" | "identity">("account");
-  const [form, setForm] = useState({ username: "", email: "", password: "", confirm: "" });
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirm: "",
+  });
+  const [loginMethod, setLoginMethod] = useState<LoginMethod>("email");
+  const [loginId, setLoginId] = useState("");
   const [identity, setIdentity] = useState<IdentityType | null>(null);
   const [identityTopic, setIdentityTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleIdentitySelect = (id: IdentityType) => {
     setIdentity(id);
@@ -36,10 +52,9 @@ export default function Frame7({
   };
 
   const canClaimIdentity = Boolean(identity && identityTopic);
-  const [error, setError] = useState<string | null>(null);
 
-  const validateAccount = () => {
-    if (mode === "signup" && form.username.trim().length < 3) {
+  const validateSignup = () => {
+    if (form.username.trim().length < 3) {
       return "Username must be at least 3 characters.";
     }
     if (!form.email.includes("@")) {
@@ -48,28 +63,46 @@ export default function Frame7({
     if (form.password.length < 6) {
       return "Password must be at least 6 characters.";
     }
-    if (mode === "signup" && form.password !== form.confirm) {
+    if (form.password !== form.confirm) {
       return "Passwords do not match.";
+    }
+    return null;
+  };
+
+  const validateSignin = () => {
+    if (!loginId.trim()) {
+      return loginMethod === "email"
+        ? "Enter your email."
+        : loginMethod === "username"
+          ? "Enter your username."
+          : "Enter your phone number.";
+    }
+    if (loginMethod === "email" && !loginId.includes("@")) {
+      return "Enter a valid email.";
+    }
+    if (form.password.length < 6) {
+      return "Password must be at least 6 characters.";
     }
     return null;
   };
 
   const handleAccountNext = async () => {
     setError(null);
-    const validationError = validateAccount();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
 
     if (mode === "signin") {
-      if (!isSupabaseConfigured()) {
-        setError("Supabase is not configured. Add env vars and redeploy.");
+      const validationError = validateSignin();
+      if (validationError) {
+        setError(validationError);
         return;
       }
+
       setLoading(true);
       try {
-        await signInWithEmail(form.email, form.password);
+        await signInWithIdentifier({
+          method: loginMethod,
+          identifier: loginId,
+          password: form.password,
+        });
         markOnboardingComplete();
         router.push("/pulse");
       } catch (err) {
@@ -77,6 +110,12 @@ export default function Frame7({
       } finally {
         setLoading(false);
       }
+      return;
+    }
+
+    const validationError = validateSignup();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -94,34 +133,33 @@ export default function Frame7({
     const topicLabel = getIdentityTopicLabel(identity, identityTopic) ?? identityTopic;
 
     try {
-      if (isSupabaseConfigured()) {
-        const validationError = validateAccount();
-        if (validationError) {
-          setError(validationError);
-          return;
-        }
-
-        const result = await signUpWithEmail({
-          email: form.email,
-          password: form.password,
-          username: form.username,
-          identity,
-        });
-
-        if (!result.session) {
-          setError("Check your email to confirm your account, then sign in.");
-          setMode("signin");
-          setStep("account");
-          return;
-        }
-      }
+      const result = await signUpWithEmail({
+        email: form.email,
+        password: form.password,
+        username: form.username,
+        identity,
+        identityTopic,
+        identityTopicLabel: topicLabel,
+        phone: form.phone || undefined,
+      });
 
       saveUserIdentity(identity);
       saveUserProfile({
+        username: form.username,
+        name: form.username,
         identity,
         identityTopic,
         identityTopicLabel: topicLabel,
       });
+
+      if (result.needsEmailConfirmation) {
+        setError("Account created — check your email to confirm, then sign in.");
+        setMode("signin");
+        setStep("account");
+        setLoginMethod("email");
+        setLoginId(form.email);
+        return;
+      }
 
       onNext();
     } catch (err) {
@@ -151,6 +189,21 @@ export default function Frame7({
     }
     onBack?.();
   };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "15px 18px",
+    borderRadius: 14,
+    background: "rgba(255,255,255,0.055)",
+    border: "1px solid rgba(255,255,255,0.09)",
+    color: "#fff",
+    fontFamily: "system-ui, sans-serif",
+    fontSize: "0.95rem",
+    outline: "none",
+    boxSizing: "border-box" as const,
+  };
+
+  const activeLogin = LOGIN_METHODS.find((m) => m.id === loginMethod)!;
 
   return (
     <div style={{ position: "absolute", inset: 0, background: "#050505", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 28px" }}>
@@ -189,7 +242,7 @@ export default function Frame7({
             <p style={{ color: "rgba(255,255,255,0.42)", fontSize: "0.95rem", margin: 0, fontFamily: "system-ui, sans-serif" }}>
               {step === "account"
                 ? mode === "signin"
-                  ? "Pick up where you left off."
+                  ? "Sign in with email, username, or phone."
                   : "Join the culture."
                 : "Pick your lane — every identity has a specialty."}
             </p>
@@ -204,30 +257,90 @@ export default function Frame7({
 
         {step === "account" ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.6 }} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-            {(mode === "signup"
-              ? [
-                  { key: "username", placeholder: "Username", type: "text" },
-                  { key: "email", placeholder: "Email", type: "email" },
-                  { key: "password", placeholder: "Password", type: "password" },
-                  { key: "confirm", placeholder: "Confirm Password", type: "password" },
-                ]
-              : [
-                  { key: "email", placeholder: "Email", type: "email" },
-                  { key: "password", placeholder: "Password", type: "password" },
-                ]
-            ).map(({ key, placeholder, type }, i) => (
-              <motion.input
-                key={key}
-                type={type}
-                placeholder={placeholder}
-                value={form[key as keyof typeof form]}
-                onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + i * 0.07, duration: 0.4 }}
-                style={{ width: "100%", padding: "15px 18px", borderRadius: 14, background: "rgba(255,255,255,0.055)", border: "1px solid rgba(255,255,255,0.09)", color: "#fff", fontFamily: "system-ui, sans-serif", fontSize: "0.95rem", outline: "none", boxSizing: "border-box" }}
-              />
-            ))}
+            {mode === "signin" && (
+              <div style={{ display: "flex", gap: 6, padding: 4, borderRadius: 99, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                {LOGIN_METHODS.map((method) => {
+                  const active = loginMethod === method.id;
+                  return (
+                    <button
+                      key={method.id}
+                      type="button"
+                      onClick={() => {
+                        setLoginMethod(method.id);
+                        setLoginId("");
+                        setError(null);
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: "10px 8px",
+                        borderRadius: 99,
+                        border: "none",
+                        background: active ? "linear-gradient(90deg, #FF4D6D, #A855F7)" : "transparent",
+                        color: active ? "#fff" : "rgba(255,255,255,0.45)",
+                        fontFamily: "system-ui, sans-serif",
+                        fontSize: "0.78rem",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        transition: "background 0.2s ease",
+                      }}
+                    >
+                      {method.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {mode === "signup" ? (
+              [
+                { key: "username", placeholder: "Username", type: "text" },
+                { key: "email", placeholder: "Email", type: "email" },
+                { key: "phone", placeholder: "Phone (optional)", type: "tel" },
+                { key: "password", placeholder: "Password", type: "password" },
+                { key: "confirm", placeholder: "Confirm Password", type: "password" },
+              ].map(({ key, placeholder, type }, i) => (
+                <motion.input
+                  key={key}
+                  type={type}
+                  placeholder={placeholder}
+                  value={form[key as keyof typeof form]}
+                  onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.07, duration: 0.4 }}
+                  style={inputStyle}
+                />
+              ))
+            ) : (
+              [
+                {
+                  key: "loginId",
+                  placeholder: activeLogin.placeholder,
+                  type: loginMethod === "email" ? "email" : loginMethod === "phone" ? "tel" : "text",
+                  value: loginId,
+                  onChange: (v: string) => setLoginId(v),
+                },
+                {
+                  key: "password",
+                  placeholder: "Password",
+                  type: "password",
+                  value: form.password,
+                  onChange: (v: string) => setForm((f) => ({ ...f, password: v })),
+                },
+              ].map(({ key, placeholder, type, value, onChange }, i) => (
+                <motion.input
+                  key={key}
+                  type={type}
+                  placeholder={placeholder}
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.07, duration: 0.4 }}
+                  style={inputStyle}
+                />
+              ))
+            )}
 
             <div style={{ height: 4 }} />
 
