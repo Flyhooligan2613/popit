@@ -13,8 +13,8 @@ type UseCityEnergyOptions = {
 
 export function useCityEnergy({
   reducedMotion,
-  initialEnergy = 92,
-  initialExploring = 3482,
+  initialEnergy = 98,
+  initialExploring = 3590,
 }: UseCityEnergyOptions) {
   const [energy, setEnergy] = useState(initialEnergy);
   const [exploringCount, setExploringCount] = useState(initialExploring);

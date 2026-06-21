@@ -8,6 +8,8 @@ type CityEnergyMeterProps = {
   label: string;
   tier: EnergyTier;
   reducedMotion: boolean;
+  exploringCount?: number;
+  cityName?: string | null;
 };
 
 const TIER_CLASS: Record<EnergyTier, string> = {
@@ -19,16 +21,28 @@ const TIER_CLASS: Record<EnergyTier, string> = {
   overdrive: "energy-tier-overdrive",
 };
 
-export default function CityEnergyMeter({ value, label, tier, reducedMotion }: CityEnergyMeterProps) {
+export default function CityEnergyMeter({
+  value,
+  label,
+  tier,
+  reducedMotion,
+  exploringCount = 3590,
+  cityName = "Miami",
+}: CityEnergyMeterProps) {
   const fillPct = `${Math.round(value)}%`;
   const ignited = tier === "on-fire" || tier === "overdrive";
   const sparking = tier === "hot" || ignited;
   const isLit = value >= 99 && ignited;
   const displayLabel = isLit ? "CITY IS LIT" : label;
+  const city = cityName ?? "your city";
+  const statusLine =
+    ignited || isLit
+      ? `ON FIRE: ${city} is absolutely popping tonight! ${exploringCount.toLocaleString()} active explorers.`
+      : `${city} energy is building — ${exploringCount.toLocaleString()} explorers active.`;
 
   return (
     <div
-      className={`city-energy city-energy-v3 ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""}`}
+      className={`city-energy city-energy-mock ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""}`}
       role="meter"
       aria-valuenow={Math.round(value)}
       aria-valuemin={0}
@@ -39,6 +53,7 @@ export default function CityEnergyMeter({ value, label, tier, reducedMotion }: C
       <div className="city-energy-flow" aria-hidden />
       <div className="city-energy-header">
         <span className="city-energy-title font-display">City Energy</span>
+        <span className="city-energy-tier-tag font-display">{displayLabel}</span>
         <motion.span
           key={Math.round(value)}
           className="city-energy-value font-display"
@@ -50,9 +65,9 @@ export default function CityEnergyMeter({ value, label, tier, reducedMotion }: C
         </motion.span>
       </div>
 
-      <div className="city-energy-track">
+      <div className="city-energy-track city-energy-track-flame">
         <motion.div
-          className="city-energy-fill"
+          className="city-energy-fill city-energy-fill-flame"
           initial={false}
           animate={{ width: fillPct }}
           transition={{ duration: reducedMotion ? 0.2 : 0.9, ease: [0.16, 1, 0.3, 1] }}
@@ -75,14 +90,7 @@ export default function CityEnergyMeter({ value, label, tier, reducedMotion }: C
         )}
       </div>
 
-      <motion.p
-        key={displayLabel}
-        className="city-energy-label font-display"
-        animate={isLit ? { scale: [1, 1.04, 1] } : { scale: 1 }}
-        transition={isLit ? { duration: 1.2, repeat: Infinity } : undefined}
-      >
-        {displayLabel}
-      </motion.p>
+      <p className="city-energy-status font-body">{statusLine}</p>
     </div>
   );
 }

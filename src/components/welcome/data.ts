@@ -145,6 +145,7 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     id: "v1",
     icon: "🍕",
     name: "Joe's Pizza",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&q=80&auto=format&fit=crop",
     rating: "★★★★★",
     distance: "1.3 mi",
     stat: "+540 saves today",
@@ -154,29 +155,34 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     id: "v2",
     icon: "🎉",
     name: "LIV Nightclub",
+    image: "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=400&q=80&auto=format&fit=crop",
     stat: "Almost Full",
-    detail: "DJ starts 9:30 PM · 12 minute wait",
+    detail: "12 min wait",
     badge: "Hot",
   },
   {
     id: "v3",
     icon: "☕",
     name: "Panther Coffee",
+    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80&auto=format&fit=crop",
     stat: "Buzzing",
     detail: "72 people checked in",
+    badge: "Live",
   },
   {
     id: "v4",
     icon: "🏀",
     name: "Heat Watch Party",
+    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80&auto=format&fit=crop",
     stat: "Starts in 25 min",
-    detail: "VIP filling quickly",
-    badge: "Live",
+    detail: "Filling fast",
+    badge: "Hot",
   },
   {
     id: "v5",
     icon: "🌮",
     name: "Wynwood Tacos",
+    image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&q=80&auto=format&fit=crop",
     rating: "★★★★☆",
     distance: "0.8 mi",
     stat: "Exploding on TikTok",
@@ -186,6 +192,7 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     id: "v6",
     icon: "🎤",
     name: "Bayfront Concert",
+    image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=80&auto=format&fit=crop",
     stat: "Starts in 45 min",
     detail: "GA tickets moving fast",
     badge: "Hot",
@@ -197,8 +204,8 @@ export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
     key: "restaurants",
     icon: "🍔",
     label: "Restaurants",
-    value: 97,
-    delta: 6,
+    value: 100,
+    delta: 8,
     statusLabel: "Most Active",
     accent: "#ff6b35",
   },
@@ -206,8 +213,8 @@ export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
     key: "events",
     icon: "🎉",
     label: "Events",
-    value: 84,
-    delta: 2,
+    value: 85,
+    delta: 5,
     statusLabel: "Concert Night",
     accent: "#a855f7",
   },
@@ -215,8 +222,8 @@ export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
     key: "nightlife",
     icon: "🌃",
     label: "Nightlife",
-    value: 99,
-    delta: 4,
+    value: 97,
+    delta: 9,
     statusLabel: "Hottest Category",
     accent: "#6366f1",
     isHottest: true,
@@ -225,10 +232,10 @@ export const PULSE_CHANNELS: import("./types").PulseChannel[] = [
     key: "sports",
     icon: "🏀",
     label: "Sports",
-    value: 73,
-    delta: 1,
+    value: 74,
+    delta: 4,
     statusLabel: "Game Night",
-    accent: "#f97316",
+    accent: "#22c55e",
   },
 ];
 
@@ -241,12 +248,11 @@ export const CATEGORY_CARDS = [
 
 /** Globe hotspot positions — future zoom targets (Miami, Atlanta, NYC, etc.) */
 export const GLOBE_HOTSPOTS: GlobeHotspot[] = [
-  { id: "miami", city: "Miami", x: 68, y: 62 },
-  { id: "atlanta", city: "Atlanta", x: 62, y: 48 },
-  { id: "nyc", city: "New York", x: 72, y: 42 },
-  { id: "la", city: "Los Angeles", x: 22, y: 50 },
-  { id: "chicago", city: "Chicago", x: 58, y: 40 },
-  { id: "houston", city: "Houston", x: 52, y: 56 },
+  { id: "miami", city: "Miami", code: "MIA", count: 3600, x: 68, y: 62 },
+  { id: "atlanta", city: "Atlanta", code: "ATL", count: 2100, x: 62, y: 48 },
+  { id: "nyc", city: "New York", code: "NYC", count: 5200, x: 72, y: 42 },
+  { id: "la", city: "Los Angeles", code: "LA", count: 4100, x: 22, y: 50 },
+  { id: "houston", city: "Houston", code: "HOU", count: 1800, x: 52, y: 56 },
 ];
 
 export const TRENDING_CREATORS: TrendingCreator[] = [
@@ -316,6 +322,13 @@ export const TRENDING_CREATORS: TrendingCreator[] = [
     trending: true,
   },
 ];
+
+export const LIVE_AVATAR_STACK = TRENDING_CREATORS.slice(0, 5).map((c) => c.avatar);
+
+export function formatHotspotCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+  return String(n);
+}
 
 export function energyTierFromValue(energy: number) {
   if (energy >= 92) return "overdrive" as const;

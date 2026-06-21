@@ -15,6 +15,7 @@ export type VenueCard = {
   id: string;
   icon: string;
   name: string;
+  image?: string;
   rating?: string;
   distance?: string;
   stat: string;
@@ -73,6 +74,8 @@ export type TrendingCreator = {
 export type GlobeHotspot = {
   id: string;
   city: string;
+  code: string;
+  count: number;
   /** 0–100 position on globe projection */
   x: number;
   y: number;
