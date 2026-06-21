@@ -94,7 +94,8 @@ function scoreCard(
 
 function popMarkForCard(card: PoppingCard): PopMarkTier | null {
   if (card.kind === "business" && card.rank <= 2) return "gold";
-  if (card.rank === 1 && card.verified) return Math.random() > 0.55 ? "gold" : "green";
+  if (card.rank === 1 && card.verified) return Math.random() > 0.7 ? "gold" : "green";
+  if (card.rank === 2 && card.verified && Math.random() > 0.92) return "legend";
   if (card.rank <= 3 && card.verified) return "green";
   if (card.verified) return "blue";
   return null;

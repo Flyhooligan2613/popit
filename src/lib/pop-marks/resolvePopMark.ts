@@ -14,8 +14,9 @@ export function popMarkFromStatusId(statusId: PopStatusId): PopMarkTier | null {
     case "gold-status":
       return "gold";
     case "diamond":
+      return "legend";
     case "icon":
-      return "diamond";
+      return "icon";
     default:
       return null;
   }
@@ -23,7 +24,8 @@ export function popMarkFromStatusId(statusId: PopStatusId): PopMarkTier | null {
 
 /** Direct resolution from metrics — aligned with POP Mark level thresholds */
 export function resolvePopMarkTier(metrics: PopStatusMetrics): PopMarkTier | null {
-  if (metrics.isIconAwarded || metrics.isDiamondInvited) return "diamond";
+  if (metrics.isIconAwarded) return "icon";
+  if (metrics.isDiamondInvited) return "legend";
   if (metrics.accountStanding !== "good") return null;
 
   if (metrics.isVerifiedBusiness && metrics.popScore >= 75) return "gold";
@@ -46,7 +48,8 @@ export function resolvePopMarkTier(metrics: PopStatusMetrics): PopMarkTier | nul
 
 export function nextPopMarkTier(current: PopMarkTier | null): PopMarkTier | null {
   if (!current) return "blue";
-  const order: PopMarkTier[] = ["blue", "green", "gold", "diamond"];
-  const idx = order.indexOf(current);
+  const order: PopMarkTier[] = ["blue", "green", "gold", "legend", "icon"];
+  const normalized = current === "diamond" ? "legend" : current;
+  const idx = order.indexOf(normalized as (typeof order)[number]);
   return idx >= 0 && idx < order.length - 1 ? order[idx + 1] : null;
 }

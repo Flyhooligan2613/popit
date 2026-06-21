@@ -1,5 +1,5 @@
-/** POP Mark visual tiers — original POP'IT recognition (not platform checkmarks) */
-export type PopMarkTier = "blue" | "green" | "gold" | "diamond" | "black-chrome";
+/** POP Mark visual tiers — matches POP'IT Verified Mark mock system */
+export type PopMarkTier = "blue" | "green" | "gold" | "legend" | "icon" | "diamond" | "black-chrome";
 
 export type PopMarkSize = 16 | 20 | 24 | 32 | 64;
 
@@ -19,7 +19,7 @@ export type PopMarkConfig = {
   nextTitle: string | null;
 };
 
-export const POP_MARK_ORDER: PopMarkTier[] = ["blue", "green", "gold", "diamond"];
+export const POP_MARK_ORDER: PopMarkTier[] = ["blue", "green", "gold", "legend", "icon"];
 
 export const POP_MARK_CONFIG: Record<PopMarkTier, Omit<PopMarkConfig, "nextTier" | "nextTitle">> = {
   blue: {
@@ -41,8 +41,8 @@ export const POP_MARK_CONFIG: Record<PopMarkTier, Omit<PopMarkConfig, "nextTier"
   green: {
     tier: "green",
     title: "Green POP Mark",
-    subtitle: "Community Leader",
-    philosophy: "Helpful contribution and strong community reputation.",
+    subtitle: "Rising Creator",
+    philosophy: "Trusted community growth and positive engagement.",
     requirements: [
       { label: "100,000 followers" },
       { label: "250,000 likes" },
@@ -58,7 +58,7 @@ export const POP_MARK_CONFIG: Record<PopMarkTier, Omit<PopMarkConfig, "nextTier"
   gold: {
     tier: "gold",
     title: "Gold POP Mark",
-    subtitle: "Elite",
+    subtitle: "Elite Business / Creator",
     philosophy: "Prestigious recognition for major creators and premium businesses.",
     requirements: [
       { label: "500,000 followers or verified business" },
@@ -71,9 +71,39 @@ export const POP_MARK_CONFIG: Record<PopMarkTier, Omit<PopMarkConfig, "nextTier"
       "Gold represents earned prestige — never given lightly.",
     ],
   },
+  legend: {
+    tier: "legend",
+    title: "Legend POP Mark",
+    subtitle: "POP Legend",
+    philosophy: "Ultra-rare. Invitation or exceptional long-term platform impact.",
+    requirements: [
+      { label: "Platform invitation only" },
+      { label: "Sustained cultural influence" },
+      { label: "Exemplary trust & community impact" },
+    ],
+    whyEarned: [
+      "Reserved for creators who define what POP'IT means in their city.",
+      "Extremely limited — never awarded from follower count alone.",
+    ],
+  },
+  icon: {
+    tier: "icon",
+    title: "ICON POP Mark",
+    subtitle: "Highest Recognition",
+    philosophy: "The pinnacle of POP'IT achievement and cultural impact.",
+    requirements: [
+      { label: "Extraordinary long-term contribution" },
+      { label: "Defines culture within your city" },
+      { label: "Platform designation only" },
+    ],
+    whyEarned: [
+      "The rarest mark on POP'IT — earned, never expected.",
+      "Reserved for those who shape the platform itself.",
+    ],
+  },
   diamond: {
     tier: "diamond",
-    title: "Diamond POP Mark",
+    title: "Legend POP Mark",
     subtitle: "POP Legend",
     philosophy: "Ultra-rare. Invitation or exceptional long-term platform impact.",
     requirements: [
@@ -97,8 +127,9 @@ export const POP_MARK_CONFIG: Record<PopMarkTier, Omit<PopMarkConfig, "nextTier"
 };
 
 export function getPopMarkConfig(tier: PopMarkTier): PopMarkConfig {
-  const idx = POP_MARK_ORDER.indexOf(tier as (typeof POP_MARK_ORDER)[number]);
-  const base = POP_MARK_CONFIG[tier];
+  const key = tier === "diamond" ? "legend" : tier;
+  const idx = POP_MARK_ORDER.indexOf(key as (typeof POP_MARK_ORDER)[number]);
+  const base = POP_MARK_CONFIG[tier === "diamond" ? "legend" : tier];
   const nextTier = idx >= 0 && idx < POP_MARK_ORDER.length - 1 ? POP_MARK_ORDER[idx + 1] : null;
   return {
     ...base,

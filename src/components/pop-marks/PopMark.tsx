@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import PopMarkSvg from "./PopMarkSvg";
 import PopMarkStatusSheet from "./PopMarkStatusSheet";
+import { normalizePopMarkTier } from "@/lib/pop-marks/popMarkArt";
 import type { PopMarkSize, PopMarkTier } from "@/lib/pop-marks/types";
 import type { PopStatusState } from "@/lib/creator-economy/types";
 
@@ -31,9 +32,10 @@ function PopMarkVisual({
   className: string;
   size: PopMarkSize;
 }) {
+  const visualTier = normalizePopMarkTier(tier);
   return (
     <span
-      className={`pop-mark pop-mark-${tier} pop-mark-size-${size} ${animate ? "is-animated" : ""} ${entered ? "is-entered" : ""} ${interactive ? "is-interactive" : ""} ${className}`}
+      className={`pop-mark pop-mark-${visualTier} pop-mark-size-${size} ${animate ? "is-animated" : ""} ${entered ? "is-entered" : ""} ${interactive ? "is-interactive" : ""} ${className}`}
       style={{ "--pop-mark-size": `${size}px` } as React.CSSProperties}
     >
       <span className="pop-mark-glow" aria-hidden />
