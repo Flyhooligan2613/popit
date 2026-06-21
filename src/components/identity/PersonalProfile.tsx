@@ -3,6 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import PopitLens from "@/components/profile/PopitLens";
+import CreatorEconomyCard from "@/components/creator-economy/CreatorEconomyCard";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
 
@@ -55,7 +56,7 @@ function PersonalProfile({ user }: PersonalProfileProps) {
         <div className="relative mt-6 grid grid-cols-3 gap-3 text-center">
           {[
             { label: "Following", value: user.following },
-            { label: "Pulse Score", value: user.pulseScore },
+            { label: "POP Score", value: user.pulseScore },
             { label: "Energy", value: `${user.energy}%` },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border border-white/8 bg-black/40 py-3">
@@ -67,6 +68,23 @@ function PersonalProfile({ user }: PersonalProfileProps) {
       </div>
 
       <div className="flex flex-col gap-4 px-4 pt-6">
+        <CreatorEconomyCard
+          signals={{
+            qualityReactions: user.followers * 0.3,
+            meaningfulComments: user.following * 0.4,
+            shares: user.followers * 0.08,
+            saves: user.followers * 0.05,
+            profileVisits: user.followers * 1.2,
+            eventParticipationGenerated: Math.round(user.pulseScore * 0.6),
+            restaurantVisitsInfluenced: Math.round(user.pulseScore * 0.35),
+            liveStreamWatchTime: user.live ? 12000 : 2400,
+            followerGrowth: Math.round(user.followers * 0.01),
+            consistentPosting: 14,
+            communityTrust: user.verified ? 0.88 : 0.62,
+            accountAuthenticity: user.verified ? 0.92 : 0.7,
+          }}
+        />
+
         <Section title="Live Status">
           <div className="flex items-center gap-3">
             <span className={`h-2 w-2 rounded-full ${user.live ? "animate-pulse bg-[#FF4D6D]" : "bg-emerald-400"}`} />

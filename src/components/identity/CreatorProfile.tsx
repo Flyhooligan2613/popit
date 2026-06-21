@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import CreatorEconomyCard from "@/components/creator-economy/CreatorEconomyCard";
 import type { UserProfile } from "@/lib/identity/userProfile";
 
 type CreatorProfileProps = { user: UserProfile };
@@ -23,7 +24,7 @@ function CreatorProfile({ user }: CreatorProfileProps) {
           {[
             { k: "Subscribers", v: "42.1K" },
             { k: "Growth", v: "+18%" },
-            { k: "Pulse", v: user.pulseScore },
+            { k: "POP Score", v: user.pulseScore },
           ].map((s) => (
             <div key={s.k} className="rounded-xl border border-purple-500/20 bg-purple-900/10 py-3 text-center">
               <p className="text-poster text-xl text-white">{s.v}</p>
@@ -34,6 +35,24 @@ function CreatorProfile({ user }: CreatorProfileProps) {
       </div>
 
       <div className="flex flex-col gap-4 px-4 pt-6">
+        <CreatorEconomyCard
+          variant="creator"
+          signals={{
+            qualityReactions: user.followers * 0.55,
+            meaningfulComments: user.following * 0.9,
+            shares: user.followers * 0.14,
+            saves: user.followers * 0.11,
+            profileVisits: user.followers * 2.1,
+            eventParticipationGenerated: Math.round(user.pulseScore * 1.4),
+            restaurantVisitsInfluenced: Math.round(user.pulseScore * 0.8),
+            liveStreamWatchTime: user.live ? 28000 : 14000,
+            followerGrowth: Math.round(user.followers * 0.025),
+            consistentPosting: 24,
+            communityTrust: user.verified ? 0.92 : 0.7,
+            accountAuthenticity: user.verified ? 0.95 : 0.75,
+          }}
+        />
+
         <section className="rounded-xl border border-white/10 bg-black/50 p-4">
           <h3 className="text-poster mb-3 text-lg uppercase text-white/90">Featured Videos</h3>
           <div className="space-y-2">

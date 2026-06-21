@@ -12,6 +12,7 @@ import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
+import CityCareerSection from "./CityCareerSection";
 import WelcomeBottomNav from "./WelcomeBottomNav";
 import WelcomeHeroSection from "./WelcomeHeroSection";
 import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES } from "./data";
@@ -281,6 +282,11 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           reducedMotion={!!reducedMotion}
           energyNorm={energyNorm}
           onCardAction={() => handleJoin()}
+        />
+
+        <CityCareerSection
+          reducedMotion={!!reducedMotion}
+          onExplore={() => handleJoin()}
         />
 
         <div className="popit-category-grid popit-category-grid-mock" role="list" aria-label="Explore modes">

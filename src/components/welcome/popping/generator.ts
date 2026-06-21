@@ -1,4 +1,5 @@
 import type { PoppingCard, PoppingCardKind } from "./types";
+import { popScoreFromEngagement } from "@/lib/creator-economy/popScoreEngine";
 
 const IMAGES = {
   creator: [
@@ -72,6 +73,40 @@ function popScoreForRank(rank: number) {
   return Math.max(72, 99 - (rank - 1) * rand(1, 3));
 }
 
+function scoreCard(
+  rank: number,
+  engagement: {
+    likes?: number;
+    comments?: number;
+    shares?: number;
+    saves?: number;
+    followersToday?: number;
+    viewers?: number;
+    interested?: number;
+    verified?: boolean;
+  }
+): number {
+  const impactScore = popScoreFromEngagement(engagement);
+  const rankScore = popScoreForRank(rank);
+  return Math.min(99, Math.round(impactScore * 0.72 + rankScore * 0.28));
+}
+
+function assignPopScore(card: PoppingCard): PoppingCard {
+  return {
+    ...card,
+    popScore: scoreCard(card.rank, {
+      likes: card.likes,
+      comments: card.comments,
+      shares: card.shares,
+      saves: card.savesToday,
+      followersToday: card.followersToday,
+      viewers: card.viewers,
+      interested: card.interested,
+      verified: card.verified,
+    }),
+  };
+}
+
 export function formatPoppingCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
@@ -90,14 +125,14 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
     id: nextId(kind),
     kind,
     rank,
-    popScore: popScoreForRank(rank),
+    popScore: 0,
     trending: rank <= 5,
     city,
   };
 
   switch (kind) {
     case "creator":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["@miamifoodie", "@wynwood.eats", "@305creator", "@southbeachvibes", "@popit.creator"]),
         category: pick(["Food Creator", "Lifestyle Creator", "City Creator"]),
@@ -108,9 +143,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         comments: rand(420, 2400),
         shares: rand(380, 1200),
         followersToday: rand(180, 890),
-      };
+      });
     case "athlete":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["@heatwatch", "@305runs", "@beachathlete", "@miami.fitness"]),
         category: "Athlete",
@@ -121,9 +156,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         comments: rand(320, 1800),
         shares: rand(240, 980),
         followersToday: rand(120, 620),
-      };
+      });
     case "music_artist":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["@djpulse.mia", "@luna.live", "@basscoast", "@ultra.after"]),
         category: "Music Artist",
@@ -134,9 +169,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         comments: rand(520, 3100),
         shares: rand(600, 2100),
         followersToday: rand(200, 1100),
-      };
+      });
     case "photographer":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["@lens305", "@golden.hour.mia", "@streetframe"]),
         category: "Photographer",
@@ -147,9 +182,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         comments: rand(180, 920),
         shares: rand(140, 640),
         followersToday: rand(80, 420),
-      };
+      });
     case "community":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["@wynwood.crew", "@305.community", "@locals.only.mia"]),
         category: "Community Member",
@@ -159,9 +194,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         comments: rand(120, 680),
         shares: rand(90, 420),
         followersToday: rand(45, 280),
-      };
+      });
     case "business":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["🍕 Joe's Pizza", "☕ Panther Coffee", "🌮 Wynwood Tacos", "🍔 LoKal Burger", "🍣 Zuma Miami"]),
         category: pick(["Restaurant", "Cafe", "Local Business"]),
@@ -170,9 +205,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         rating: 4.2 + Math.random() * 0.7,
         distance: `${(0.4 + Math.random() * 2.2).toFixed(1)} mi`,
         savesToday: rand(180, 720),
-      };
+      });
     case "event":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["🎵 Ultra After Party", "🏀 Heat Watch Party", "🎪 Wynwood Art Walk", "🎤 Bayfront Concert"]),
         category: pick(["Concert", "Sports Event", "Festival"]),
@@ -180,9 +215,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         tapTarget: "event",
         countdown: pick(["45 Min", "2 Hours", "Tonight", "Tomorrow"]),
         interested: rand(420, 2800),
-      };
+      });
     case "nightlife":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["🎉 LIV Nightclub", "🍸 Rooftop at E11EVEN", "🌃 Sky Lounge", "🎵 Club Space"]),
         category: "Nightlife",
@@ -190,9 +225,9 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         tapTarget: "event",
         countdown: pick(["Doors Open", "In 1 Hour", "Tonight"]),
         interested: rand(680, 3200),
-      };
+      });
     case "charity":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["💙 Beach Cleanup", "🤝 Feed Miami", "❤️ Community Drive", "🌴 Park Restoration"]),
         category: "Charity Event",
@@ -200,18 +235,18 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         tapTarget: "event",
         countdown: pick(["This Weekend", "Saturday", "Sunday AM"]),
         interested: rand(120, 980),
-      };
+      });
     case "live_video":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["Beach Workout", "Kitchen Live", "Rooftop Set", "Game Day Live"]),
         category: "Live Stream",
         image: pick(IMAGES.live),
         tapTarget: "video",
         viewers: rand(380, 2400),
-      };
+      });
     case "local_story":
-      return {
+      return assignPopScore({
         ...base,
         title: pick(["South Beach Sunrise", "Hidden Alley Mural", "Street Fair Moment", "Neon Rain Night"]),
         category: "Local Story",
@@ -219,7 +254,7 @@ export function generateCard(kind: PoppingCardKind, rank: number, city: string):
         tapTarget: "profile",
         likes: rand(2400, 9800),
         comments: rand(180, 840),
-      };
+      });
     default:
       return generateCard("creator", rank, city);
   }
@@ -255,9 +290,8 @@ export function bumpCardStats(card: PoppingCard): PoppingCard {
   if (next.savesToday != null && Math.random() > 0.5) next.savesToday += rand(1, 3);
   if (next.viewers != null) next.viewers += rand(0, 4);
   if (next.interested != null && Math.random() > 0.6) next.interested += rand(1, 2);
-  if (Math.random() > 0.82) next.popScore = Math.min(99, next.popScore + 1);
 
-  return next;
+  return assignPopScore(next);
 }
 
 export function nextRotatedCard(deck: PoppingCard[], city: string): PoppingCard {
