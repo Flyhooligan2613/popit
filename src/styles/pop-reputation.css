@@ -1,0 +1,363 @@
+/* POP Score reputation — comments, trust strips, profile summary */
+
+.lens-comment {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1rem 0;
+}
+
+.lens-comment:last-child {
+  border-bottom: 0;
+}
+
+.lens-comment__row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.lens-comment__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.lens-comment__time {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.28);
+  white-space: nowrap;
+}
+
+.lens-comment__text {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 0.5rem;
+}
+
+.lens-comment__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lens-comment__likes,
+.lens-comment__reply {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lens-comment__reply {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.lens-comment__reply:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* User trust strip */
+.user-trust-strip__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+}
+
+.user-trust-strip__name {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+}
+
+.user-trust-strip__name:hover {
+  text-decoration: underline;
+}
+
+.user-trust-strip__mark-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.user-trust-strip__mark-label {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.user-trust-strip__stats {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.42);
+  margin: 0.15rem 0 0;
+}
+
+.user-trust-strip__stats strong {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+}
+
+.user-trust-strip__dot {
+  margin: 0 0.25rem;
+  opacity: 0.45;
+}
+
+.user-trust-strip__trust {
+  font-weight: 600;
+}
+
+.user-trust-strip__meta {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0.15rem 0 0;
+}
+
+.user-trust-strip.is-compact .user-trust-strip__stats {
+  font-size: 0.6rem;
+}
+
+/* Profile reputation summary */
+.profile-reputation {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  backdrop-filter: blur(8px);
+}
+
+.profile-reputation__header {
+  margin-bottom: 1rem;
+}
+
+.profile-reputation__title {
+  font-family: var(--font-poster, "Teko", sans-serif);
+  font-size: 1.125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0;
+}
+
+.profile-reputation__tagline {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.38);
+  margin: 0.15rem 0 0;
+  letter-spacing: 0.04em;
+}
+
+.profile-reputation__hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.profile-reputation__score-block,
+.profile-reputation__level-block {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.75rem;
+}
+
+.profile-reputation__label {
+  display: block;
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 0.25rem;
+}
+
+.profile-reputation__score {
+  font-family: var(--font-poster, "Teko", sans-serif);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--rep-accent, #a855f7);
+}
+
+.profile-reputation__level {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.profile-reputation__mark {
+  display: inline-flex;
+  margin-top: 0.35rem;
+}
+
+.profile-reputation__trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profile-reputation__trust-badge {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--rep-accent, #a855f7) 45%, transparent);
+  color: var(--rep-accent, #a855f7);
+  background: color-mix(in srgb, var(--rep-accent, #a855f7) 12%, transparent);
+}
+
+.profile-reputation__achievements,
+.profile-reputation__tenure {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.profile-reputation__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.profile-reputation__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.profile-reputation__row dt {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.profile-reputation__row dd {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0;
+}
+
+/* Trusted review badges */
+.trusted-review-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.trusted-review-badge--trusted-review {
+  border-color: rgba(250, 204, 21, 0.35);
+  background: rgba(250, 204, 21, 0.08);
+  color: #fde68a;
+}
+
+.trusted-review-badge--community-favorite {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fcd34d;
+}
+
+.trusted-review-badge--pop-legend-opinion {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.12);
+  color: #e9d5ff;
+}
+
+.trusted-review-badge--trending-creator-review {
+  border-color: rgba(255, 77, 109, 0.35);
+  background: rgba(255, 77, 109, 0.1);
+  color: #fda4af;
+}
+
+/* Smart review cards on venue pages */
+.smart-review-card {
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.85rem;
+}
+
+.smart-review-card + .smart-review-card {
+  margin-top: 0.65rem;
+}
+
+.smart-review-card__label {
+  margin-bottom: 0.55rem;
+}
+
+.smart-review-card__body {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.smart-review-card__text {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0.35rem 0 0.45rem;
+  font-style: italic;
+}
+
+.smart-review-card__engagement {
+  font-family: var(--font-body, "Barlow Condensed", sans-serif);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.38);
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 480px) {
+  .profile-reputation__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-reputation__grid {
+    grid-template-columns: 1fr;
+  }
+}

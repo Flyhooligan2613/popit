@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import SmartReviewCard, { buildReviewReputation, type SmartReview } from "@/components/reputation/SmartReviewCard";
 import type { UserProfile } from "@/lib/identity/userProfile";
 
 type RestaurantProfileProps = { user: UserProfile };
@@ -22,6 +23,48 @@ const MENU = {
     { name: "Tiramisu", price: 12 },
   ],
 };
+
+const TRUSTED_REVIEWS: SmartReview[] = [
+  {
+    id: "r1",
+    author: "MiamiFoodie",
+    username: "MiamiFoodie",
+    identity: "content-creator",
+    followers: 186_000,
+    verified: true,
+    popScoreRating: 88,
+    text: "This place has the best tacos in the city. Chef's tasting menu is worth every penny.",
+    likes: 4200,
+    communitySince: 2024,
+    lifetimePopScore: 84_320,
+    popMark: "gold",
+  },
+  {
+    id: "r2",
+    author: "Luna",
+    username: "luna-creates",
+    identity: "content-creator",
+    followers: 94_000,
+    verified: true,
+    popScoreRating: 82,
+    text: "Perfect date-night spot. Sommelier pairing elevated the whole experience.",
+    likes: 890,
+    trending: true,
+    communitySince: 2024,
+  },
+  {
+    id: "r3",
+    author: "Marcus",
+    username: "flygoon",
+    identity: "personal",
+    followers: 18_420,
+    verified: true,
+    popScoreRating: 94,
+    text: "Dry-aged ribeye is unmatched. Always recommend for out-of-town guests.",
+    likes: 312,
+    communitySince: 2026,
+  },
+];
 
 function RestaurantProfile({ user }: RestaurantProfileProps) {
   const accent = "#FF7A00";
@@ -92,6 +135,14 @@ function RestaurantProfile({ user }: RestaurantProfileProps) {
               <div key={i} className="aspect-square rounded-lg bg-gradient-to-br from-amber-900/40 to-black" />
             ))}
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-amber-900/25 bg-amber-950/15 p-4">
+          <h3 className="text-poster mb-1 text-lg uppercase tracking-widest text-amber-400">Community Reviews</h3>
+          <p className="font-body mb-3 text-xs text-white/40">Trusted voices ranked by POP Score &amp; reputation</p>
+          {TRUSTED_REVIEWS.map((review) => (
+            <SmartReviewCard key={review.id} review={review} reputation={buildReviewReputation(review)} />
+          ))}
         </section>
 
         <button

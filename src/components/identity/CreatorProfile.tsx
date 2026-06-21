@@ -3,11 +3,22 @@
 import { memo } from "react";
 import PopitLens from "@/components/profile/PopitLens";
 import CreatorEconomyCard from "@/components/creator-economy/CreatorEconomyCard";
+import ProfileReputationSummary from "@/components/reputation/ProfileReputationSummary";
 import type { UserProfile } from "@/lib/identity/userProfile";
+import { buildUserReputation, formatLifetimePopScore } from "@/lib/reputation/reputationEngine";
 
 type CreatorProfileProps = { user: UserProfile };
 
 function CreatorProfile({ user }: CreatorProfileProps) {
+  const reputation = buildUserReputation({
+    followers: user.followers,
+    following: user.following,
+    popScoreRating: user.pulseScore,
+    verified: user.verified,
+    identity: user.identity,
+    communitySince: 2023,
+  });
+
   return (
     <div className="min-h-screen bg-[#08080f] pb-24">
       <div className="border-b border-purple-500/20 px-4 pb-8 pt-6">
@@ -23,8 +34,8 @@ function CreatorProfile({ user }: CreatorProfileProps) {
         <div className="mt-6 grid grid-cols-3 gap-3">
           {[
             { k: "Subscribers", v: "42.1K" },
-            { k: "Growth", v: "+18%" },
-            { k: "POP Score", v: user.pulseScore },
+            { k: "Level", v: reputation.level },
+            { k: "POP Score", v: formatLifetimePopScore(reputation.lifetimePopScore) },
           ].map((s) => (
             <div key={s.k} className="rounded-xl border border-purple-500/20 bg-purple-900/10 py-3 text-center">
               <p className="text-poster text-xl text-white">{s.v}</p>
@@ -35,6 +46,13 @@ function CreatorProfile({ user }: CreatorProfileProps) {
       </div>
 
       <div className="flex flex-col gap-4 px-4 pt-6">
+        <ProfileReputationSummary
+          reputation={reputation}
+          followers={user.followers}
+          following={user.following}
+          accent="#A855F7"
+        />
+
         <CreatorEconomyCard
           variant="creator"
           signals={{

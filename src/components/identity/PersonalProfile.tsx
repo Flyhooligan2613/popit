@@ -4,8 +4,10 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import PopitLens from "@/components/profile/PopitLens";
 import CreatorEconomyCard from "@/components/creator-economy/CreatorEconomyCard";
+import ProfileReputationSummary from "@/components/reputation/ProfileReputationSummary";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
+import { buildUserReputation, formatLifetimePopScore } from "@/lib/reputation/reputationEngine";
 
 type PersonalProfileProps = {
   user: UserProfile;
@@ -22,6 +24,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function PersonalProfile({ user }: PersonalProfileProps) {
   const accent = getIdentityAccent(user.identity);
+  const reputation = buildUserReputation({
+    followers: user.followers,
+    following: user.following,
+    popScoreRating: user.pulseScore,
+    verified: user.verified,
+    identity: user.identity,
+    communitySince: 2024,
+  });
 
   return (
     <div className="min-h-screen bg-[#050505] pb-24">
@@ -56,8 +66,8 @@ function PersonalProfile({ user }: PersonalProfileProps) {
         <div className="relative mt-6 grid grid-cols-3 gap-3 text-center">
           {[
             { label: "Following", value: user.following },
-            { label: "POP Score", value: user.pulseScore },
-            { label: "Energy", value: `${user.energy}%` },
+            { label: "POP Score", value: formatLifetimePopScore(reputation.lifetimePopScore) },
+            { label: "Level", value: reputation.level },
           ].map((stat) => (
             <div key={stat.label} className="rounded-xl border border-white/8 bg-black/40 py-3">
               <p className="text-poster text-2xl text-white">{stat.value}</p>
@@ -68,6 +78,13 @@ function PersonalProfile({ user }: PersonalProfileProps) {
       </div>
 
       <div className="flex flex-col gap-4 px-4 pt-6">
+        <ProfileReputationSummary
+          reputation={reputation}
+          followers={user.followers}
+          following={user.following}
+          accent={accent}
+        />
+
         <CreatorEconomyCard
           signals={{
             qualityReactions: user.followers * 0.3,
