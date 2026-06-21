@@ -601,63 +601,66 @@
 .popit-home-brand-watermark {
   position: fixed;
   left: 50%;
-  bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(3.75rem + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
-  width: min(92vw, 24rem);
-  height: min(70vw, 18rem);
+  width: min(92vw, 26rem);
+  height: auto;
+  max-height: min(78vw, 24rem);
   z-index: 0;
   pointer-events: none;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 
 .popit-home-brand-watermark__glow {
   position: absolute;
-  inset: 5% 0 -10%;
+  inset: 0 -8% -12%;
   background:
-    radial-gradient(ellipse 75% 70% at 50% 75%, rgba(168, 85, 247, 0.16) 0%, transparent 65%),
-    radial-gradient(ellipse 65% 55% at 50% 85%, rgba(255, 77, 109, 0.12) 0%, transparent 60%);
-  filter: blur(10px);
+    radial-gradient(ellipse 75% 70% at 50% 55%, rgba(168, 85, 247, 0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 55% at 50% 65%, rgba(255, 77, 109, 0.1) 0%, transparent 60%);
+  filter: blur(12px);
 }
 
 .popit-home-brand-watermark__mark {
   position: relative;
   z-index: 1;
-  width: 118%;
-  max-width: none;
+  width: 100%;
   height: auto;
+  max-height: min(78vw, 24rem);
   object-fit: contain;
-  object-position: center top;
-  margin-bottom: -18%;
-  opacity: 0.32;
+  object-position: center center;
+  opacity: 0.3;
   filter: saturate(1.05);
   -webkit-mask-image: linear-gradient(
     to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.9) 35%,
-    rgba(0, 0, 0, 0.45) 72%,
-    transparent 100%
+    transparent 0%,
+    rgba(0, 0, 0, 0.25) 8%,
+    rgba(0, 0, 0, 0.75) 22%,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 1) 100%
   );
   mask-image: linear-gradient(
     to top,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.9) 35%,
-    rgba(0, 0, 0, 0.45) 72%,
-    transparent 100%
+    transparent 0%,
+    rgba(0, 0, 0, 0.25) 8%,
+    rgba(0, 0, 0, 0.75) 22%,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 1) 100%
   );
 }
 
 @media (min-width: 480px) {
   .popit-home-brand-watermark {
-    width: min(86vw, 28rem);
-    height: min(62vw, 21rem);
-    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+    width: min(88vw, 30rem);
+    max-height: 26rem;
+    bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   }
 
   .popit-home-brand-watermark__mark {
-    opacity: 0.36;
+    opacity: 0.34;
+    max-height: 26rem;
   }
 }
 

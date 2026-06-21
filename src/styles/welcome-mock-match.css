@@ -253,7 +253,7 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  height: clamp(2.75rem, 8vh, 4rem);
+  height: clamp(3rem, 9vh, 4.5rem);
   overflow: visible;
   pointer-events: none;
   z-index: 6;
@@ -274,29 +274,27 @@
 
 .city-energy-flame-strip-svg {
   position: absolute;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  width: calc(100% + 2px);
-  height: 100%;
+  left: -2px;
+  right: -2px;
+  bottom: 0;
+  width: calc(100% + 4px);
+  height: 108%;
   display: block;
   overflow: visible;
   transform-origin: bottom center;
   opacity: 1;
-  filter: drop-shadow(0 2px 6px rgba(255, 100, 0, 0.35));
+  filter: drop-shadow(0 3px 8px rgba(255, 120, 0, 0.4));
   transition: filter 0.8s ease;
 }
 
-.city-energy-flame-strip-layers {
+.city-energy-flame-strip-fill,
+.city-energy-flame-strip-inner,
+.city-energy-flame-ground-glow {
   transform-origin: bottom center;
 }
 
-.city-energy-flame-strip-outline {
-  transform-origin: bottom center;
-}
-
-.city-energy-flame-strip-rim {
-  transform-origin: bottom center;
+.city-energy-flame-strip-inner {
+  pointer-events: none;
 }
 
 .city-energy-flame-tongue {
@@ -423,9 +421,8 @@
 }
 
 .city-energy-fire-stack.is-static .city-energy-flame-strip-svg,
-.city-energy-fire-stack.is-static .city-energy-flame-strip-layers,
-.city-energy-fire-stack.is-static .city-energy-flame-strip-outline,
-.city-energy-fire-stack.is-static .city-energy-flame-strip-rim,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-fill,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-inner,
 .city-energy-fire-stack.is-static .city-energy-fire-drip,
 .city-energy-fire-stack.is-static .city-energy-flame-tip {
   animation: none !important;
@@ -447,12 +444,8 @@
     animation: flame-strip-sway calc(0.7s - var(--flame-intensity, 1) * 0.15s) ease-in-out infinite alternate;
   }
 
-  .city-energy-flame-strip-layers {
+  .city-energy-flame-strip-fill {
     animation: flame-strip-core-flicker 0.5s ease-in-out infinite alternate;
-  }
-
-  .city-energy-flame-strip-outline {
-    animation: flame-strip-outline-pulse 0.55s ease-in-out infinite alternate;
   }
 
   .city-energy-flame-tongue-1 {
@@ -511,7 +504,7 @@
     animation: flame-strip-sway-blaze calc(0.45s - var(--flame-intensity, 1) * 0.1s) ease-in-out infinite alternate;
   }
 
-  .city-energy-fire-stack.is-blazing .city-energy-flame-strip-layers {
+  .city-energy-fire-stack.is-blazing .city-energy-flame-strip-fill {
     animation: flame-strip-core-flicker 0.32s ease-in-out infinite alternate;
   }
 

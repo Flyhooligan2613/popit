@@ -28,10 +28,12 @@ const DRIP_SLOTS: DripSlot[] = [
   { left: 95, scale: 0.8, delay: 0.65, duration: 2.15 },
 ];
 
-/** Sharp cartoon peaks — flat base, connected tongues like the reference art */
-const PEAK_HEIGHTS = [22, 14, 26, 16, 24, 12, 28, 18, 22, 10, 25, 15, 20, 12, 27, 17, 23, 11, 26, 19];
+/** Reference art — sharp triangular tongues, flat base */
+const PEAK_HEIGHTS = [
+  30, 18, 34, 14, 28, 22, 36, 16, 30, 20, 32, 12, 26, 18, 34, 14, 28, 22, 32, 16, 30, 20, 26, 18,
+];
 
-function buildCartoonFlamePath(width = 400, baseY = 44, segments = 20): string {
+function buildCartoonFlamePath(width = 480, baseY = 46, segments = 24): string {
   const step = width / segments;
   let d = `M 0 ${baseY}`;
 
@@ -48,53 +50,59 @@ function buildCartoonFlamePath(width = 400, baseY = 44, segments = 20): string {
 }
 
 function ContinuousFlameStrip({ uid }: { uid: string }) {
-  const clipId = `${uid}-flame-clip`;
+  const gradId = `${uid}-flame-fill`;
   const flamePath = useMemo(() => buildCartoonFlamePath(), []);
 
   return (
     <svg
       className="city-energy-flame-strip-svg"
-      viewBox="0 0 400 48"
+      viewBox="0 0 480 52"
       preserveAspectRatio="none"
       fill="none"
       aria-hidden
     >
       <defs>
-        <clipPath id={clipId}>
-          <path d={flamePath} />
-        </clipPath>
+        <linearGradient id={gradId} x1="240" y1="46" x2="240" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#fff176" />
+          <stop offset="50%" stopColor="#ffeb3b" />
+          <stop offset="78%" stopColor="#ffc107" />
+          <stop offset="100%" stopColor="#ff9800" />
+        </linearGradient>
       </defs>
 
-      <g clipPath={`url(#${clipId})`} className="city-energy-flame-strip-layers">
-        {/* Yellow base — majority of the bar */}
-        <rect x="0" y="27" width="400" height="21" fill="#fff176" />
-        <rect x="0" y="24" width="400" height="4" fill="#ffee58" />
-        {/* Orange mid band */}
-        <rect x="0" y="17" width="400" height="9" fill="#ff9100" />
-        <rect x="0" y="14" width="400" height="4" fill="#ff6d00" />
-        {/* Hot crest */}
-        <rect x="0" y="6" width="400" height="10" fill="#ff5722" />
-        <rect x="0" y="0" width="400" height="7" fill="#e53935" opacity="0.85" />
-      </g>
+      {/* Ground glow */}
+      <ellipse
+        className="city-energy-flame-ground-glow"
+        cx="240"
+        cy="49"
+        rx="230"
+        ry="5"
+        fill="#ff9800"
+        opacity="0.45"
+      />
 
-      {/* Bold red cartoon outline */}
+      {/* Thick orange base bar */}
+      <rect x="0" y="43" width="480" height="5" fill="#ff6f00" />
+
+      {/* Yellow fill + red cartoon outline + inner yellow rim */}
       <path
-        className="city-energy-flame-strip-outline"
+        className="city-energy-flame-strip-fill"
         d={flamePath}
-        fill="none"
-        stroke="#b71c1c"
-        strokeWidth="4"
+        fill={`url(#${gradId})`}
+        stroke="#c62828"
+        strokeWidth="5"
         strokeLinejoin="round"
         strokeLinecap="round"
+        paintOrder="stroke fill"
       />
       <path
-        className="city-energy-flame-strip-rim"
+        className="city-energy-flame-strip-inner"
         d={flamePath}
         fill="none"
-        stroke="#ff8f00"
+        stroke="#ffeb3b"
         strokeWidth="2"
         strokeLinejoin="round"
-        opacity="0.65"
+        opacity="0.95"
       />
     </svg>
   );
