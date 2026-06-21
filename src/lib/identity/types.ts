@@ -9,6 +9,8 @@ export type IdentityType =
   | "athlete"
   | "fitness"
   | "fashion"
+  | "beautician"
+  | "stylist"
   | "photographer"
   | "videographer"
   | "content-creator"
@@ -46,6 +48,8 @@ export const IDENTITY_OPTIONS: IdentityOption[] = [
   { id: "athlete", label: "Athlete", description: "Sports trading card", accent: "#00D4FF" },
   { id: "fitness", label: "Fitness", description: "Training identity", accent: "#FF7A00" },
   { id: "fashion", label: "Fashion", description: "Style identity", accent: "#E8B4B8" },
+  { id: "beautician", label: "Beautician", description: "Beauty & glam professional", accent: "#F472B6" },
+  { id: "stylist", label: "Stylist", description: "Personal image creator", accent: "#E879F9" },
   { id: "photographer", label: "Photographer", description: "Visual storyteller", accent: "#FFFFFF" },
   { id: "videographer", label: "Videographer", description: "Cinema identity", accent: "#A855F7" },
   { id: "content-creator", label: "Content Creator", description: "Creator studio", accent: "#A855F7" },
