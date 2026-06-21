@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const showFab = pathname === "/pulse" || pathname === "/map";
+  const showFab = pathname === "/map";
   const hideChrome =
     pathname.startsWith("/profile") ||
     pathname === "/search" ||

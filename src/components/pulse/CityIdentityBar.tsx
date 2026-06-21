@@ -34,7 +34,7 @@ function CityIdentityBar({ user }: CityIdentityBarProps) {
           verified={user.verified}
           live={user.live}
           accent="#FF4D6D"
-          href="/profile/me"
+          href="/pulse#profile"
           size={56}
         />
       </div>

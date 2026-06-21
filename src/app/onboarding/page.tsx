@@ -63,12 +63,13 @@ export default function OnboardingPage() {
       sessionStorage.removeItem("popit:welcomeIntroSeen");
     }
 
+    const isExploreHome = params.get("explore") === "1";
     const skip = shouldSkipIntro();
     setSkipIntro(skip);
     setFrame(resolveStartFrame(skip));
     setMounted(true);
 
-    if (isOnboardingComplete()) {
+    if (isOnboardingComplete() && !isExploreHome) {
       window.location.replace("/pulse");
     }
   }, []);

@@ -9,8 +9,8 @@ export function markOnboardingComplete() {
   localStorage.setItem(ONBOARDING_KEY, "true");
 }
 
-/** Landing / explore home — welcome overdrive with skip intro */
-export const EXPLORE_HOME_ROUTE = "/onboarding?skipIntro=1";
+/** Landing / explore home — Frame 6 welcome overdrive (satellite landing) */
+export const EXPLORE_HOME_ROUTE = "/onboarding?skipIntro=1&explore=1";
 
 export async function logoutAndGoLanding() {
   await resetAppSession();

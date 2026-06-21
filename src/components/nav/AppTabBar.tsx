@@ -25,7 +25,9 @@ export default function AppTabBar() {
           const active =
             tab.id === "home"
               ? pathname.startsWith("/onboarding")
-              : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+              : tab.id === "pulse"
+                ? pathname === "/pulse" || pathname.startsWith("/pulse/")
+                : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
           return (
             <Link
               key={tab.id}

@@ -80,7 +80,7 @@ export default function SettingsPage() {
             </svg>
           </Link>
           <p className="font-body text-xs font-bold uppercase tracking-[0.2em] text-white/50">Settings</p>
-          <Link href="/profile/me" className="profile-social__topnav-btn" aria-label="Profile">
+          <Link href="/pulse#profile" className="profile-social__topnav-btn" aria-label="Profile">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20a8 8 0 0 1 16 0" />
@@ -114,8 +114,8 @@ export default function SettingsPage() {
       <div className="profile-settings__section">
         <p className="profile-settings__section-title">Your POP'IT</p>
         <div className="profile-settings__list">
-          <SettingsRow label="Edit Profile" hint="Photo, name, bio, identity lane" href="/profile/me" />
-          <SettingsRow label="Identity & Specialty" hint="Update who you are in the city" href="/profile/me" />
+          <SettingsRow label="Edit Profile" hint="Photo, name, bio, identity lane" href="/pulse#profile" />
+          <SettingsRow label="Identity & Specialty" hint="Update who you are in the city" href="/pulse#profile" />
           <SettingsRow label="Interests" hint="Tune your city feed" onClick={() => router.push("/onboarding?skipIntro=1")} />
         </div>
       </div>

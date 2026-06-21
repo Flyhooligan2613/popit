@@ -1,0 +1,122 @@
+.city-hub {
+  position: relative;
+  min-height: 100%;
+}
+
+.city-hub-main {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: max(0.5rem, env(safe-area-inset-top, 0px)) 4.25rem 7rem;
+}
+
+.city-hub-dock {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.city-hub-dock--left {
+  left: max(0.55rem, env(safe-area-inset-left, 0px));
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+}
+
+.city-hub-dock__name {
+  margin: 0.45rem 0 0;
+  max-width: 5.5rem;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.city-hub-dock__city {
+  margin: 0.15rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.city-hub-rail {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  pointer-events: auto;
+}
+
+.city-hub-rail--right {
+  right: max(0.45rem, env(safe-area-inset-right, 0px));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.city-hub-rail__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  width: 3rem;
+  padding: 0.45rem 0.25rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.city-hub-rail__btn:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.city-hub-rail__btn--accent {
+  border-color: color-mix(in srgb, #ff4d6d 40%, white);
+}
+
+.city-hub-rail__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.city-hub-rail__label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  text-align: center;
+  line-height: 1.1;
+}
+
+@media (max-width: 380px) {
+  .city-hub-main {
+    padding-left: 3.85rem;
+    padding-right: 3.85rem;
+  }
+
+  .city-hub-rail__label {
+    display: none;
+  }
+
+  .city-hub-rail__btn {
+    width: 2.55rem;
+    padding: 0.4rem 0.2rem;
+  }
+}

@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { SEARCH_DIRECTORY } from "@/lib/identity/searchData";
 import Link from "next/link";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
+import { useState } from "react";
 
 function resultToProfile(result: (typeof SEARCH_DIRECTORY)[number]): UserProfile {
   return {
@@ -26,6 +27,7 @@ function resultToProfile(result: (typeof SEARCH_DIRECTORY)[number]): UserProfile
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const params = useParams();
   const username = typeof params.username === "string" ? params.username : "";
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -33,12 +35,16 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (isOwnProfile) {
-      loadUserProfile().then(setUser);
+      router.replace("/pulse");
       return;
     }
     const found = SEARCH_DIRECTORY.find((result) => result.username === username);
     setUser(found ? resultToProfile(found) : null);
-  }, [username, isOwnProfile]);
+  }, [username, isOwnProfile, router]);
+
+  if (isOwnProfile) {
+    return <div className="min-h-screen bg-[#050505]" />;
+  }
 
   if (!user) {
     return (

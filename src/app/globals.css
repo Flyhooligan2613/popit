@@ -12,6 +12,7 @@
 @import "../styles/identity-topics.css";
 @import "../styles/pull-to-refresh.css";
 @import "../styles/profile-social.css";
+@import "../styles/city-hub.css";
 @import "tailwindcss";
 
 html {

@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import ProfileIdentityExtras from "@/components/profile/ProfileIdentityExtras";
+import { getProfileTemplate } from "@/lib/identity/types";
 import LivingCityBackground from "./LivingCityBackground";
 import CityDistricts from "./CityDistricts";
-import PulseHero from "./PulseHero";
-import CityIdentityBar from "./CityIdentityBar";
+import CityProfileHero from "./CityProfileHero";
+import CityHubChrome from "./CityHubChrome";
 import CommentThread from "@/components/comments/CommentThread";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
@@ -25,21 +27,25 @@ export default function ThePulse() {
     await new Promise((resolve) => window.setTimeout(resolve, 600));
   }, []);
 
+  if (!user) {
+    return <div className="absolute inset-0 bg-[#050505]" />;
+  }
+
+  const template = getProfileTemplate(user.identity);
+
   return (
     <PullToRefresh onRefresh={handleRefresh} className="absolute inset-0 overflow-y-auto">
       <LivingCityBackground />
-
-      <div className="pointer-events-none fixed right-4 top-4 z-20">
-        {user && <CityIdentityBar user={user} />}
-      </div>
-
-      <div className="relative z-[1] mx-auto max-w-[680px] px-4 pb-28 pt-10">
-        <PulseHero key={feedKey} />
+      <CityHubChrome user={user}>
+        <CityProfileHero key={`hero-${feedKey}`} user={user} />
         <CityDistricts key={`districts-${feedKey}`} />
+        <div className="mt-5">
+          <ProfileIdentityExtras user={user} template={template} />
+        </div>
         <div className="mt-5">
           <CommentThread key={feedKey} />
         </div>
-      </div>
+      </CityHubChrome>
     </PullToRefresh>
   );
 }
