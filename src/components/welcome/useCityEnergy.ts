@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAnimatedNumber } from "@/components/pulse/useAnimatedNumber";
 import { energyLabelFromTier, energyTierFromValue, PULSE_CHANNELS } from "./data";
 import type { CityEnergyState, PulseChannel } from "./types";
@@ -82,6 +82,19 @@ export function useCityEnergy({
     };
   }, [reducedMotion]);
 
+  const refresh = useCallback(() => {
+    setEnergy(72 + Math.floor(Math.random() * 28));
+    setExploringCount((count) => count + 12 + Math.floor(Math.random() * 24));
+    setMinuteGain(10 + Math.floor(Math.random() * 18));
+    setPulse(
+      PULSE_CHANNELS.map((channel) => ({
+        ...channel,
+        value: Math.max(52, Math.min(100, channel.value + (Math.random() - 0.35) * 18)),
+        delta: Math.max(1, Math.floor(Math.random() * 12)),
+      }))
+    );
+  }, []);
+
   return {
     state,
     pulse,
@@ -89,5 +102,6 @@ export function useCityEnergy({
     displayExploring,
     minuteGain,
     energyNorm: energy / 100,
+    refresh,
   };
 }

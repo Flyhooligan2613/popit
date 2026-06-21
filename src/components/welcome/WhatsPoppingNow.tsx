@@ -15,6 +15,7 @@ type WhatsPoppingNowProps = {
   reducedMotion: boolean;
   mobileLite?: boolean;
   energyNorm?: number;
+  refreshKey?: number;
   onCardAction?: (card: PoppingCard) => void;
   onSectionClick?: () => void;
 };
@@ -24,12 +25,13 @@ export default function WhatsPoppingNow({
   reducedMotion,
   mobileLite = false,
   energyNorm = 0.5,
+  refreshKey = 0,
   onCardAction,
   onSectionClick,
 }: WhatsPoppingNowProps) {
   const [paused, setPaused] = useState(false);
   const [preview, setPreview] = useState<PoppingCard | null>(null);
-  const cards = usePoppingFeed(city, reducedMotion);
+  const cards = usePoppingFeed(city, reducedMotion, refreshKey);
 
   const speed = 0.28 + energyNorm * 0.18;
   const viewportRef = useHorizontalMarquee({

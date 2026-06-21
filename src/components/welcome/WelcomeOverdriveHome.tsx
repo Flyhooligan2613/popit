@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
+import PullToRefresh from "@/components/ui/PullToRefresh";
 import BackNavButton from "@/components/nav/BackNavButton";
 import AmbientField from "./AmbientField";
 import WelcomeBackgroundMark from "./WelcomeBackgroundMark";
@@ -77,11 +78,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [reorganizeT, setReorganizeT] = useState(0);
   const [signInBusy, setSignInBusy] = useState(false);
   const [weatherOpen, setWeatherOpen] = useState(false);
+  const [feedRefreshKey, setFeedRefreshKey] = useState(0);
   const joinLock = useRef(false);
   const signInLock = useRef(false);
   const reorganizeRaf = useRef(0);
 
-  const { state, pulse, displayEnergy, displayExploring, minuteGain, energyNorm } = useCityEnergy({
+  const { state, pulse, displayEnergy, displayExploring, minuteGain, energyNorm, refresh } = useCityEnergy({
     reducedMotion: motionLite,
   });
 
@@ -246,8 +248,18 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     }, (elapsed += connected));
   }, [onSignIn, reducedMotion, runReorganize, signInBusy]);
 
+  const handleRefresh = useCallback(async () => {
+    hapticTap();
+    setFeedRefreshKey((key) => key + 1);
+    refresh();
+    setSurge(true);
+    window.setTimeout(() => setSurge(false), 850);
+    await new Promise((resolve) => window.setTimeout(resolve, 650));
+  }, [refresh]);
+
   return (
-    <div
+    <PullToRefresh
+      onRefresh={handleRefresh}
       className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
       style={
         {
@@ -324,6 +336,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           reducedMotion={motionLite}
           mobileLite={mobileLite}
           energyNorm={energyNorm}
+          refreshKey={feedRefreshKey}
           onCardAction={() => goTo(WELCOME_TAB_ROUTES.popping)}
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.popping)}
         />
@@ -381,6 +394,6 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         period={timePeriod}
         onClose={() => setWeatherOpen(false)}
       />
-    </div>
+    </PullToRefresh>
   );
 }

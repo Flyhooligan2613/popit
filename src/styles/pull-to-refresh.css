@@ -1,0 +1,116 @@
+.ptr-root {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ptr-indicator {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: none;
+  transition: height 0.22s ease, opacity 0.22s ease;
+}
+
+.ptr-indicator-btn {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  position: absolute;
+  top: max(0.45rem, env(safe-area-inset-top, 0px));
+  left: 50%;
+  translate: -50% 0;
+  padding: 0.35rem 0.85rem 0.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ptr-indicator-btn.is-visible {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ptr-indicator-ring {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(255, 77, 109, 0.18), rgba(168, 85, 247, 0.16));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ptr-indicator-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.ptr-indicator-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.ptr-indicator-btn.is-ready .ptr-indicator-ring {
+  border-color: rgba(0, 212, 255, 0.55);
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.25);
+}
+
+.ptr-indicator-btn.is-ready .ptr-indicator-icon {
+  transform: rotate(180deg);
+}
+
+.ptr-indicator-btn.is-refreshing .ptr-indicator-ring {
+  border-color: rgba(255, 77, 109, 0.55);
+  animation: ptr-spin 0.85s linear infinite;
+}
+
+.ptr-indicator-btn.is-refreshing .ptr-indicator-icon {
+  animation: ptr-spin 0.85s linear infinite reverse;
+}
+
+.ptr-content {
+  will-change: transform;
+  transition: transform 0.22s ease;
+}
+
+@keyframes ptr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (hover: hover) {
+  .ptr-indicator-btn:not(:disabled):hover .ptr-indicator-ring {
+    border-color: rgba(255, 77, 109, 0.45);
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ptr-indicator-btn.is-refreshing .ptr-indicator-ring,
+  .ptr-indicator-btn.is-refreshing .ptr-indicator-icon {
+    animation: none;
+  }
+
+  .ptr-content {
+    transition: none;
+  }
+}

@@ -10,13 +10,17 @@ function reindexRanks(cards: PoppingCard[]): PoppingCard[] {
   return cards.map((c, i) => ({ ...c, rank: i + 1 }));
 }
 
-export function usePoppingFeed(city: string | null, reducedMotion: boolean) {
+export function usePoppingFeed(
+  city: string | null,
+  reducedMotion: boolean,
+  refreshKey = 0
+) {
   const cityLabel = city ?? "Miami";
   const [cards, setCards] = useState<PoppingCard[]>(() => generateDeck(cityLabel, DECK_SIZE));
 
   useEffect(() => {
     setCards(generateDeck(cityLabel, DECK_SIZE));
-  }, [cityLabel]);
+  }, [cityLabel, refreshKey]);
 
   useEffect(() => {
     if (reducedMotion) return;

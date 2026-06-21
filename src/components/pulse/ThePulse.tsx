@@ -1,23 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import PullToRefresh from "@/components/ui/PullToRefresh";
 import LivingCityBackground from "./LivingCityBackground";
 import CityDistricts from "./CityDistricts";
 import PulseHero from "./PulseHero";
 import CityIdentityBar from "./CityIdentityBar";
 import CommentThread from "@/components/comments/CommentThread";
-import { getUserProfile, loadUserProfile } from "@/lib/identity/userProfile";
+import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 
 export default function ThePulse() {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [feedKey, setFeedKey] = useState(0);
 
   useEffect(() => {
     loadUserProfile().then(setUser);
   }, []);
 
+  const handleRefresh = useCallback(async () => {
+    const profile = await loadUserProfile();
+    setUser(profile);
+    setFeedKey((key) => key + 1);
+    await new Promise((resolve) => window.setTimeout(resolve, 600));
+  }, []);
+
   return (
-    <div className="absolute inset-0 overflow-y-auto">
+    <PullToRefresh onRefresh={handleRefresh} className="absolute inset-0 overflow-y-auto">
       <LivingCityBackground />
 
       <div className="pointer-events-none fixed right-4 top-4 z-20">
@@ -25,12 +34,12 @@ export default function ThePulse() {
       </div>
 
       <div className="relative z-[1] mx-auto max-w-[680px] px-4 pb-28 pt-10">
-        <PulseHero />
-        <CityDistricts />
+        <PulseHero key={feedKey} />
+        <CityDistricts key={`districts-${feedKey}`} />
         <div className="mt-5">
-          <CommentThread />
+          <CommentThread key={feedKey} />
         </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 }
