@@ -1,15 +1,17 @@
 "use client";
 
 import { Home, Search, MessageCircle, User, Plus } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 type WelcomeBottomNavProps = {
   onCreate?: () => void;
 };
 
 export default function WelcomeBottomNav({ onCreate }: WelcomeBottomNavProps) {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <nav className="welcome-bottom-nav" aria-label="App navigation preview">
+    <nav className="welcome-bottom-nav welcome-bottom-nav-polish" aria-label="App navigation preview">
       <div className="welcome-bottom-nav-inner">
         <button type="button" className="welcome-nav-item is-active" aria-label="Home" aria-current="page">
           <Home size={20} strokeWidth={2} />
@@ -26,7 +28,17 @@ export default function WelcomeBottomNav({ onCreate }: WelcomeBottomNavProps) {
           aria-label="Create"
           onClick={onCreate}
           whileTap={{ scale: 0.92 }}
-          animate={{ boxShadow: ["0 0 24px rgba(255,77,109,0.45)", "0 0 36px rgba(168,85,247,0.55)", "0 0 24px rgba(255,77,109,0.45)"] }}
+          animate={
+            reducedMotion
+              ? undefined
+              : {
+                  boxShadow: [
+                    "0 0 24px rgba(255,77,109,0.45)",
+                    "0 0 36px rgba(168,85,247,0.55)",
+                    "0 0 24px rgba(255,77,109,0.45)",
+                  ],
+                }
+          }
           transition={{ duration: 3, repeat: Infinity }}
         >
           <Plus size={26} strokeWidth={2.5} />

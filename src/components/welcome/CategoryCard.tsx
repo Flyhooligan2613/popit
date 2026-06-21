@@ -30,11 +30,17 @@ export default function CategoryCard({ label, stat, theme, selected, delay }: Ca
       transition={{ delay, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -5, scale: 1.04 }}
       whileTap={{ scale: 0.95 }}
-      className={`popit-card popit-card-mock ${theme} ${fx} ${selected ? "is-selected" : ""}`}
+      className={`popit-card popit-card-mock popit-card-portal ${theme} ${fx} ${selected ? "is-selected" : ""}`}
     >
       <span className="popit-card-glass" aria-hidden />
       <span className="popit-card-theme-fx" aria-hidden />
       <span className="popit-card-edge" aria-hidden />
+      <span className="popit-card-light-sweep" aria-hidden />
+      <span className="popit-card-portal-particles" aria-hidden>
+        <span className="popit-card-portal-particle popit-card-portal-particle-1" />
+        <span className="popit-card-portal-particle popit-card-portal-particle-2" />
+        <span className="popit-card-portal-particle popit-card-portal-particle-3" />
+      </span>
       <span className="popit-card-icon-svg" aria-hidden>
         <CategoryIcon theme={theme} className="popit-category-svg" />
       </span>

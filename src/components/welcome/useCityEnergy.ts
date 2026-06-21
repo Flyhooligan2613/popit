@@ -49,8 +49,8 @@ export function useCityEnergy({
     }, 4200);
 
     const exploreTimer = setInterval(() => {
-      setExploringCount((c) => c + 2 + Math.floor(Math.random() * 3));
-    }, 2600);
+      setExploringCount((c) => c + 1 + Math.floor(Math.random() * 3));
+    }, 3200);
 
     const pulseTimer = setInterval(() => {
       setPulse((channels) =>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import BackNavButton from "@/components/nav/BackNavButton";
@@ -17,7 +17,7 @@ import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
 import WelcomeBottomNav from "./WelcomeBottomNav";
 import WelcomeHeaderBrand from "./WelcomeHeaderBrand";
-import WelcomeHeroMock from "./WelcomeHeroMock";
+import HeroAssembleText from "./HeroAssembleText";
 import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
@@ -153,7 +153,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
   return (
     <div
-      className={`popit-home popit-mock-match popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
+      className={`popit-home popit-mock-match popit-polish-v1 popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
       style={
         {
           "--city-energy": String(energyNorm),
@@ -195,7 +195,16 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         </header>
 
         <section className="welcome-mock-hero-zone" aria-label="City network">
-          <WelcomeHeroMock cityName={city} />
+          <AnimatePresence mode="wait">
+            <HeroAssembleText
+              key={current.id}
+              slideKey={current.id}
+              top={current.headlineTop}
+              accent={current.headlineAccent}
+              city={city ? `IN ${city.toUpperCase()}` : "NEAR YOU"}
+              subtitle={current.subtitle}
+            />
+          </AnimatePresence>
           <HolographicGlobe
             energyNorm={energyNorm}
             tier={state.tier}

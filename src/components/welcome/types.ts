@@ -21,6 +21,7 @@ export type VenueCard = {
   stat: string;
   badge?: string;
   detail?: string;
+  updatedMin?: number;
 };
 
 export type PulseChannel = {

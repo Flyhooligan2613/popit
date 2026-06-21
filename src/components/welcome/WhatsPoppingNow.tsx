@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import type { TrendingCreator } from "./types";
 import { useHorizontalMarquee } from "./useHorizontalMarquee";
+import { useScrollCenterScale } from "./useScrollCenterScale";
 
 type WhatsPoppingNowProps = {
   creators: TrendingCreator[];
@@ -25,10 +26,12 @@ export default function WhatsPoppingNow({ creators, reducedMotion, energyNorm = 
     enabled: !reducedMotion && creators.length > 1,
   });
 
+  useScrollCenterScale(viewportRef, ".whats-popping-card-mock", !reducedMotion);
+
   const loop = [...creators, ...creators];
 
   return (
-    <section className="whats-popping whats-popping-mock" aria-label="What's popping right now">
+    <section className="whats-popping whats-popping-mock whats-popping-polish" aria-label="What's popping right now">
       <header className="whats-popping-header">
         <h2 className="whats-popping-title font-display">
           <span className="whats-popping-fire" aria-hidden>
@@ -56,8 +59,8 @@ export default function WhatsPoppingNow({ creators, reducedMotion, energyNorm = 
               className="whats-popping-card whats-popping-card-mock"
               whileHover={{ y: -6 }}
             >
-              <span className="whats-popping-rank font-display" aria-label={`Rank ${rank}`}>
-                {rank}
+              <span className="whats-popping-rank-badge font-display" aria-label={`Rank ${rank}`}>
+                <span aria-hidden>🔥</span> #{rank}
               </span>
               <div className="whats-popping-avatar-wrap">
                 <div className="whats-popping-avatar-ring" aria-hidden />
@@ -76,13 +79,13 @@ export default function WhatsPoppingNow({ creators, reducedMotion, energyNorm = 
                 </div>
                 <p className="whats-popping-category font-body">{creator.category} Creator</p>
                 <p className="whats-popping-followers font-body">
-                  +{formatCount(creator.followersToday)} followers today
+                  ↗ +{formatCount(creator.followersToday)} followers today
                 </p>
 
                 <div className="whats-popping-stats font-body">
                   <span>❤️ {formatCount(creator.likes)}</span>
                   <span>💬 {formatCount(creator.comments)}</span>
-                  <span>🔖 {formatCount(creator.saves)}</span>
+                  <span>↗ {formatCount(creator.shares)}</span>
                 </div>
 
                 {creator.trending && <span className="whats-popping-trending-badge font-body">Trending</span>}

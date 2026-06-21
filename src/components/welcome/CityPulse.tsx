@@ -54,7 +54,7 @@ function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMo
 
 export default function CityPulse({ channels, reducedMotion }: CityPulseProps) {
   return (
-    <section className="city-pulse city-pulse-v3" aria-label="City pulse command center">
+    <section className="city-pulse city-pulse-v3 city-pulse-polish" aria-label="City pulse command center">
       <h2 className="city-pulse-title font-display">
         <span className="city-pulse-title-dot" aria-hidden />
         City Pulse

@@ -150,6 +150,7 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     distance: "1.3 mi",
     stat: "+540 saves today",
     badge: "Trending",
+    updatedMin: 2,
   },
   {
     id: "v2",
@@ -157,8 +158,9 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     name: "LIV Nightclub",
     image: "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=400&q=80&auto=format&fit=crop",
     stat: "Almost Full",
-    detail: "12 min wait",
+    detail: "12 min wait · DJ 9:30 PM",
     badge: "Hot",
+    updatedMin: 1,
   },
   {
     id: "v3",
@@ -166,8 +168,9 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     name: "Panther Coffee",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80&auto=format&fit=crop",
     stat: "Buzzing",
-    detail: "72 people checked in",
+    detail: "72 check-ins",
     badge: "Live",
+    updatedMin: 2,
   },
   {
     id: "v4",
@@ -351,7 +354,9 @@ export function energyLabelFromTier(tier: ReturnType<typeof energyTierFromValue>
       return "BUSY";
     case "active":
       return "ACTIVE";
+    case "busy":
+      return "ACTIVE";
     default:
-      return "CALM";
+      return "NORMAL";
   }
 }

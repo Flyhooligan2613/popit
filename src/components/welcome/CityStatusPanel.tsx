@@ -14,16 +14,15 @@ function formatTime(date: Date) {
 }
 
 function tempForPeriod(period: TimePeriod, city: string | null): string {
-  const base = city?.toLowerCase().includes("miami") ? 72 : 74;
+  const base = city?.toLowerCase().includes("miami") ? 82 : 74;
   const offset =
     period === "morning" ? -4 : period === "afternoon" ? 2 : period === "sunset" ? 0 : period === "night" ? -6 : -2;
   return `${base + offset}°`;
 }
 
-function formatCityLabel(city: string | null): string {
-  if (!city) return "YOUR CITY";
-  if (city.toLowerCase().includes("miami")) return "MIAMI, FL";
-  return `${city.toUpperCase()}, FL`;
+function shortCityName(city: string | null): string {
+  if (!city) return "Your City";
+  return city;
 }
 
 export default function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
@@ -46,32 +45,27 @@ export default function CityStatusPanel({ city, connected = true }: CityStatusPa
     return () => clearInterval(t);
   }, []);
 
-  const cityLabel = formatCityLabel(city);
+  const cityShort = shortCityName(city);
   const temp = tempForPeriod(period, city);
 
   return (
     <motion.div
-      className="connection-card connection-card-mock"
-      aria-label={`Connected to ${cityLabel}`}
-      animate={{ boxShadow: ["0 4px 24px rgba(0,0,0,0.25)", "0 6px 32px rgba(0,212,255,0.1)", "0 4px 24px rgba(0,0,0,0.25)"] }}
+      className="connection-card connection-card-mock connection-card-polish"
+      aria-label={`Connected to ${cityShort}`}
+      animate={{ boxShadow: ["0 4px 24px rgba(0,0,0,0.25)", "0 6px 32px rgba(0,212,255,0.12)", "0 4px 24px rgba(0,0,0,0.25)"] }}
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
       <div className="connection-card-scan" aria-hidden />
-      <div className="connection-card-row connection-card-city font-display">{cityLabel}</div>
-      <div className="connection-card-row connection-card-meta font-body">
-        <span className="connection-weather" aria-hidden>
-          ☁
-        </span>
-        <span>{temp}</span>
-        <span className="connection-card-sep" aria-hidden>
-          ·
-        </span>
-        <span>{time}</span>
-      </div>
+      <p className="connection-card-pin font-display">
+        <span aria-hidden>📍 </span>
+        {cityShort}
+      </p>
+      <p className="connection-card-time font-body">{time}</p>
+      <p className="connection-card-temp font-body">{temp}</p>
       {connected && (
         <div className="connection-card-linked font-body">
           <span className="connection-card-linked-dot" aria-hidden />
-          CONNECTED
+          Connected
         </div>
       )}
     </motion.div>

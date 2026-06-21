@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 type StartExploringButtonProps = {
   loading: boolean;
@@ -9,6 +9,8 @@ type StartExploringButtonProps = {
 };
 
 export default function StartExploringButton({ loading, isOverdrive, onClick }: StartExploringButtonProps) {
+  const reducedMotion = useReducedMotion();
+
   return (
     <motion.button
       type="button"
@@ -16,9 +18,16 @@ export default function StartExploringButton({ loading, isOverdrive, onClick }: 
       disabled={loading}
       aria-busy={loading}
       whileTap={{ scale: 0.96 }}
-      whileHover={{ scale: 1.01 }}
-      className={`popit-start-btn popit-start-btn-mock font-display ${loading ? "is-loading" : ""} ${isOverdrive ? "is-overdrive" : ""}`}
+      whileHover={reducedMotion ? undefined : { scale: 1.01 }}
+      className={`popit-start-btn popit-start-btn-mock popit-start-btn-polish font-display ${loading ? "is-loading" : ""} ${isOverdrive ? "is-overdrive" : ""}`}
     >
+      {!reducedMotion && !loading && (
+        <span className="popit-start-btn-particles" aria-hidden>
+          <span className="popit-start-btn-particle popit-start-btn-particle-1" />
+          <span className="popit-start-btn-particle popit-start-btn-particle-2" />
+          <span className="popit-start-btn-particle popit-start-btn-particle-3" />
+        </span>
+      )}
       <span className="popit-start-btn-glow" aria-hidden />
       <span className="popit-start-btn-sweep" aria-hidden />
       <span className="popit-start-btn-ripple" aria-hidden />
@@ -30,7 +39,7 @@ export default function StartExploringButton({ loading, isOverdrive, onClick }: 
         <motion.span
           className="popit-start-btn-arrow"
           aria-hidden
-          animate={{ x: [0, 5, 0] }}
+          animate={reducedMotion ? undefined : { x: [0, 5, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
           →

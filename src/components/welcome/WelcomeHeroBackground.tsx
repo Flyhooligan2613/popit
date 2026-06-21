@@ -69,6 +69,8 @@ export default function WelcomeHeroBackground({
       <div className="popit-bg-vignette" />
       <div className="popit-bg-rays" />
       <div className="popit-bg-ambient" />
+      <div className="popit-bg-neon-reflect" />
+      <div className="popit-bg-blur-veil" />
 
       {!reducedMotion && (
         <>

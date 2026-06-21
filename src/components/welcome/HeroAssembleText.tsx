@@ -70,7 +70,7 @@ export default function HeroAssembleText({ top, accent, city, subtitle, slideKey
   return (
     <motion.div
       key={slideKey}
-      className={`hero-assemble ${shake ? "is-shaking" : ""}`}
+      className={`hero-assemble hero-assemble-polish ${shake ? "is-shaking" : ""}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, y: -10 }}

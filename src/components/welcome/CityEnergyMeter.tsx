@@ -40,9 +40,11 @@ export default function CityEnergyMeter({
       ? `ON FIRE: ${city} is absolutely popping tonight! ${exploringCount.toLocaleString()} active explorers.`
       : `${city} energy is building — ${exploringCount.toLocaleString()} explorers active.`;
 
+  const isHighEnergy = value >= 90;
+
   return (
     <div
-      className={`city-energy city-energy-mock ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""}`}
+      className={`city-energy city-energy-mock city-energy-polish ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""} ${isHighEnergy ? "is-high-energy" : ""}`}
       role="meter"
       aria-valuenow={Math.round(value)}
       aria-valuemin={0}
@@ -66,6 +68,7 @@ export default function CityEnergyMeter({
       </div>
 
       <div className="city-energy-track city-energy-track-flame">
+        <div className="city-energy-edge-glow" aria-hidden />
         <motion.div
           className="city-energy-fill city-energy-fill-flame"
           initial={false}
@@ -74,6 +77,13 @@ export default function CityEnergyMeter({
         />
         <div className="city-energy-charge" aria-hidden />
         <div className="city-energy-stream" aria-hidden />
+        {!reducedMotion && (
+          <>
+            <span className="city-energy-bar-particle city-energy-bar-particle-1" aria-hidden />
+            <span className="city-energy-bar-particle city-energy-bar-particle-2" aria-hidden />
+            <span className="city-energy-bar-particle city-energy-bar-particle-3" aria-hidden />
+          </>
+        )}
         {!reducedMotion && sparking && (
           <>
             <span className="city-energy-spark city-energy-spark-1" aria-hidden />

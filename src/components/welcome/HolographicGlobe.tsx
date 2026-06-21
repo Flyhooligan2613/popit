@@ -37,7 +37,7 @@ export default function HolographicGlobe({
 
   return (
     <div
-      className={`holo-globe holo-globe-v3 holo-globe-mock ${large ? "is-large" : ""} ${ignited ? "is-ignited" : ""} tier-${tier}`}
+      className={`holo-globe holo-globe-v3 holo-globe-mock holo-globe-polish ${large ? "is-large" : ""} ${ignited ? "is-ignited" : ""} tier-${tier}`}
       aria-label="POP'IT network core"
       style={{ "--globe-energy": String(energyNorm) } as Record<string, string>}
     >
@@ -51,6 +51,10 @@ export default function HolographicGlobe({
             <span className="holo-globe-orbit holo-globe-orbit-1" aria-hidden />
             <span className="holo-globe-orbit holo-globe-orbit-2" aria-hidden />
             <span className="holo-globe-orbit holo-globe-orbit-3" aria-hidden />
+            <span className="holo-globe-scan-ring" aria-hidden />
+            <span className="holo-globe-scan-ring holo-globe-scan-ring-2" aria-hidden />
+            <span className="holo-globe-energy-wave" aria-hidden />
+            <span className="holo-globe-travel-pulse" aria-hidden />
             {Array.from({ length: 6 }).map((_, i) => (
               <span key={i} className={`holo-globe-particle holo-globe-particle-${(i % 4) + 1}`} aria-hidden />
             ))}

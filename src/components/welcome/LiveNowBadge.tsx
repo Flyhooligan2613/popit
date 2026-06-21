@@ -15,7 +15,7 @@ export default function LiveNowBadge({ exploringCount, todayGain = 342, avatarUr
   const gain = useAnimatedNumber(todayGain, reducedMotion ? 0 : 800);
 
   return (
-    <div className="live-now-badge live-now-badge-mock">
+    <div className="live-now-badge live-now-badge-mock live-now-badge-polish">
       <motion.span
         className="live-now-pill font-body"
         animate={reducedMotion ? undefined : { scale: [1, 1.025, 1] }}
@@ -28,7 +28,7 @@ export default function LiveNowBadge({ exploringCount, todayGain = 342, avatarUr
       <motion.span
         key={display}
         className="live-now-count font-display"
-        initial={{ opacity: 0.7, y: 2 }}
+        initial={{ opacity: 0.85, y: 1 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
