@@ -1,6 +1,5 @@
+import type { PopMarkTier } from "@/lib/pop-marks/types";
 import type { PopStatusLevel, PopStatusId } from "./types";
-
-/** POP'IT Identity & Status System v1.0 — achievement over vanity metrics */
 export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   {
     id: "rising",
@@ -8,6 +7,7 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
     tier: 1,
     accent: "#cbd5e1",
     badge: "⭐",
+    popMark: null,
     hasPremiumBadge: false,
     tagline: "New creator showing strong growth",
     unlocks: ["City feed", "Check-ins", "Basic profile"],
@@ -17,12 +17,13 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   },
   {
     id: "rising-creator",
-    label: "Rising Creator",
+    label: "Verified Creator",
     tier: 2,
-    accent: "#22c55e",
+    accent: "#2563eb",
     badge: "◆",
+    popMark: "blue",
     hasPremiumBadge: true,
-    tagline: "Emerging creator gaining real traction",
+    tagline: "Blue POP Mark — authentic creator on the rise",
     unlocks: ["Community challenges", "Referral tracking", "Creator insights"],
     requirements: {
       minFollowers: 25_000,
@@ -33,12 +34,13 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   },
   {
     id: "verified-creator",
-    label: "Verified Creator",
+    label: "Community Leader",
     tier: 3,
-    accent: "#3b82f6",
+    accent: "#059669",
     badge: "◆",
+    popMark: "green",
     hasPremiumBadge: true,
-    tagline: "Trusted and influential creator",
+    tagline: "Green POP Mark — trusted community voice",
     unlocks: ["Creator studio", "Live streaming", "Creator bonuses"],
     requirements: {
       minFollowers: 100_000,
@@ -49,12 +51,13 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   },
   {
     id: "elite-creator",
-    label: "Elite Creator",
+    label: "Community Leader",
     tier: 4,
-    accent: "#a855f7",
+    accent: "#059669",
     badge: "◆",
+    popMark: "green",
     hasPremiumBadge: true,
-    tagline: "Leading creator within your city",
+    tagline: "Building toward Gold POP Mark",
     unlocks: ["Premium analytics", "Ticket commissions", "Partnership desk"],
     requirements: {
       minFollowers: 250_000,
@@ -65,12 +68,13 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   },
   {
     id: "gold-status",
-    label: "Gold Status",
+    label: "Elite",
     tier: 5,
-    accent: "#fbbf24",
+    accent: "#f59e0b",
     badge: "◆",
+    popMark: "gold",
     hasPremiumBadge: true,
-    tagline: "Highest verified public status",
+    tagline: "Gold POP Mark — prestigious recognition",
     unlocks: ["Marketplace", "Brand campaigns", "Affiliate programs"],
     requirements: {
       minFollowers: 500_000,
@@ -82,12 +86,13 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
   },
   {
     id: "diamond",
-    label: "Diamond",
+    label: "POP Legend",
     tier: 6,
-    accent: "#67e8f9",
+    accent: "#e0f2fe",
     badge: "◆",
+    popMark: "diamond",
     hasPremiumBadge: true,
-    tagline: "Exceptional long-term city impact",
+    tagline: "Diamond POP Mark — ultra rare",
     unlocks: ["Digital products", "Platform features", "Priority support"],
     requirements: {
       minPopScore: 85,
@@ -101,6 +106,7 @@ export const POP_STATUS_LEVELS: PopStatusLevel[] = [
     tier: 7,
     accent: "#fcd34d",
     badge: "👑",
+    popMark: "diamond",
     hasPremiumBadge: true,
     tagline: "Defines culture in your city",
     unlocks: ["All monetization", "ICON recognition", "Culture-defining status"],

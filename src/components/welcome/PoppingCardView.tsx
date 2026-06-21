@@ -11,6 +11,8 @@ import type { PoppingCard } from "./popping/types";
 import { formatPoppingCount, rankMedal } from "./popping/generator";
 
 import PopScoreRing from "./PopScoreRing";
+import PopMark from "@/components/pop-marks/PopMark";
+
 
 
 
@@ -236,7 +238,9 @@ function CardBody({ card, reducedMotion }: { card: PoppingCard; reducedMotion: b
 
             <h3 className="popping-card-s2-title font-display">{card.title}</h3>
 
-            {card.verified && <span className="popping-card-s2-verified" aria-label="Verified">✔</span>}
+            {card.popMark && (
+              <PopMark tier={card.popMark} size={16} animate={false} interactive={false} label={`${card.title} POP Mark`} />
+            )}
 
           </div>
 

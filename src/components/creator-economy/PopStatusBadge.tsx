@@ -1,38 +1,39 @@
 "use client";
 
-import type { PopStatusLevel } from "@/lib/creator-economy/types";
+import PopMark from "@/components/pop-marks/PopMark";
+import type { PopStatusLevel, PopStatusState } from "@/lib/creator-economy/types";
 
 type PopStatusBadgeProps = {
   level: PopStatusLevel;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md";
   animate?: boolean;
+  career?: PopStatusState | null;
 };
 
-export default function PopStatusBadge({ level, size = "md", animate = true }: PopStatusBadgeProps) {
-  if (!level.hasPremiumBadge) {
+const SIZE_MAP = { sm: 16, md: 20 } as const;
+
+export default function PopStatusBadge({ level, size = "md", animate = true, career = null }: PopStatusBadgeProps) {
+  if (level.popMark) {
     return (
-      <span className={`pop-status-rising-only pop-status-rising-only-${size} font-body`}>
-        {level.badge && (
-          <span className="pop-status-rising-star" aria-hidden>
-            {level.badge}
-          </span>
-        )}
-        <span>{level.label}</span>
-      </span>
+      <PopMark
+        tier={level.popMark}
+        size={SIZE_MAP[size]}
+        animate={animate}
+        interactive
+        career={career}
+        label={`${level.label} POP Mark`}
+      />
     );
   }
 
   return (
-    <span
-      className={`pop-status-badge pop-status-badge-${level.id} pop-status-badge-${size} ${animate ? "is-animated" : ""} ${level.id === "icon" ? "pop-status-badge-icon" : ""}`}
-      style={{ "--status-accent": level.accent } as React.CSSProperties}
-      title={level.tagline}
-    >
-      <span className="pop-status-badge-gem" aria-hidden>
-        <span className="pop-status-badge-shine" />
-        {level.id === "icon" ? level.badge : null}
-      </span>
-      <span className="pop-status-badge-label font-body">{level.label}</span>
+    <span className={`pop-status-rising-only pop-status-rising-only-${size} font-body`}>
+      {level.badge && (
+        <span className="pop-status-rising-star" aria-hidden>
+          {level.badge}
+        </span>
+      )}
+      <span>{level.label}</span>
     </span>
   );
 }

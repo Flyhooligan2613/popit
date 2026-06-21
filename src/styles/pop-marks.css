@@ -1,0 +1,271 @@
+/* POP Marks — original POP'IT recognition system */
+
+.pop-mark-btn {
+  display: inline-flex;
+  padding: 0;
+  border: none;
+  background: transparent;
+  vertical-align: middle;
+  line-height: 0;
+}
+
+.pop-mark {
+  --pop-mark-size: 20px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pop-mark-size);
+  height: var(--pop-mark-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.pop-mark.is-interactive {
+  cursor: pointer;
+}
+
+.pop-mark:not(.is-interactive) {
+  pointer-events: none;
+}
+
+.pop-mark-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pop-mark-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.pop-mark-glow {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  opacity: 0.55;
+  z-index: 0;
+  transition: opacity 0.35s ease;
+}
+
+.pop-mark-blue .pop-mark-glow {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.45) 0%, transparent 70%);
+}
+
+.pop-mark-green .pop-mark-glow {
+  background: radial-gradient(circle, rgba(5, 150, 105, 0.4) 0%, transparent 70%);
+}
+
+.pop-mark-gold .pop-mark-glow {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.42) 0%, transparent 70%);
+}
+
+.pop-mark-diamond .pop-mark-glow {
+  background: radial-gradient(circle, rgba(224, 242, 254, 0.5) 0%, rgba(196, 181, 253, 0.25) 40%, transparent 72%);
+}
+
+.pop-mark-black-chrome .pop-mark-glow {
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.35) 0%, rgba(34, 211, 238, 0.15) 45%, transparent 70%);
+}
+
+.pop-mark-sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 4px;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.55) 50%, transparent 62%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pop-mark.is-animated.is-entered {
+  animation: pop-mark-enter 620ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pop-mark.is-animated.is-entered .pop-mark-sweep {
+  animation:
+    pop-mark-enter-sweep 620ms ease-out forwards,
+    pop-mark-idle-sweep 10s ease-in-out 620ms infinite;
+}
+
+.pop-mark.is-interactive:hover {
+  transform: scale(1.06);
+}
+
+.pop-mark.is-interactive:hover .pop-mark-glow {
+  opacity: 0.85;
+}
+
+.pop-mark-size-16 { --pop-mark-size: 16px; }
+.pop-mark-size-20 { --pop-mark-size: 20px; }
+.pop-mark-size-24 { --pop-mark-size: 24px; }
+.pop-mark-size-32 { --pop-mark-size: 32px; }
+.pop-mark-size-64 { --pop-mark-size: 64px; }
+
+@keyframes pop-mark-enter {
+  0% { transform: scale(1); filter: brightness(1); }
+  45% { transform: scale(1.05); filter: brightness(1.12); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes pop-mark-enter-sweep {
+  0% { opacity: 0; transform: translateX(-120%); }
+  30% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateX(120%); }
+}
+
+@keyframes pop-mark-idle-sweep {
+  0%, 88%, 100% { opacity: 0; transform: translateX(-130%); }
+  92% { opacity: 0.35; }
+  96% { opacity: 0; transform: translateX(130%); }
+}
+
+/* Status sheet */
+.pop-mark-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(6px);
+  border: none;
+  cursor: pointer;
+}
+
+.pop-mark-sheet {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 201;
+  width: min(calc(100vw - 2rem), 22rem);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(165deg, rgba(28, 28, 36, 0.98) 0%, rgba(8, 8, 12, 0.98) 100%);
+  padding: 1.1rem 1.15rem 1rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+}
+
+.pop-mark-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pop-mark-sheet-title {
+  margin: 0;
+  font-size: 0.875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.pop-mark-sheet-tier {
+  margin: 0.2rem 0 0;
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pop-mark-sheet-philosophy {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.pop-mark-sheet-section {
+  margin-top: 0.85rem;
+}
+
+.pop-mark-sheet-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.pop-mark-sheet-list,
+.pop-mark-sheet-reqs {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.pop-mark-sheet-progress-bar {
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.pop-mark-sheet-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #059669, #f59e0b);
+  border-radius: inherit;
+  transition: width 0.6s ease;
+}
+
+.pop-mark-sheet-progress-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.35;
+}
+
+.pop-mark-sheet-close {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.55rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pop-mark-username-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop-mark.is-animated.is-entered,
+  .pop-mark.is-animated.is-entered .pop-mark-sweep {
+    animation: none !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .pop-mark-sheet {
+    background: linear-gradient(165deg, #fafafa 0%, #f0f0f2 100%);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .pop-mark-sheet-title {
+    color: #111;
+  }
+
+  .pop-mark-sheet-tier,
+  .pop-mark-sheet-philosophy,
+  .pop-mark-sheet-list,
+  .pop-mark-sheet-reqs {
+    color: rgba(0, 0, 0, 0.65);
+  }
+}

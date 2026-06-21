@@ -1,3 +1,5 @@
+import type { PopMarkTier } from "@/lib/pop-marks/types";
+
 export type PoppingCardKind =
   | "creator"
   | "business"
@@ -24,6 +26,8 @@ export type PoppingCard = {
   trending: boolean;
   tapTarget: PoppingTapTarget;
   verified?: boolean;
+  /** POP Mark tier when earned — replaces generic verification checkmarks */
+  popMark?: PopMarkTier | null;
   city?: string;
   likes?: number;
   comments?: number;

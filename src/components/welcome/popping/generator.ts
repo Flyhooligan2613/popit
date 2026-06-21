@@ -1,5 +1,6 @@
 import type { PoppingCard, PoppingCardKind } from "./types";
 import { popScoreFromEngagement } from "@/lib/creator-economy/popScoreEngine";
+import type { PopMarkTier } from "@/lib/pop-marks/types";
 
 const IMAGES = {
   creator: [
@@ -91,8 +92,16 @@ function scoreCard(
   return Math.min(99, Math.round(impactScore * 0.72 + rankScore * 0.28));
 }
 
+function popMarkForCard(card: PoppingCard): PopMarkTier | null {
+  if (card.kind === "business" && card.rank <= 2) return "gold";
+  if (card.rank === 1 && card.verified) return Math.random() > 0.55 ? "gold" : "green";
+  if (card.rank <= 3 && card.verified) return "green";
+  if (card.verified) return "blue";
+  return null;
+}
+
 function assignPopScore(card: PoppingCard): PoppingCard {
-  return {
+  const scored = {
     ...card,
     popScore: scoreCard(card.rank, {
       likes: card.likes,
@@ -105,6 +114,7 @@ function assignPopScore(card: PoppingCard): PoppingCard {
       verified: card.verified,
     }),
   };
+  return { ...scored, popMark: popMarkForCard(scored) };
 }
 
 export function formatPoppingCount(n: number): string {

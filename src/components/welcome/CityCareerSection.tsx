@@ -27,11 +27,11 @@ export default function CityCareerSection({ reducedMotion, onExplore, onSectionC
           <div>
             <h2 className="city-career-title font-display">POP Status</h2>
             <p className="city-career-sub font-body">
-              Achievement over popularity — your journey, not a checkmark.
+              Earn POP Marks through impact — not a blue checkmark.
             </p>
           </div>
         </div>
-        <PopStatusBadge level={economy.career.level} size="sm" animate={!reducedMotion} />
+        <PopStatusBadge level={economy.career.level} size="sm" animate={!reducedMotion} career={economy.career} />
       </button>
 
       <div className="city-career-grid">

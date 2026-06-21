@@ -23,7 +23,7 @@ export default function CreatorEconomyCard({ signals, variant = "personal" }: Cr
           <h3 className="text-poster text-lg uppercase tracking-wider text-white/90">POP Status</h3>
           <p className="font-body mt-0.5 text-[0.65rem] text-white/40">{economy.career.level.tagline}</p>
         </div>
-        <PopStatusBadge level={economy.career.level} />
+        <PopStatusBadge level={economy.career.level} career={economy.career} />
       </div>
 
       <PopScorePanel breakdown={economy.popScore} compact />

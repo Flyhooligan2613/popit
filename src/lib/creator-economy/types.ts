@@ -50,6 +50,8 @@ export type PopStatusRequirements = {
   businessEligible?: boolean;
 };
 
+import type { PopMarkTier } from "@/lib/pop-marks/types";
+
 export type PopStatusLevel = {
   id: PopStatusId;
   label: string;
@@ -57,7 +59,9 @@ export type PopStatusLevel = {
   accent: string;
   /** Display glyph — null for no-badge Rising state */
   badge: string | null;
-  /** Premium animated badge chrome (green/blue/purple/gold/diamond/crown) */
+  /** POP Mark tier when earned — POP'IT recognition system */
+  popMark: PopMarkTier | null;
+  /** Premium animated badge chrome */
   hasPremiumBadge: boolean;
   tagline: string;
   unlocks: string[];
