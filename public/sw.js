@@ -1,4 +1,4 @@
-const CACHE = "popit-v2-lens";
+const CACHE = "popit-v5-overdrive";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting());
@@ -14,14 +14,23 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+function isNetworkOnly(url) {
+  return (
+    url.pathname.startsWith("/_next/") ||
+    url.pathname.startsWith("/onboarding") ||
+    url.pathname === "/" ||
+    url.pathname.includes("/brand/logo/") ||
+    url.pathname.includes("popit-mark")
+  );
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
 
-  // Never serve stale brand assets from cache
-  if (url.pathname.includes("/brand/logo/") || url.pathname.includes("popit-mark")) {
+  if (isNetworkOnly(url)) {
     event.respondWith(fetch(request));
     return;
   }

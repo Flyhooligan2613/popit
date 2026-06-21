@@ -15,6 +15,7 @@ export default function Home() {
   const handleSplashComplete = useCallback(async () => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem(SPLASH_KEY, "1");
+      sessionStorage.setItem("popit:welcomeIntroSeen", "1");
     }
 
     const profile = await loadAuthenticatedProfile();

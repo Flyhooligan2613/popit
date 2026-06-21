@@ -67,7 +67,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const contentVisible = introReady && !showIntro;
 
   useEffect(() => {
-    if (reducedMotion) {
+    const splashSeen = sessionStorage.getItem("popit:splashSeen") === "1";
+    if (reducedMotion || splashSeen) {
       sessionStorage.setItem(WELCOME_INTRO_SESSION_KEY, "1");
       setShowIntro(false);
     } else {

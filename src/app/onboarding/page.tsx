@@ -19,7 +19,7 @@ const INTRO_AUTO_MS: Record<number, number> = {
 };
 
 function resolveStartFrame(): number {
-  if (typeof window === "undefined") return 4;
+  if (typeof window === "undefined") return 6;
   const params = new URLSearchParams(window.location.search);
   if (params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1") {
     return 6;
@@ -40,18 +40,23 @@ function prevFrame(current: number): number {
 }
 
 export default function OnboardingPage() {
-  const [frame, setFrame] = useState(4);
+  const [frame, setFrame] = useState(6);
   const [ready, setReady] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
+  const [landedFromSplash, setLandedFromSplash] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("reset") === "1") {
       resetAppSession();
       sessionStorage.removeItem("popit:splashSeen");
+      sessionStorage.removeItem("popit:welcomeIntroSeen");
     }
 
     setFrame(resolveStartFrame());
+    setLandedFromSplash(
+      params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1"
+    );
     setReady(true);
 
     if (isOnboardingComplete()) {
@@ -123,10 +128,10 @@ export default function OnboardingPage() {
       <AnimatePresence mode="wait">
         <motion.div
           key={frame}
-          initial={{ opacity: 0 }}
+          initial={{ opacity: landedFromSplash && frame === 6 ? 1 : 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.45, ease: "easeInOut" }}
+          transition={{ duration: landedFromSplash && frame === 6 ? 0 : 0.45, ease: "easeInOut" }}
           style={{ position: "absolute", inset: 0 }}
         >
           {renderFrame()}
