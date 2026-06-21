@@ -41,11 +41,19 @@ function hapticTap() {
   }
 }
 
+function shouldSkipWelcomeIntro(): boolean {
+  if (typeof window === "undefined") return true;
+  return (
+    sessionStorage.getItem("popit:splashSeen") === "1" ||
+    sessionStorage.getItem(WELCOME_INTRO_SESSION_KEY) === "1"
+  );
+}
+
 export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: WelcomeHomeProps) {
   const reducedMotion = useReducedMotion();
   const timePeriod = useTimeOfDay();
-  const [showIntro, setShowIntro] = useState(false);
-  const [introReady, setIntroReady] = useState(false);
+  const [skipWelcomeIntro] = useState(shouldSkipWelcomeIntro);
+  const [showIntro, setShowIntro] = useState(() => !shouldSkipWelcomeIntro());
   const [slide, setSlide] = useState(0);
   const [city, setCity] = useState<string | null>("Miami");
   const [ctaLoading, setCtaLoading] = useState(false);
@@ -64,18 +72,16 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   });
 
   const current = SCENE_SLIDES[slide];
-  const contentVisible = introReady && !showIntro;
+  const contentVisible = !showIntro;
 
   useEffect(() => {
-    const splashSeen = sessionStorage.getItem("popit:splashSeen") === "1";
-    if (reducedMotion || splashSeen) {
+    if (reducedMotion || skipWelcomeIntro) {
       sessionStorage.setItem(WELCOME_INTRO_SESSION_KEY, "1");
       setShowIntro(false);
-    } else {
-      setShowIntro(sessionStorage.getItem(WELCOME_INTRO_SESSION_KEY) !== "1");
+      return;
     }
-    setIntroReady(true);
-  }, [reducedMotion]);
+    setShowIntro(sessionStorage.getItem(WELCOME_INTRO_SESSION_KEY) !== "1");
+  }, [reducedMotion, skipWelcomeIntro]);
 
   useEffect(() => {
     const t = setInterval(
@@ -228,7 +234,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
       role="main"
       aria-label="POP'IT Living City"
     >
-      {introReady && showIntro && <WelcomeBrandedIntro onComplete={handleIntroDone} />}
+      {showIntro && !skipWelcomeIntro && <WelcomeBrandedIntro onComplete={handleIntroDone} />}
 
       <WelcomeHeroBackground
         slides={SCENE_SLIDES}
@@ -244,9 +250,9 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
       <motion.div
         className="popit-home-content popit-mock-content"
-        initial={{ opacity: 0 }}
+        initial={{ opacity: skipWelcomeIntro ? 1 : 0 }}
         animate={{ opacity: contentVisible ? 1 : 0 }}
-        transition={{ duration: reducedMotion ? 0.2 : 0.55, ease: INTRO_EASE }}
+        transition={{ duration: skipWelcomeIntro || reducedMotion ? 0 : 0.55, ease: INTRO_EASE }}
       >
         {onBack && (
           <div className="welcome-back-float">

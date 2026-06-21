@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { isOnboardingComplete, resetAppSession } from "@/lib/session";
 import Frame4 from "@/components/onboarding/frames/Frame4";
@@ -18,13 +18,14 @@ const INTRO_AUTO_MS: Record<number, number> = {
   5: 2600,
 };
 
-function resolveStartFrame(): number {
-  if (typeof window === "undefined") return 6;
+function shouldSkipIntro(): boolean {
+  if (typeof window === "undefined") return false;
   const params = new URLSearchParams(window.location.search);
-  if (params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1") {
-    return 6;
-  }
-  return 4;
+  return params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1";
+}
+
+function resolveStartFrame(skipIntro: boolean): number {
+  return skipIntro ? 6 : 4;
 }
 
 function nextIntroFrame(current: number): number {
@@ -39,11 +40,20 @@ function prevFrame(current: number): number {
   return Math.max(current - 1, 4);
 }
 
+const shellStyle = {
+  position: "fixed" as const,
+  inset: 0,
+  height: "100dvh",
+  maxHeight: "100dvh",
+  background: "#000000",
+  overflow: "hidden" as const,
+};
+
 export default function OnboardingPage() {
+  const [mounted, setMounted] = useState(false);
+  const [skipIntro, setSkipIntro] = useState(false);
   const [frame, setFrame] = useState(6);
-  const [ready, setReady] = useState(false);
   const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
-  const [landedFromSplash, setLandedFromSplash] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -53,27 +63,30 @@ export default function OnboardingPage() {
       sessionStorage.removeItem("popit:welcomeIntroSeen");
     }
 
-    setFrame(resolveStartFrame());
-    setLandedFromSplash(
-      params.get("skipIntro") === "1" || sessionStorage.getItem("popit:splashSeen") === "1"
-    );
-    setReady(true);
+    const skip = shouldSkipIntro();
+    setSkipIntro(skip);
+    setFrame(resolveStartFrame(skip));
+    setMounted(true);
 
     if (isOnboardingComplete()) {
       window.location.replace("/pulse");
     }
   }, []);
 
-  const advance = () => setFrame((current) => (current <= 5 ? nextIntroFrame(current) : Math.min(current + 1, 11)));
-  const goBack = () => setFrame((current) => prevFrame(current));
+  const advance = useCallback(
+    () => setFrame((current) => (current <= 5 ? nextIntroFrame(current) : Math.min(current + 1, 11))),
+    []
+  );
+  const goBack = useCallback(() => setFrame((current) => prevFrame(current)), []);
 
   useEffect(() => {
+    if (!mounted || skipIntro) return;
     const delay = INTRO_AUTO_MS[frame];
     if (delay == null) return;
 
     const timeout = setTimeout(advance, delay);
     return () => clearTimeout(timeout);
-  }, [frame]);
+  }, [frame, mounted, skipIntro, advance]);
 
   const renderFrame = () => {
     switch (frame) {
@@ -84,7 +97,7 @@ export default function OnboardingPage() {
       case 6:
         return (
           <Frame6
-            onBack={goBack}
+            onBack={skipIntro ? undefined : goBack}
             onJoin={() => {
               setAuthMode("signup");
               advance();
@@ -110,28 +123,23 @@ export default function OnboardingPage() {
     }
   };
 
-  if (!ready) {
-    return <div style={{ position: "fixed", inset: 0, background: "#000000" }} />;
+  if (!mounted) {
+    return <div style={shellStyle} />;
+  }
+
+  if (skipIntro && frame === 6) {
+    return <div style={shellStyle}>{renderFrame()}</div>;
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        height: "100dvh",
-        maxHeight: "100dvh",
-        background: "#000000",
-        overflow: "hidden",
-      }}
-    >
+    <div style={shellStyle}>
       <AnimatePresence mode="wait">
         <motion.div
           key={frame}
-          initial={{ opacity: landedFromSplash && frame === 6 ? 1 : 0 }}
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: landedFromSplash && frame === 6 ? 0 : 0.45, ease: "easeInOut" }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
           style={{ position: "absolute", inset: 0 }}
         >
           {renderFrame()}
