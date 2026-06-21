@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { SEARCH_DIRECTORY } from "@/lib/identity/searchData";
+import Link from "next/link";
+import { EXPLORE_HOME_ROUTE } from "@/lib/session";
 
 function resultToProfile(result: (typeof SEARCH_DIRECTORY)[number]): UserProfile {
   return {
@@ -28,15 +29,16 @@ export default function ProfilePage() {
   const params = useParams();
   const username = typeof params.username === "string" ? params.username : "";
   const [user, setUser] = useState<UserProfile | null>(null);
+  const isOwnProfile = username === "me";
 
   useEffect(() => {
-    if (username === "me") {
+    if (isOwnProfile) {
       loadUserProfile().then(setUser);
       return;
     }
-    const found = SEARCH_DIRECTORY.find((r) => r.username === username);
+    const found = SEARCH_DIRECTORY.find((result) => result.username === username);
     setUser(found ? resultToProfile(found) : null);
-  }, [username]);
+  }, [username, isOwnProfile]);
 
   if (!user) {
     return (
@@ -45,22 +47,12 @@ export default function ProfilePage() {
         <Link href="/search" className="font-body text-sm text-[#FF4D6D] hover:underline">
           Search the city
         </Link>
+        <Link href={EXPLORE_HOME_ROUTE} className="font-body text-sm text-white/45 hover:underline">
+          Back to Explore Home
+        </Link>
       </div>
     );
   }
 
-  return (
-    <div className="relative">
-      <Link
-        href="/pulse"
-        className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/60 backdrop-blur-md"
-        aria-label="Back to Your City"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-      </Link>
-      <IdentityProfileRouter user={user} />
-    </div>
-  );
+  return <IdentityProfileRouter user={user} isOwnProfile={isOwnProfile} />;
 }

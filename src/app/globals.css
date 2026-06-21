@@ -11,6 +11,7 @@
 @import "../styles/pop-reputation.css";
 @import "../styles/identity-topics.css";
 @import "../styles/pull-to-refresh.css";
+@import "../styles/profile-social.css";
 @import "tailwindcss";
 
 html {

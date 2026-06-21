@@ -4,6 +4,7 @@ import { memo } from "react";
 import Link from "next/link";
 import LensProfileTransition from "@/components/profile/LensProfileTransition";
 import type { UserProfile } from "@/lib/identity/userProfile";
+import { EXPLORE_HOME_ROUTE } from "@/lib/session";
 
 type CityIdentityBarProps = {
   user: UserProfile;
@@ -40,6 +41,12 @@ function CityIdentityBar({ user }: CityIdentityBarProps) {
 
       <div className="flex flex-col gap-2 pt-1">
         <div className="flex gap-2">
+          <IconBtn href={EXPLORE_HOME_ROUTE} label="Explore Home">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
+            </svg>
+          </IconBtn>
           <IconBtn href="/search" label="Search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />

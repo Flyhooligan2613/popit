@@ -9,6 +9,17 @@ export function markOnboardingComplete() {
   localStorage.setItem(ONBOARDING_KEY, "true");
 }
 
+/** Landing / explore home — welcome overdrive with skip intro */
+export const EXPLORE_HOME_ROUTE = "/onboarding?skipIntro=1";
+
+export async function logoutAndGoLanding() {
+  await resetAppSession();
+  if (typeof window === "undefined") return;
+  sessionStorage.removeItem("popit:splashSeen");
+  sessionStorage.removeItem("popit:welcomeIntroSeen");
+  window.location.replace(EXPLORE_HOME_ROUTE);
+}
+
 export function isOnboardingComplete(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(ONBOARDING_KEY) === "true";

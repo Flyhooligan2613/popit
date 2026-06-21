@@ -1,4 +1,4 @@
-import { isOnboardingComplete } from "@/lib/session";
+import { isOnboardingComplete, EXPLORE_HOME_ROUTE } from "@/lib/session";
 import type { CategoryKey } from "@/components/welcome/types";
 
 export const PENDING_ROUTE_KEY = "popit:pendingRoute";
@@ -52,7 +52,7 @@ export function navigateFromWelcome(href: string, onJoin: () => void) {
 }
 
 export const WELCOME_TAB_ROUTES = {
-  home: "/onboarding?skipIntro=1",
+  home: EXPLORE_HOME_ROUTE,
   explore: "/search",
   create: "/pulse",
   inbox: "/messages",
