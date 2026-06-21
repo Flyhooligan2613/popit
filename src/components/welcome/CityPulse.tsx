@@ -7,14 +7,29 @@ import type { PulseChannel } from "./types";
 type CityPulseProps = {
   channels: PulseChannel[];
   reducedMotion: boolean;
+  onChannelClick?: (channel: PulseChannel) => void;
+  onSectionClick?: () => void;
 };
 
-function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMotion: boolean }) {
+function PulseRow({
+  channel,
+  reducedMotion,
+  onClick,
+}: {
+  channel: PulseChannel;
+  reducedMotion: boolean;
+  onClick?: () => void;
+}) {
   const value = useAnimatedNumber(Math.round(channel.value), reducedMotion ? 0 : 900);
   const delta = useAnimatedNumber(channel.delta, reducedMotion ? 0 : 700);
 
   return (
-    <div className={`city-pulse-row city-pulse-row-v3 ${channel.isHottest ? "is-hottest" : ""}`} data-channel={channel.key}>
+    <button
+      type="button"
+      className={`city-pulse-row city-pulse-row-v3 popit-tap-target ${channel.isHottest ? "is-hottest" : ""}`}
+      data-channel={channel.key}
+      onClick={onClick}
+    >
       <div className="city-pulse-row-head">
         <span className="city-pulse-icon" aria-hidden>
           {channel.icon}
@@ -48,20 +63,27 @@ function PulseRow({ channel, reducedMotion }: { channel: PulseChannel; reducedMo
         <div className="city-pulse-stream" aria-hidden />
         {!reducedMotion && <span className="city-pulse-spark" aria-hidden />}
       </div>
-    </div>
+    </button>
   );
 }
 
-export default function CityPulse({ channels, reducedMotion }: CityPulseProps) {
+export default function CityPulse({ channels, reducedMotion, onChannelClick, onSectionClick }: CityPulseProps) {
   return (
     <section className="city-pulse city-pulse-v3 city-pulse-polish" aria-label="City pulse command center">
-      <h2 className="city-pulse-title font-display">
-        <span className="city-pulse-title-dot" aria-hidden />
-        City Pulse
-      </h2>
+      <button type="button" className="city-pulse-title-wrap popit-tap-target" onClick={onSectionClick}>
+        <h2 className="city-pulse-title font-display">
+          <span className="city-pulse-title-dot" aria-hidden />
+          City Pulse
+        </h2>
+      </button>
       <div className="city-pulse-grid">
         {channels.map((channel) => (
-          <PulseRow key={channel.key} channel={channel} reducedMotion={reducedMotion} />
+          <PulseRow
+            key={channel.key}
+            channel={channel}
+            reducedMotion={reducedMotion}
+            onClick={() => onChannelClick?.(channel)}
+          />
         ))}
       </div>
     </section>

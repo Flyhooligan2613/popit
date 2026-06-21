@@ -24,6 +24,9 @@ type WelcomeHeroSectionProps = {
   userAvatar?: string | null;
   reorganizeT?: number;
   onExplore?: () => void;
+  onWeatherClick?: () => void;
+  onLiveClick?: () => void;
+  onSignalClick?: () => void;
 };
 
 export default function WelcomeHeroSection({
@@ -39,6 +42,9 @@ export default function WelcomeHeroSection({
   userAvatar,
   reorganizeT = 0,
   onExplore,
+  onWeatherClick,
+  onLiveClick,
+  onSignalClick,
 }: WelcomeHeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const scrollProgress = useHeroScrollProgress(heroRef);
@@ -61,12 +67,13 @@ export default function WelcomeHeroSection({
       <HeroParticleField scrollProgress={scrollProgress} reducedMotion={reducedMotion} />
 
       <header className="welcome-hero-status-row">
-        <CityStatusPanel city={city} />
+        <CityStatusPanel city={city} onClick={onWeatherClick} />
         <LiveNowBadge
           exploringCount={exploringCount}
           minuteGain={minuteGain}
           avatarUrls={avatarUrls}
           compact
+          onClick={onLiveClick}
         />
       </header>
 
@@ -92,7 +99,7 @@ export default function WelcomeHeroSection({
           hubPhase={hubPhase}
           userAvatar={userAvatar}
           reorganizeT={reorganizeT}
-          onNodeOpen={onExplore}
+          onNodeOpen={onSignalClick ?? onExplore}
         />
       </div>
     </section>

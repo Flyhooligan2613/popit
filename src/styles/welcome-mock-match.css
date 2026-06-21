@@ -329,7 +329,8 @@
   z-index: 0;
 }
 
-.popit-card-photo-bg img {
+.popit-card-photo-bg img,
+.popit-card-photo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -338,7 +339,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .popit-card-photo-bg img {
+  .popit-card-photo-bg img,
+  .popit-card-photo-img {
     animation: category-photo-drift 14s ease-in-out infinite alternate;
   }
 }
@@ -628,6 +630,266 @@
 
 .popit-signin-btn-mock:hover {
   color: rgba(255, 255, 255, 0.65);
+}
+
+/* Landing footer — Sign Up + Start Exploring */
+.popit-home-footer-landing {
+  gap: 0.55rem;
+}
+
+.popit-signup-btn-mock {
+  width: 100%;
+  padding: 0.95rem 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.22) 0%, rgba(99, 102, 241, 0.12) 100%);
+  color: #fff;
+  font-size: clamp(1rem, 3.8vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(168, 85, 247, 0.22);
+}
+
+.popit-signin-link-mock {
+  width: 100%;
+  margin-top: 0.15rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: clamp(0.6875rem, 2.5vw, 0.8125rem);
+  letter-spacing: 0.04em;
+  padding: 0.35rem;
+  cursor: pointer;
+}
+
+.popit-signin-link-mock:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.popit-card-photo-fallback,
+.venue-card-photo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  background: linear-gradient(145deg, rgba(20, 24, 36, 0.95), rgba(8, 10, 18, 0.98));
+}
+
+.popit-tap-target {
+  cursor: pointer;
+  text-align: inherit;
+  color: inherit;
+  font: inherit;
+}
+
+.popit-card.popit-tap-target {
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.connection-card-stable.popit-tap-target,
+.live-now-badge.popit-tap-target,
+.city-energy.popit-tap-target,
+.venue-card.popit-tap-target,
+.popping-header-s2.popit-tap-target,
+.city-pulse-row.popit-tap-target {
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.connection-card-stable.popit-tap-target {
+  width: auto;
+  text-align: left;
+}
+
+.live-now-badge.popit-tap-target {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.city-energy.popit-tap-target {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.venue-card.popit-tap-target {
+  background: rgba(10, 10, 16, 0.8);
+}
+
+.popping-header-s2.popit-tap-target {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.venue-feed-header.popit-tap-target {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 0 0.55rem;
+}
+
+.city-pulse-title-wrap.popit-tap-target {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 0 0.55rem;
+}
+
+.city-pulse-row.popit-tap-target {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: inherit;
+}
+
+/* Weather sheet */
+.weather-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(0, 0, 0, 0.62);
+  border: none;
+  cursor: pointer;
+}
+
+.weather-sheet {
+  position: fixed;
+  left: 50%;
+  bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 121;
+  width: min(92vw, 22rem);
+  padding: 1rem 1rem 1.1rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(165deg, rgba(14, 18, 32, 0.98) 0%, rgba(6, 8, 14, 0.99) 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 32px rgba(0, 212, 255, 0.12);
+}
+
+.weather-sheet-handle {
+  width: 2.5rem;
+  height: 0.25rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.weather-sheet-kicker {
+  margin: 0;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.weather-sheet-city {
+  margin: 0.15rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.weather-sheet-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  margin: 0.85rem 0 0.75rem;
+}
+
+.weather-sheet-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.weather-sheet-temp {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+.weather-sheet-condition {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.weather-sheet-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 0.65rem;
+}
+
+.weather-sheet-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.55rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.weather-sheet-stats span {
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.weather-sheet-stats strong {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.weather-sheet-detail {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.weather-sheet-close {
+  margin-top: 0.85rem;
+  width: 100%;
+  padding: 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  background: rgba(0, 212, 255, 0.1);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
 }
 
 /* ── Bottom nav ── */

@@ -2,11 +2,12 @@
 
 type WhatsPoppingHeaderProps = {
   reducedMotion?: boolean;
+  onClick?: () => void;
 };
 
-export default function WhatsPoppingHeader({ reducedMotion = false }: WhatsPoppingHeaderProps) {
+export default function WhatsPoppingHeader({ reducedMotion = false, onClick }: WhatsPoppingHeaderProps) {
   return (
-    <header className="popping-header-s2">
+    <button type="button" className="popping-header-s2 popit-tap-target" onClick={onClick}>
       <div className="popping-header-s2-left">
         <span className={`popping-flame-icon ${reducedMotion ? "" : "is-animated"}`} aria-hidden>
           🔥
@@ -22,6 +23,6 @@ export default function WhatsPoppingHeader({ reducedMotion = false }: WhatsPoppi
         <span className={`popping-live-dot ${reducedMotion ? "" : "is-pulse"}`} aria-hidden />
         LIVE
       </div>
-    </header>
+    </button>
   );
 }

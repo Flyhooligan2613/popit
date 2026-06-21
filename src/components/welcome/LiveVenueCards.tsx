@@ -2,14 +2,17 @@
 
 import type { VenueCard } from "./types";
 import { useHorizontalMarquee } from "./useHorizontalMarquee";
+import ReliableImage from "./ReliableImage";
 
 type LiveVenueCardsProps = {
   venues: VenueCard[];
   reducedMotion?: boolean;
   energyNorm?: number;
+  onVenueClick?: (venue: VenueCard) => void;
+  onSectionClick?: () => void;
 };
 
-function VenueCardItem({ venue }: { venue: VenueCard }) {
+function VenueCardItem({ venue, onClick }: { venue: VenueCard; onClick?: () => void }) {
   const badgeClass =
     venue.badge === "Hot" || venue.badge === "Trending"
       ? "venue-card-badge is-pulse"
@@ -18,11 +21,15 @@ function VenueCardItem({ venue }: { venue: VenueCard }) {
         : "venue-card-badge";
 
   return (
-    <article className="venue-card venue-card-mock" role="listitem">
+    <button type="button" className="venue-card venue-card-mock popit-tap-target" role="listitem" onClick={onClick}>
       <div className="venue-card-photo-wrap">
         {venue.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={venue.image} alt="" className="venue-card-photo" loading="lazy" decoding="async" />
+          <ReliableImage
+            src={venue.image}
+            className="venue-card-photo"
+            fallbackClassName="venue-card-photo-fallback"
+            fallbackIcon={venue.icon}
+          />
         ) : (
           <span className="venue-card-photo-fallback" aria-hidden>
             {venue.icon}
@@ -51,11 +58,17 @@ function VenueCardItem({ venue }: { venue: VenueCard }) {
           <p className="venue-card-updated font-body">Updated {venue.updatedMin} min ago</p>
         )}
       </div>
-    </article>
+    </button>
   );
 }
 
-export default function LiveVenueCards({ venues, reducedMotion = false, energyNorm = 0.5 }: LiveVenueCardsProps) {
+export default function LiveVenueCards({
+  venues,
+  reducedMotion = false,
+  energyNorm = 0.5,
+  onVenueClick,
+  onSectionClick,
+}: LiveVenueCardsProps) {
   const viewportRef = useHorizontalMarquee({
     speed: reducedMotion ? 0 : 0.35 + energyNorm * 0.25,
     paused: false,
@@ -66,14 +79,14 @@ export default function LiveVenueCards({ venues, reducedMotion = false, energyNo
 
   return (
     <section className="venue-feed venue-feed-mock venue-feed-polish" aria-label="Live venue activity">
-      <div className="venue-feed-header">
+      <button type="button" className="venue-feed-header popit-tap-target" onClick={onSectionClick}>
         <span className="venue-feed-live-dot" aria-hidden />
         <h2 className="venue-feed-title font-display">Live Activity</h2>
-      </div>
+      </button>
 
       <div ref={viewportRef} className="venue-feed-scroll" role="list">
         {loop.map((venue, i) => (
-          <VenueCardItem key={`${venue.id}-${i}`} venue={venue} />
+          <VenueCardItem key={`${venue.id}-${i}`} venue={venue} onClick={() => onVenueClick?.(venue)} />
         ))}
       </div>
     </section>

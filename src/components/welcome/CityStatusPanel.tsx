@@ -6,6 +6,7 @@ import type { TimePeriod } from "./types";
 type CityStatusPanelProps = {
   city: string | null;
   connected?: boolean;
+  onClick?: () => void;
 };
 
 function formatTime(date: Date) {
@@ -32,7 +33,7 @@ function shortCityName(city: string | null): string {
   return city;
 }
 
-function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
+function CityStatusPanel({ city, connected = true, onClick }: CityStatusPanelProps) {
   const [time, setTime] = useState("--:--");
   const [period, setPeriod] = useState<TimePeriod>(() => periodFromHour(new Date().getHours()));
 
@@ -60,9 +61,11 @@ function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
   const temp = tempForPeriod(period, city);
 
   return (
-    <div
-      className="connection-card connection-card-mock connection-card-polish connection-card-stable"
-      aria-label={`Connected to ${cityShort}`}
+    <button
+      type="button"
+      className="connection-card connection-card-mock connection-card-polish connection-card-stable popit-tap-target"
+      aria-label={`Weather and connection for ${cityShort}. Tap for full report.`}
+      onClick={onClick}
     >
       <div className="connection-card-scan" aria-hidden />
       <p className="connection-card-pin font-display">
@@ -77,7 +80,7 @@ function CityStatusPanel({ city, connected = true }: CityStatusPanelProps) {
           Connected
         </div>
       )}
-    </div>
+    </button>
   );
 }
 

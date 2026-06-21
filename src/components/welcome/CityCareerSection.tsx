@@ -10,15 +10,16 @@ import { getUpcomingChannels } from "@/lib/creator-economy";
 type CityCareerSectionProps = {
   reducedMotion: boolean;
   onExplore?: () => void;
+  onSectionClick?: () => void;
 };
 
-export default function CityCareerSection({ reducedMotion, onExplore }: CityCareerSectionProps) {
+export default function CityCareerSection({ reducedMotion, onExplore, onSectionClick }: CityCareerSectionProps) {
   const economy = useLivePopScore(reducedMotion);
   const upcoming = getUpcomingChannels(economy.career.level.id, 2);
 
   return (
     <section className="city-career-section" aria-label="Build your city career on POP'IT">
-      <header className="city-career-header">
+      <button type="button" className="city-career-header popit-tap-target" onClick={onSectionClick ?? onExplore}>
         <div className="city-career-header-left">
           <span className="city-career-header-icon" aria-hidden>
             ✦
@@ -31,7 +32,7 @@ export default function CityCareerSection({ reducedMotion, onExplore }: CityCare
           </div>
         </div>
         <CityCareerBadge level={economy.career.level} size="sm" />
-      </header>
+      </button>
 
       <div className="city-career-grid">
         <PopScorePanel breakdown={economy.popScore} reducedMotion={reducedMotion} compact />

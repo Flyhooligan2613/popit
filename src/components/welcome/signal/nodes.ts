@@ -32,7 +32,7 @@ const POOL: BubbleTemplate[] = [
     status: "Almost Full",
     detail: "DJ starts in 18 min",
     distance: "2.1 mi",
-    image: "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=400&q=80&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80&auto=format&fit=crop",
   },
   {
     category: "sports",

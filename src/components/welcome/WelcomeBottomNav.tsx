@@ -5,26 +5,34 @@ import { motion, useReducedMotion } from "framer-motion";
 
 type WelcomeBottomNavProps = {
   onCreate?: () => void;
+  onExplore?: () => void;
+  onInbox?: () => void;
+  onProfile?: () => void;
 };
 
-export default function WelcomeBottomNav({ onCreate }: WelcomeBottomNavProps) {
+export default function WelcomeBottomNav({
+  onCreate,
+  onExplore,
+  onInbox,
+  onProfile,
+}: WelcomeBottomNavProps) {
   const reducedMotion = useReducedMotion();
 
   return (
-    <nav className="welcome-bottom-nav welcome-bottom-nav-polish" aria-label="App navigation preview">
+    <nav className="welcome-bottom-nav welcome-bottom-nav-polish" aria-label="App navigation">
       <div className="welcome-bottom-nav-inner">
-        <button type="button" className="welcome-nav-item is-active" aria-label="Home" aria-current="page">
+        <button type="button" className="welcome-nav-item is-active popit-tap-target" aria-label="Home" aria-current="page">
           <Home size={20} strokeWidth={2} />
           <span className="welcome-nav-label font-body">Home</span>
         </button>
-        <button type="button" className="welcome-nav-item" aria-label="Explore">
+        <button type="button" className="welcome-nav-item popit-tap-target" aria-label="Explore" onClick={onExplore}>
           <Search size={20} strokeWidth={2} />
           <span className="welcome-nav-label font-body">Explore</span>
         </button>
 
         <motion.button
           type="button"
-          className="welcome-nav-create"
+          className="welcome-nav-create popit-tap-target"
           aria-label="Create"
           onClick={onCreate}
           whileTap={{ scale: 0.92 }}
@@ -44,11 +52,11 @@ export default function WelcomeBottomNav({ onCreate }: WelcomeBottomNavProps) {
           <Plus size={26} strokeWidth={2.5} />
         </motion.button>
 
-        <button type="button" className="welcome-nav-item" aria-label="Inbox">
+        <button type="button" className="welcome-nav-item popit-tap-target" aria-label="Inbox" onClick={onInbox}>
           <MessageCircle size={20} strokeWidth={2} />
           <span className="welcome-nav-label font-body">Inbox</span>
         </button>
-        <button type="button" className="welcome-nav-item" aria-label="Profile">
+        <button type="button" className="welcome-nav-item popit-tap-target" aria-label="Profile" onClick={onProfile}>
           <User size={20} strokeWidth={2} />
           <span className="welcome-nav-label font-body">Profile</span>
         </button>

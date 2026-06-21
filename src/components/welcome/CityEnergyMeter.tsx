@@ -10,6 +10,7 @@ type CityEnergyMeterProps = {
   reducedMotion: boolean;
   exploringCount?: number;
   cityName?: string | null;
+  onClick?: () => void;
 };
 
 const TIER_CLASS: Record<EnergyTier, string> = {
@@ -28,6 +29,7 @@ export default function CityEnergyMeter({
   reducedMotion,
   exploringCount = 3590,
   cityName = "Miami",
+  onClick,
 }: CityEnergyMeterProps) {
   const fillPct = `${Math.round(value)}%`;
   const ignited = tier === "on-fire" || tier === "overdrive";
@@ -43,13 +45,12 @@ export default function CityEnergyMeter({
   const isHighEnergy = value >= 90;
 
   return (
-    <div
-      className={`city-energy city-energy-mock city-energy-polish ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""} ${isHighEnergy ? "is-high-energy" : ""}`}
-      role="meter"
-      aria-valuenow={Math.round(value)}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-label={`City energy ${Math.round(value)} percent, ${displayLabel}`}
+    <button
+      type="button"
+      className={`city-energy city-energy-mock city-energy-polish popit-tap-target ${TIER_CLASS[tier]} ${ignited ? "is-ignited" : ""} ${sparking ? "is-sparking" : ""} ${isLit ? "is-lit" : ""} ${isHighEnergy ? "is-high-energy" : ""}`}
+      role="group"
+      aria-label={`City energy ${Math.round(value)} percent, ${displayLabel}. Tap to open city pulse.`}
+      onClick={onClick}
     >
       <div className="city-energy-shimmer" aria-hidden />
       <div className="city-energy-flow" aria-hidden />
@@ -101,6 +102,6 @@ export default function CityEnergyMeter({
       </div>
 
       <p className="city-energy-status font-body">{statusLine}</p>
-    </div>
+    </button>
   );
 }

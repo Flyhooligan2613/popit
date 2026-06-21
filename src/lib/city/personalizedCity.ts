@@ -28,7 +28,7 @@ export const INTEREST_SCENES: CityScene[] = [
   {
     id: "nightlife-rooftop",
     label: "Rooftop Lounges",
-    src: "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=1920&q=80&auto=format&fit=crop",
+    src: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920&q=80&auto=format&fit=crop",
     tint: "rgba(168,85,247,0.2)",
     interests: ["nightlife", "entertainment", "music"],
   },

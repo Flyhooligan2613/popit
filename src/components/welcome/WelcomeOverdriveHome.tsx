@@ -9,8 +9,9 @@ import CategoryCard from "./CategoryCard";
 import CityEnergyMeter from "./CityEnergyMeter";
 import CityPulse from "./CityPulse";
 import LiveVenueCards from "./LiveVenueCards";
-import StartExploringButton from "./StartExploringButton";
+import WelcomeLandingFooter from "./WelcomeLandingFooter";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
+import WeatherReportSheet from "./WeatherReportSheet";
 import WhatsPoppingNow from "./WhatsPoppingNow";
 import CityCareerSection from "./CityCareerSection";
 import WelcomeBottomNav from "./WelcomeBottomNav";
@@ -20,6 +21,15 @@ import type { WelcomeHomeProps } from "./types";
 import type { SignalHubPhase } from "./signal/types";
 import { useCityEnergy } from "./useCityEnergy";
 import { useTimeOfDay } from "./useTimeOfDay";
+import {
+  categoryRoute,
+  navigateFromWelcome,
+  pulseChannelRoute,
+  venueRoute,
+  WELCOME_TAB_ROUTES,
+} from "@/lib/welcomeNavigation";
+import type { CategoryKey, PulseChannel } from "./types";
+import type { VenueCard } from "./types";
 
 const SLIDE_MS = 9000;
 const INTRO_EASE = [0.16, 1, 0.3, 1] as const;
@@ -63,6 +73,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [hubPhase, setHubPhase] = useState<SignalHubPhase>("inviting");
   const [reorganizeT, setReorganizeT] = useState(0);
   const [signInBusy, setSignInBusy] = useState(false);
+  const [weatherOpen, setWeatherOpen] = useState(false);
   const joinLock = useRef(false);
   const signInLock = useRef(false);
   const reorganizeRaf = useRef(0);
@@ -170,6 +181,30 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     window.setTimeout(onJoin, 580);
   };
 
+  const goTo = useCallback(
+    (href: string) => {
+      hapticTap();
+      navigateFromWelcome(href, onJoin);
+    },
+    [onJoin]
+  );
+
+  const handleStartExploring = () => {
+    if (joinLock.current || ctaLoading) return;
+    joinLock.current = true;
+    hapticTap();
+    setCtaLoading(true);
+    navigateFromWelcome(WELCOME_TAB_ROUTES.create, onJoin);
+    window.setTimeout(() => {
+      setCtaLoading(false);
+      joinLock.current = false;
+    }, 900);
+  };
+
+  const handleCategory = (key: CategoryKey) => goTo(categoryRoute(key));
+  const handleVenue = (venue: VenueCard) => goTo(venueRoute(venue.id));
+  const handlePulseChannel = (channel: PulseChannel) => goTo(pulseChannelRoute(channel.key));
+
   const runReorganize = useCallback((durationMs: number) => {
     if (reorganizeRaf.current) cancelAnimationFrame(reorganizeRaf.current);
     const start = performance.now();
@@ -272,7 +307,13 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           hubPhase={hubPhase}
           userAvatar={hubPhase === "inviting" || hubPhase === "pulsing" ? null : DEMO_USER_AVATAR}
           reorganizeT={reorganizeT}
-          onExplore={() => handleJoin()}
+          onExplore={() => goTo(WELCOME_TAB_ROUTES.signal)}
+          onWeatherClick={() => {
+            hapticTap();
+            setWeatherOpen(true);
+          }}
+          onLiveClick={() => goTo(WELCOME_TAB_ROUTES.live)}
+          onSignalClick={() => goTo(WELCOME_TAB_ROUTES.signal)}
         />
 
         <CityEnergyMeter
@@ -282,18 +323,21 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           reducedMotion={!!reducedMotion}
           exploringCount={displayExploring}
           cityName={city}
+          onClick={() => goTo(WELCOME_TAB_ROUTES.energy)}
         />
 
         <WhatsPoppingNow
           city={city}
           reducedMotion={!!reducedMotion}
           energyNorm={energyNorm}
-          onCardAction={() => handleJoin()}
+          onCardAction={() => goTo(WELCOME_TAB_ROUTES.popping)}
+          onSectionClick={() => goTo(WELCOME_TAB_ROUTES.popping)}
         />
 
         <CityCareerSection
           reducedMotion={!!reducedMotion}
-          onExplore={() => handleJoin()}
+          onExplore={() => goTo(WELCOME_TAB_ROUTES.career)}
+          onSectionClick={() => goTo(WELCOME_TAB_ROUTES.career)}
         />
 
         <div className="popit-category-grid popit-category-grid-mock" role="list" aria-label="Explore modes">
@@ -307,29 +351,49 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
               image={card.image}
               selected={current.chipKey === card.key}
               delay={0.12 + i * 0.06}
+              onClick={() => handleCategory(card.key)}
             />
           ))}
         </div>
 
-        <LiveVenueCards venues={LIVE_VENUE_CARDS} reducedMotion={!!reducedMotion} energyNorm={energyNorm} />
+        <LiveVenueCards
+          venues={LIVE_VENUE_CARDS}
+          reducedMotion={!!reducedMotion}
+          energyNorm={energyNorm}
+          onVenueClick={handleVenue}
+          onSectionClick={() => goTo(WELCOME_TAB_ROUTES.live)}
+        />
 
-        <CityPulse channels={pulse} reducedMotion={!!reducedMotion} />
+        <CityPulse
+          channels={pulse}
+          reducedMotion={!!reducedMotion}
+          onChannelClick={handlePulseChannel}
+          onSectionClick={() => goTo(WELCOME_TAB_ROUTES.energy)}
+        />
 
-        <footer className="popit-home-footer popit-home-footer-mock">
-          <StartExploringButton loading={ctaLoading} isOverdrive={state.isOverdrive} onClick={handleJoin} />
-          <motion.button
-            type="button"
-            onClick={handleSignIn}
-            disabled={signInBusy}
-            whileTap={{ scale: signInBusy ? 1 : 0.98 }}
-            className={`popit-signin-btn popit-signin-btn-mock font-body ${signInBusy ? "is-connecting" : ""}`}
-          >
-            {signInBusy ? "Connecting…" : "Sign In To Your Account"}
-          </motion.button>
-        </footer>
+        <WelcomeLandingFooter
+          loading={ctaLoading}
+          isOverdrive={state.isOverdrive}
+          signInBusy={signInBusy}
+          onSignUp={handleJoin}
+          onStartExploring={handleStartExploring}
+          onSignIn={handleSignIn}
+        />
       </motion.div>
 
-      <WelcomeBottomNav onCreate={handleJoin} />
+      <WelcomeBottomNav
+        onCreate={() => goTo(WELCOME_TAB_ROUTES.create)}
+        onExplore={() => goTo(WELCOME_TAB_ROUTES.explore)}
+        onInbox={() => goTo(WELCOME_TAB_ROUTES.inbox)}
+        onProfile={() => goTo(WELCOME_TAB_ROUTES.profile)}
+      />
+
+      <WeatherReportSheet
+        open={weatherOpen}
+        city={city}
+        period={timePeriod}
+        onClose={() => setWeatherOpen(false)}
+      />
     </div>
   );
 }

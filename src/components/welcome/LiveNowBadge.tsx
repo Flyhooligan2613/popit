@@ -9,6 +9,7 @@ type LiveNowBadgeProps = {
   minuteGain?: number;
   avatarUrls?: string[];
   compact?: boolean;
+  onClick?: () => void;
 };
 
 export default function LiveNowBadge({
@@ -17,13 +18,19 @@ export default function LiveNowBadge({
   minuteGain,
   avatarUrls = [],
   compact = false,
+  onClick,
 }: LiveNowBadgeProps) {
   const reducedMotion = useReducedMotion();
   const display = useAnimatedNumber(exploringCount, reducedMotion ? 0 : 720);
   const minute = useAnimatedNumber(minuteGain ?? todayGain, reducedMotion ? 0 : 850);
 
   return (
-    <div className={`live-now-badge live-now-badge-mock live-now-badge-polish live-now-badge-v2 ${compact ? "is-compact" : ""}`}>
+    <button
+      type="button"
+      className={`live-now-badge live-now-badge-mock live-now-badge-polish live-now-badge-v2 popit-tap-target ${compact ? "is-compact" : ""}`}
+      onClick={onClick}
+      aria-label={`${display.toLocaleString()} people exploring live right now`}
+    >
       <motion.span
         className="live-now-pill font-body"
         animate={reducedMotion ? undefined : { scale: [1, 1.018, 1] }}
@@ -53,6 +60,6 @@ export default function LiveNowBadge({
           ))}
         </div>
       )}
-    </div>
+    </button>
   );
 }

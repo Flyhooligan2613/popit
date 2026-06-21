@@ -15,6 +15,15 @@
   gap: 0.65rem;
 }
 
+.city-career-header.popit-tap-target {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
 .city-career-header-left {
   display: flex;
   align-items: flex-start;

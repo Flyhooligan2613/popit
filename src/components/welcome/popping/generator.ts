@@ -16,7 +16,7 @@ const IMAGES = {
     "https://images.unsplash.com/photo-1459749411175-367ad7899a91?w=400&q=80&auto=format&fit=crop",
   ],
   nightlife: [
-    "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=400&q=80&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80&auto=format&fit=crop",
   ],
   athlete: [
     "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80&auto=format&fit=crop",

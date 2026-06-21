@@ -164,7 +164,7 @@ export const LIVE_VENUE_CARDS: import("./types").VenueCard[] = [
     id: "v2",
     icon: "🎉",
     name: "LIV Nightclub",
-    image: "https://images.unsplash.com/photo-1571266028243-e68f8570c9e2?w=400&q=80&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80&auto=format&fit=crop",
     stat: "Almost Full",
     detail: "12 min wait · DJ 9:30 PM",
     badge: "Hot",
@@ -265,7 +265,7 @@ export const CATEGORY_CARDS = [
     label: "Nightlife",
     stat: "340+ tonight",
     theme: "card-events",
-    image: "https://images.unsplash.com/photo-1571266028245-a0d306aecd97?w=600&q=80&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80&auto=format&fit=crop",
   },
   {
     key: "trending" as const,
@@ -281,7 +281,7 @@ export const CATEGORY_CARDS = [
     label: "Nearby",
     stat: "12 cities live",
     theme: "card-nearby",
-    image: "https://images.unsplash.com/photo-1449824912920-35a4420c7892?w=600&q=80&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&q=80&auto=format&fit=crop",
   },
 ];
 

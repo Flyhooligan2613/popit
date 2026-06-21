@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { CategoryIcon } from "./CategoryIcons";
+import ReliableImage from "./ReliableImage";
 
 type CategoryCardProps = {
   icon: string;
@@ -11,6 +12,7 @@ type CategoryCardProps = {
   image?: string;
   selected: boolean;
   delay: number;
+  onClick?: () => void;
 };
 
 const THEME_FX: Record<string, string> = {
@@ -20,23 +22,38 @@ const THEME_FX: Record<string, string> = {
   "card-nearby": "fx-radar",
 };
 
-export default function CategoryCard({ label, stat, theme, image, selected, delay }: CategoryCardProps) {
+export default function CategoryCard({
+  icon,
+  label,
+  stat,
+  theme,
+  image,
+  selected,
+  delay,
+  onClick,
+}: CategoryCardProps) {
   const fx = THEME_FX[theme] ?? "";
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
       role="listitem"
+      onClick={onClick}
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: selected ? 1.03 : 1 }}
       transition={{ delay, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -5, scale: 1.04 }}
       whileTap={{ scale: 0.95 }}
-      className={`popit-card popit-card-mock popit-card-portal popit-card-photo ${theme} ${fx} ${selected ? "is-selected" : ""}`}
+      className={`popit-card popit-card-mock popit-card-portal popit-card-photo popit-tap-target ${theme} ${fx} ${selected ? "is-selected" : ""}`}
     >
       {image && (
         <span className="popit-card-photo-bg" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="" loading="lazy" decoding="async" />
+          <ReliableImage
+            src={image}
+            className="popit-card-photo-img"
+            fallbackClassName="popit-card-photo-fallback"
+            fallbackIcon={icon}
+          />
         </span>
       )}
       <span className="popit-card-photo-scrim" aria-hidden />
@@ -59,6 +76,6 @@ export default function CategoryCard({ label, stat, theme, image, selected, dela
         <span className="popit-card-label font-display">{label}</span>
         <span className="popit-card-stat font-body">{stat}</span>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }

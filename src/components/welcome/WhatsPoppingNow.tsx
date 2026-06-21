@@ -15,6 +15,7 @@ type WhatsPoppingNowProps = {
   reducedMotion: boolean;
   energyNorm?: number;
   onCardAction?: (card: PoppingCard) => void;
+  onSectionClick?: () => void;
 };
 
 export default function WhatsPoppingNow({
@@ -22,6 +23,7 @@ export default function WhatsPoppingNow({
   reducedMotion,
   energyNorm = 0.5,
   onCardAction,
+  onSectionClick,
 }: WhatsPoppingNowProps) {
   const [paused, setPaused] = useState(false);
   const [preview, setPreview] = useState<PoppingCard | null>(null);
@@ -47,7 +49,7 @@ export default function WhatsPoppingNow({
 
   return (
     <section className="whats-popping-s2" aria-label="What's popping right now">
-      <WhatsPoppingHeader reducedMotion={reducedMotion} />
+      <WhatsPoppingHeader reducedMotion={reducedMotion} onClick={onSectionClick} />
 
       <div
         ref={viewportRef}

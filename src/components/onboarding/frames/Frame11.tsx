@@ -4,14 +4,16 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { markOnboardingComplete } from "@/lib/session";
+import { consumePendingRoute } from "@/lib/welcomeNavigation";
 
 export default function Frame11() {
   const router = useRouter();
 
   useEffect(() => {
     markOnboardingComplete();
+    const pending = consumePendingRoute();
     const timeout = setTimeout(() => {
-      router.replace("/pulse");
+      router.replace(pending ?? "/pulse");
     }, 900);
     return () => clearTimeout(timeout);
   }, [router]);
