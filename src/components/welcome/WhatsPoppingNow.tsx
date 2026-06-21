@@ -13,6 +13,7 @@ import { useScrollCenterScale } from "./useScrollCenterScale";
 type WhatsPoppingNowProps = {
   city?: string | null;
   reducedMotion: boolean;
+  mobileLite?: boolean;
   energyNorm?: number;
   onCardAction?: (card: PoppingCard) => void;
   onSectionClick?: () => void;
@@ -21,6 +22,7 @@ type WhatsPoppingNowProps = {
 export default function WhatsPoppingNow({
   city = "Miami",
   reducedMotion,
+  mobileLite = false,
   energyNorm = 0.5,
   onCardAction,
   onSectionClick,
@@ -36,7 +38,7 @@ export default function WhatsPoppingNow({
     enabled: !reducedMotion && cards.length > 1,
   });
 
-  useScrollCenterScale(viewportRef, ".popping-card-s2", !reducedMotion);
+  useScrollCenterScale(viewportRef, ".popping-card-s2", !reducedMotion && !mobileLite);
 
   const handleTap = useCallback(
     (card: PoppingCard) => {

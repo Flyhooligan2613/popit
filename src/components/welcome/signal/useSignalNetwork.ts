@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { isPageVisible } from "@/lib/mobilePerformance";
 import { HUB_CENTER, orbitPosition, tickOrbit, type OrbitalBubble } from "./orbit";
 import type { SignalBroadcast, SignalHubMode } from "./types";
 import {
@@ -13,11 +14,12 @@ import {
 
 type UseSignalNetworkOptions = {
   reducedMotion: boolean;
+  mobileLite?: boolean;
   hubMode: SignalHubMode;
   reorganizeT: number;
 };
 
-export function useSignalNetwork({ reducedMotion, hubMode, reorganizeT }: UseSignalNetworkOptions) {
+export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, reorganizeT }: UseSignalNetworkOptions) {
   const orbitalRef = useRef<OrbitalBubble[]>(buildInitialField());
   const discoveryIdRef = useRef<string | null>(null);
   const hubModeRef = useRef(hubMode);
@@ -80,35 +82,37 @@ export function useSignalNetwork({ reducedMotion, hubMode, reorganizeT }: UseSig
 
     let raf = 0;
     let lastPaint = 0;
-    const PAINT_MS = 50;
+    const PAINT_MS = mobileLite ? 150 : 50;
 
     const loop = (now: number) => {
-      orbitalRef.current = orbitalRef.current.map((b) => tickOrbit(b));
+      if (isPageVisible()) {
+        orbitalRef.current = orbitalRef.current.map((b) => tickOrbit(b));
 
-      if (now - lastPaint >= PAINT_MS) {
-        lastPaint = now;
-        const pullId = discoveryIdRef.current;
-        setBubbles(
-          orbitalRef.current.map((b) => ({
-            ...b,
-            ...orbitPosition(
-              b,
-              hubModeRef.current,
-              reorganizeRef.current,
-              b.id === pullId ? 1 : 0
-            ),
-          }))
-        );
+        if (now - lastPaint >= PAINT_MS) {
+          lastPaint = now;
+          const pullId = discoveryIdRef.current;
+          setBubbles(
+            orbitalRef.current.map((b) => ({
+              ...b,
+              ...orbitPosition(
+                b,
+                hubModeRef.current,
+                reorganizeRef.current,
+                b.id === pullId ? 1 : 0
+              ),
+            }))
+          );
+        }
       }
 
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [reducedMotion, hubMode, reorganizeT, discoveryId]);
+  }, [reducedMotion, mobileLite, hubMode, reorganizeT, discoveryId]);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || mobileLite) return;
 
     const broadcastTimer = setInterval(triggerBroadcast, 6200);
     triggerBroadcast();
@@ -154,7 +158,7 @@ export function useSignalNetwork({ reducedMotion, hubMode, reorganizeT }: UseSig
       clearInterval(discoveryTimer);
       clearInterval(evolveTimer);
     };
-  }, [reducedMotion, triggerBroadcast]);
+  }, [reducedMotion, mobileLite, triggerBroadcast]);
 
   return { bubbles, broadcast, waveActive, hubCenter: HUB_CENTER, discoveryId };
 }

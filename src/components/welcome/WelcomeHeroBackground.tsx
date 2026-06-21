@@ -7,6 +7,7 @@ type WelcomeHeroBackgroundProps = {
   slides: SceneSlide[];
   slideIndex: number;
   reducedMotion: boolean;
+  mobileLite?: boolean;
   parallax: { x: number; y: number };
   energyNorm: number;
   ambientHue: string;
@@ -17,12 +18,14 @@ export default function WelcomeHeroBackground({
   slides,
   slideIndex,
   reducedMotion,
+  mobileLite = false,
   parallax,
   energyNorm,
   ambientHue,
   cinematic = false,
 }: WelcomeHeroBackgroundProps) {
-  const fadeDuration = reducedMotion ? 0.4 : 3.8;
+  const fadeDuration = reducedMotion ? 0.4 : mobileLite ? 1.2 : 3.8;
+  const useBlur = !mobileLite && !reducedMotion;
 
   return (
     <div
@@ -46,11 +49,11 @@ export default function WelcomeHeroBackground({
             initial={false}
             animate={{
               opacity: active ? 1 : 0,
-              filter: active ? "blur(0px)" : "blur(10px)",
+              filter: useBlur ? (active ? "blur(0px)" : "blur(10px)") : "blur(0px)",
             }}
             transition={{ duration: fadeDuration, ease: [0.42, 0, 0.18, 1] }}
           >
-            <div className={`popit-bg-inner ${active && !reducedMotion ? "is-ken-burns is-cinematic" : ""}`}>
+            <div className={`popit-bg-inner ${active && !reducedMotion && !mobileLite ? "is-ken-burns is-cinematic" : ""}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={slide.src}
@@ -85,7 +88,7 @@ export default function WelcomeHeroBackground({
         </>
       )}
 
-      {!reducedMotion && (
+      {!reducedMotion && !mobileLite && (
         <>
           <div className="popit-bg-fog-drift" />
           <div className="popit-bg-lens-flare" />

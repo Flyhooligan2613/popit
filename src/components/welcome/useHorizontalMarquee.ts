@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isPageVisible } from "@/lib/mobilePerformance";
 
 type UseHorizontalMarqueeOptions = {
   speed?: number;
@@ -23,7 +24,7 @@ export function useHorizontalMarquee({
 
     let raf = 0;
     const tick = () => {
-      if (!paused && el.scrollWidth > el.clientWidth) {
+      if (!paused && isPageVisible() && el.scrollWidth > el.clientWidth) {
         el.scrollLeft += speed;
         const half = el.scrollWidth / 2;
         if (half > 0 && el.scrollLeft >= half) {

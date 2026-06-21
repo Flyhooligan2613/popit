@@ -9,6 +9,7 @@ type CityEnergyMeterProps = {
   label: string;
   tier: EnergyTier;
   reducedMotion: boolean;
+  mobileLite?: boolean;
   exploringCount?: number;
   cityName?: string | null;
   onClick?: () => void;
@@ -32,6 +33,7 @@ export default function CityEnergyMeter({
   label,
   tier,
   reducedMotion,
+  mobileLite = false,
   exploringCount = 3590,
   cityName = "Miami",
   onClick,
@@ -102,7 +104,12 @@ export default function CityEnergyMeter({
             transition={{ duration: reducedMotion ? 0.2 : 0.9, ease: [0.16, 1, 0.3, 1] }}
             aria-hidden
           >
-            <CityEnergyFlames intensity={vibrance} blazing={blazing} reducedMotion={reducedMotion} />
+            <CityEnergyFlames
+              intensity={vibrance}
+              blazing={blazing}
+              reducedMotion={reducedMotion}
+              mobileLite={mobileLite}
+            />
           </motion.div>
         )}
         <div className="city-energy-charge" aria-hidden />

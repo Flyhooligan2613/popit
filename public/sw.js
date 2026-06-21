@@ -1,18 +1,15 @@
-const CACHE = "popit-v6-network";
+const CACHE = "popit-v7-icons";
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))).then(() =>
-      self.skipWaiting()
-    )
-  );
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))).then(() =>
-      self.clients.claim()
-    )
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
@@ -42,8 +39,4 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(fetch(request));
-});
-
-self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });

@@ -15,6 +15,7 @@ type WelcomeHeroSectionProps = {
   slide: SceneSlide;
   city: string | null;
   reducedMotion: boolean;
+  mobileLite?: boolean;
   energyNorm: number;
   tier: EnergyTier;
   exploringCount: number;
@@ -33,6 +34,7 @@ export default function WelcomeHeroSection({
   slide,
   city,
   reducedMotion,
+  mobileLite = false,
   energyNorm,
   tier,
   exploringCount,
@@ -95,6 +97,7 @@ export default function WelcomeHeroSection({
           energyNorm={energyNorm}
           tier={tier}
           reducedMotion={reducedMotion}
+          mobileLite={mobileLite}
           city={city}
           hubPhase={hubPhase}
           userAvatar={userAvatar}

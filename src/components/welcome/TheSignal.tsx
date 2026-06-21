@@ -13,6 +13,7 @@ type TheSignalProps = {
   energyNorm: number;
   tier: EnergyTier;
   reducedMotion: boolean;
+  mobileLite?: boolean;
   city?: string | null;
   hubPhase?: SignalHubPhase;
   userAvatar?: string | null;
@@ -24,6 +25,7 @@ export default function TheSignal({
   energyNorm,
   tier,
   reducedMotion,
+  mobileLite = false,
   city,
   hubPhase = "inviting",
   userAvatar,
@@ -34,6 +36,7 @@ export default function TheSignal({
   const hubMode = hubPhase === "inviting" || hubPhase === "pulsing" ? "invite" : "user";
   const { bubbles, broadcast, waveActive, hubCenter, discoveryId } = useSignalNetwork({
     reducedMotion,
+    mobileLite,
     hubMode,
     reorganizeT,
   });

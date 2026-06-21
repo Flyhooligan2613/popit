@@ -20,6 +20,7 @@ import type { WelcomeHomeProps } from "./types";
 import type { SignalHubPhase } from "./signal/types";
 import { useCityEnergy } from "./useCityEnergy";
 import { useTimeOfDay } from "./useTimeOfDay";
+import { useMobileLite } from "@/lib/mobilePerformance";
 import {
   categoryRoute,
   navigateFromWelcome,
@@ -60,6 +61,8 @@ function shouldSkipWelcomeIntro(): boolean {
 
 export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: WelcomeHomeProps) {
   const reducedMotion = useReducedMotion();
+  const mobileLite = useMobileLite();
+  const motionLite = !!reducedMotion || mobileLite;
   const timePeriod = useTimeOfDay();
   const [skipWelcomeIntro] = useState(shouldSkipWelcomeIntro);
   const [showIntro, setShowIntro] = useState(() => !shouldSkipWelcomeIntro());
@@ -78,7 +81,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const reorganizeRaf = useRef(0);
 
   const { state, pulse, displayEnergy, displayExploring, minuteGain, energyNorm } = useCityEnergy({
-    reducedMotion: !!reducedMotion,
+    reducedMotion: motionLite,
   });
 
   const current = SCENE_SLIDES[slide];
@@ -102,11 +105,9 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   }, [reducedMotion]);
 
   useEffect(() => {
-    SCENE_SLIDES.forEach((s, i) => {
-      if (i <= slide + 2) {
-        const img = new Image();
-        img.src = s.src;
-      }
+    [slide, (slide + 1) % SCENE_SLIDES.length].forEach((i) => {
+      const img = new Image();
+      img.src = SCENE_SLIDES[i].src;
     });
   }, [slide]);
 
@@ -261,14 +262,15 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
       <WelcomeHeroBackground
         slides={SCENE_SLIDES}
         slideIndex={slide}
-        reducedMotion={!!reducedMotion}
+        reducedMotion={motionLite}
+        mobileLite={mobileLite}
         parallax={parallax}
         energyNorm={energyNorm}
         ambientHue={current.ambientHue}
-        cinematic
+        cinematic={!mobileLite}
       />
       <div className="popit-lobby-fog" aria-hidden />
-      <AmbientField active={!reducedMotion && contentVisible} intensity={energyNorm} />
+      <AmbientField active={!motionLite && contentVisible} intensity={energyNorm} />
 
       <motion.div
         className="popit-home-content popit-mock-content"
@@ -285,7 +287,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         <WelcomeHeroSection
           slide={current}
           city={city}
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
+          mobileLite={mobileLite}
           energyNorm={energyNorm}
           tier={state.tier}
           exploringCount={displayExploring}
@@ -307,7 +310,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           value={displayEnergy}
           label={state.label}
           tier={state.tier}
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
+          mobileLite={mobileLite}
           exploringCount={displayExploring}
           cityName={city}
           onClick={() => goTo(WELCOME_TAB_ROUTES.energy)}
@@ -315,14 +319,15 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
         <WhatsPoppingNow
           city={city}
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
+          mobileLite={mobileLite}
           energyNorm={energyNorm}
           onCardAction={() => goTo(WELCOME_TAB_ROUTES.popping)}
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.popping)}
         />
 
         <CityCareerSection
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
           onExplore={() => goTo(WELCOME_TAB_ROUTES.career)}
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.career)}
         />
@@ -345,7 +350,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
         <LiveVenueCards
           venues={LIVE_VENUE_CARDS}
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
+          mobileLite={mobileLite}
           energyNorm={energyNorm}
           onVenueClick={handleVenue}
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.live)}
@@ -353,7 +359,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
         <CityPulse
           channels={pulse}
-          reducedMotion={!!reducedMotion}
+          reducedMotion={motionLite}
           onChannelClick={handlePulseChannel}
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.energy)}
         />

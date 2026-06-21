@@ -6,6 +6,7 @@ type CityEnergyFlamesProps = {
   intensity: number;
   blazing: boolean;
   reducedMotion: boolean;
+  mobileLite?: boolean;
 };
 
 type FlameSlot = {
@@ -165,11 +166,13 @@ function LeadingEdgeFlare({ uid }: { uid: string }) {
   );
 }
 
-export default function CityEnergyFlames({ intensity, blazing, reducedMotion }: CityEnergyFlamesProps) {
+export default function CityEnergyFlames({ intensity, blazing, reducedMotion, mobileLite = false }: CityEnergyFlamesProps) {
   const baseId = useId();
-  const crestCount = blazing ? 10 : Math.max(5, Math.round(intensity * 8));
-  const dripCount = blazing ? 9 : Math.max(3, Math.round(intensity * 6));
-  const distort = !reducedMotion;
+  const crestMax = mobileLite ? 6 : 10;
+  const dripMax = mobileLite ? 4 : 9;
+  const crestCount = blazing ? crestMax : Math.max(mobileLite ? 3 : 5, Math.round(intensity * (mobileLite ? 5 : 8)));
+  const dripCount = blazing ? dripMax : Math.max(mobileLite ? 2 : 3, Math.round(intensity * (mobileLite ? 4 : 6)));
+  const distort = !reducedMotion && !mobileLite;
 
   return (
     <div

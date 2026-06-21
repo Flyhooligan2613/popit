@@ -7,6 +7,7 @@ import ReliableImage from "./ReliableImage";
 type LiveVenueCardsProps = {
   venues: VenueCard[];
   reducedMotion?: boolean;
+  mobileLite?: boolean;
   energyNorm?: number;
   onVenueClick?: (venue: VenueCard) => void;
   onSectionClick?: () => void;
@@ -65,12 +66,13 @@ function VenueCardItem({ venue, onClick }: { venue: VenueCard; onClick?: () => v
 export default function LiveVenueCards({
   venues,
   reducedMotion = false,
+  mobileLite = false,
   energyNorm = 0.5,
   onVenueClick,
   onSectionClick,
 }: LiveVenueCardsProps) {
   const viewportRef = useHorizontalMarquee({
-    speed: reducedMotion ? 0 : 0.35 + energyNorm * 0.25,
+    speed: reducedMotion ? 0 : mobileLite ? 0.22 + energyNorm * 0.12 : 0.35 + energyNorm * 0.25,
     paused: false,
     enabled: !reducedMotion && venues.length > 1,
   });
