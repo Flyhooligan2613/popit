@@ -273,6 +273,34 @@
   mix-blend-mode: screen;
 }
 
+.city-energy-flame-strip-svg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  transform-origin: bottom center;
+  opacity: calc(0.82 + var(--flame-intensity, 1) * 0.18);
+  filter: drop-shadow(0 0 14px rgba(255, 70, 0, calc(0.45 + var(--flame-intensity, 1) * 0.4)))
+    drop-shadow(0 -4px 16px rgba(255, 210, 60, calc(0.35 + var(--flame-intensity, 1) * 0.4)));
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+
+.city-energy-flame-strip-body {
+  transform-origin: bottom center;
+}
+
+.city-energy-flame-strip-outline {
+  transform-origin: bottom center;
+}
+
+.city-energy-flame-strip-core {
+  transform-origin: 200px 46px;
+}
+
 .city-energy-flame-tongue {
   position: absolute;
   bottom: 0;
@@ -335,6 +363,12 @@
   overflow: visible;
 }
 
+.city-energy-fire-stack.is-blazing .city-energy-flame-strip-svg {
+  height: 108%;
+  filter: drop-shadow(0 0 18px rgba(255, 70, 0, calc(0.55 + var(--flame-intensity, 1) * 0.45)))
+    drop-shadow(0 -6px 22px rgba(255, 210, 60, calc(0.45 + var(--flame-intensity, 1) * 0.45)));
+}
+
 .city-energy-fire-stack.is-blazing .city-energy-flame-tongue {
   width: clamp(1.45rem, 5.8vw, 2rem);
   height: clamp(2.5rem, 8vh, 3.4rem);
@@ -390,13 +424,16 @@
   opacity: calc(0.7 + var(--energy-vibrance, 1) * 0.3);
 }
 
-.city-energy-fire-stack.is-static .city-energy-flame-tongue,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-svg,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-body,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-outline,
+.city-energy-fire-stack.is-static .city-energy-flame-strip-core,
 .city-energy-fire-stack.is-static .city-energy-fire-drip,
 .city-energy-fire-stack.is-static .city-energy-flame-tip {
   animation: none !important;
 }
 
-.city-energy-fire-stack.is-static .city-energy-flame-outer,
+.city-energy-fire-stack.is-static .city-energy-flame-tongue,
 .city-energy-fire-stack.is-static .city-energy-flame-core,
 .city-energy-fire-stack.is-static .city-energy-flame-wisp,
 .city-energy-fire-stack.is-static .city-energy-drip-body {
@@ -406,6 +443,18 @@
 @media (prefers-reduced-motion: no-preference) {
   .city-energy-fill-fire-coat {
     animation: bar-fire-coat-flicker calc(1.8s - var(--energy-vibrance, 1) * 0.6s) ease-in-out infinite;
+  }
+
+  .city-energy-flame-strip-svg {
+    animation: flame-strip-sway calc(0.55s - var(--flame-intensity, 1) * 0.12s) ease-in-out infinite alternate;
+  }
+
+  .city-energy-flame-strip-outline {
+    animation: flame-strip-outline-pulse 0.48s ease-in-out infinite alternate;
+  }
+
+  .city-energy-flame-strip-core {
+    animation: flame-strip-core-flicker 0.36s ease-in-out infinite alternate;
   }
 
   .city-energy-flame-tongue-1 {
@@ -460,6 +509,18 @@
     transform-origin: top center;
   }
 
+  .city-energy-fire-stack.is-blazing .city-energy-flame-strip-svg {
+    animation: flame-strip-sway-blaze calc(0.32s - var(--flame-intensity, 1) * 0.08s) ease-in-out infinite alternate;
+  }
+
+  .city-energy-fire-stack.is-blazing .city-energy-flame-strip-outline {
+    animation: flame-strip-outline-pulse 0.28s ease-in-out infinite alternate;
+  }
+
+  .city-energy-fire-stack.is-blazing .city-energy-flame-strip-core {
+    animation: flame-strip-core-flicker 0.22s ease-in-out infinite alternate;
+  }
+
   .city-energy-fire-stack.is-blazing .city-energy-flame-tongue-1 {
     animation: flame-dance-blaze-1 0.28s ease-in-out infinite;
     animation-delay: var(--flame-delay, 0s);
@@ -493,6 +554,26 @@
   25% { opacity: calc(0.65 + var(--energy-vibrance, 1) * 0.35); filter: brightness(1.15); }
   50% { opacity: calc(0.55 + var(--energy-vibrance, 1) * 0.45); filter: brightness(0.95); }
   75% { opacity: calc(0.72 + var(--energy-vibrance, 1) * 0.28); filter: brightness(1.08); }
+}
+
+@keyframes flame-strip-sway {
+  from { transform: scaleY(1) scaleX(1); }
+  to { transform: scaleY(1.07) scaleX(1.015); }
+}
+
+@keyframes flame-strip-sway-blaze {
+  from { transform: scaleY(1) scaleX(1); }
+  to { transform: scaleY(1.12) scaleX(1.02); }
+}
+
+@keyframes flame-strip-outline-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.92; }
+}
+
+@keyframes flame-strip-core-flicker {
+  from { opacity: 1; filter: brightness(1); }
+  to { opacity: 0.94; filter: brightness(1.12); }
 }
 
 @keyframes flame-edge-pulse {
