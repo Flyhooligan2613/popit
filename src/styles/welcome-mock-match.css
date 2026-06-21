@@ -231,10 +231,190 @@
 }
 
 .city-energy-track-flame {
+  position: relative;
   height: clamp(0.65rem, 1.8vh, 0.85rem);
   border-radius: 9999px;
   overflow: visible;
+  margin-top: clamp(1.75rem, 5vh, 2.35rem);
+}
+
+.city-energy-mock.is-blazing .city-energy-track-flame {
+  margin-top: clamp(2.1rem, 6vh, 2.85rem);
+}
+
+.city-energy-mock.is-cooling .city-energy-track-flame {
   margin-top: 0.45rem;
+}
+
+.city-energy-flame-crest {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: clamp(2.2rem, 6.5vh, 3.1rem);
+  overflow: visible;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.city-energy-flames {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --flame-intensity: 1;
+  mix-blend-mode: screen;
+}
+
+.city-energy-flame-tongue {
+  position: absolute;
+  bottom: -4px;
+  width: clamp(1.15rem, 4.8vw, 1.55rem);
+  height: clamp(1.85rem, 6.2vh, 2.65rem);
+  transform: translateX(-50%) scale(var(--flame-scale, 1));
+  transform-origin: bottom center;
+  opacity: calc(0.65 + var(--flame-intensity, 1) * 0.35);
+  filter: drop-shadow(0 0 10px rgba(255, 80, 0, calc(0.45 + var(--flame-intensity, 1) * 0.5)))
+    drop-shadow(0 -4px 16px rgba(255, 200, 60, calc(0.35 + var(--flame-intensity, 1) * 0.45)))
+    drop-shadow(0 0 4px rgba(255, 255, 220, calc(0.2 + var(--flame-intensity, 1) * 0.4)));
+  transition: opacity 0.8s ease, filter 0.8s ease, height 0.8s ease, width 0.8s ease;
+}
+
+.city-energy-flame-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.city-energy-flame-halo {
+  opacity: calc(0.5 + var(--flame-intensity, 1) * 0.4);
+}
+
+.city-energy-flame-wisp {
+  transform-origin: bottom center;
+}
+
+.city-energy-flames.is-blazing .city-energy-flame-tongue {
+  width: clamp(1.35rem, 5.5vw, 1.85rem);
+  height: clamp(2.35rem, 7.5vh, 3.25rem);
+  bottom: -6px;
+}
+
+.city-energy-flames.is-blazing .city-energy-flame-halo {
+  opacity: 0.95;
+}
+
+.city-energy-flames.is-static .city-energy-flame-tongue {
+  animation: none !important;
+}
+
+.city-energy-flames.is-static .city-energy-flame-outer,
+.city-energy-flames.is-static .city-energy-flame-core,
+.city-energy-flames.is-static .city-energy-flame-wisp {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .city-energy-flame-tongue-1 {
+    animation: flame-dance-1 0.42s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flame-tongue-2 {
+    animation: flame-dance-2 0.51s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flame-tongue-3 {
+    animation: flame-dance-3 0.47s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flame-outer {
+    animation: flame-tip-flicker 0.55s ease-in-out infinite alternate;
+  }
+
+  .city-energy-flame-core {
+    animation: flame-core-pulse 0.32s ease-in-out infinite alternate;
+  }
+
+  .city-energy-flame-wisp {
+    animation: flame-wisp-sway 0.68s ease-in-out infinite alternate;
+  }
+
+  .city-energy-flames.is-blazing .city-energy-flame-tongue-1 {
+    animation: flame-dance-blaze-1 0.28s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flames.is-blazing .city-energy-flame-tongue-2 {
+    animation: flame-dance-blaze-2 0.34s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flames.is-blazing .city-energy-flame-tongue-3 {
+    animation: flame-dance-blaze-3 0.31s ease-in-out infinite;
+    animation-delay: var(--flame-delay, 0s);
+  }
+
+  .city-energy-flames.is-blazing .city-energy-flame-outer {
+    animation: flame-tip-flicker 0.22s ease-in-out infinite alternate;
+  }
+
+  .city-energy-flames.is-blazing .city-energy-flame-core {
+    animation: flame-core-pulse 0.18s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes flame-dance-1 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleX(1) scaleY(1) rotate(0deg); }
+  25% { transform: translateX(calc(-50% - 3px)) scale(var(--flame-scale, 1)) scaleX(0.86) scaleY(1.14) rotate(-5deg); }
+  50% { transform: translateX(calc(-50% + 1px)) scale(var(--flame-scale, 1)) scaleX(1.06) scaleY(0.94) rotate(2deg); }
+  75% { transform: translateX(calc(-50% + 3px)) scale(var(--flame-scale, 1)) scaleX(0.92) scaleY(1.08) rotate(4deg); }
+}
+
+@keyframes flame-dance-2 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleX(1) scaleY(1) rotate(0deg); }
+  30% { transform: translateX(calc(-50% + 2px)) scale(var(--flame-scale, 1)) scaleX(1.12) scaleY(0.88) rotate(5deg); }
+  60% { transform: translateX(calc(-50% - 2px)) scale(var(--flame-scale, 1)) scaleX(0.88) scaleY(1.1) rotate(-4deg); }
+}
+
+@keyframes flame-dance-3 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleX(1) scaleY(1); }
+  40% { transform: translateX(calc(-50% - 1px)) scale(var(--flame-scale, 1)) scaleX(0.9) scaleY(1.15); }
+  80% { transform: translateX(calc(-50% + 2px)) scale(var(--flame-scale, 1)) scaleX(1.08) scaleY(0.9); }
+}
+
+@keyframes flame-dance-blaze-1 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleX(1) scaleY(1) rotate(0deg); }
+  20% { transform: translateX(calc(-50% - 4px)) scale(var(--flame-scale, 1)) scaleX(0.82) scaleY(1.22) rotate(-7deg); }
+  45% { transform: translateX(calc(-50% + 2px)) scale(var(--flame-scale, 1)) scaleX(1.1) scaleY(0.88) rotate(4deg); }
+  70% { transform: translateX(calc(-50% + 4px)) scale(var(--flame-scale, 1)) scaleX(0.9) scaleY(1.15) rotate(6deg); }
+}
+
+@keyframes flame-dance-blaze-2 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleX(1) scaleY(1) rotate(0deg); }
+  35% { transform: translateX(calc(-50% + 3px)) scale(var(--flame-scale, 1)) scaleX(1.14) scaleY(0.86) rotate(6deg); }
+  65% { transform: translateX(calc(-50% - 3px)) scale(var(--flame-scale, 1)) scaleX(0.84) scaleY(1.18) rotate(-5deg); }
+}
+
+@keyframes flame-dance-blaze-3 {
+  0%, 100% { transform: translateX(-50%) scale(var(--flame-scale, 1)) scaleY(1); }
+  50% { transform: translateX(calc(-50% + 1px)) scale(var(--flame-scale, 1)) scaleX(0.88) scaleY(1.2); }
+}
+
+@keyframes flame-tip-flicker {
+  from { opacity: 0.82; }
+  to { opacity: 1; }
+}
+
+@keyframes flame-core-pulse {
+  from { opacity: 0.78; transform: scaleY(0.92) scaleX(0.98); transform-origin: bottom center; }
+  to { opacity: 1; transform: scaleY(1.08) scaleX(1.02); transform-origin: bottom center; }
+}
+
+@keyframes flame-wisp-sway {
+  from { opacity: 0.3; transform: scaleX(0.92) scaleY(0.96) rotate(-3deg); transform-origin: bottom center; }
+  to { opacity: 0.55; transform: scaleX(1.08) scaleY(1.04) rotate(4deg); transform-origin: bottom center; }
 }
 
 .city-energy-fill-flame {
@@ -291,27 +471,10 @@
 }
 
 .city-energy-mock.is-cooling .city-energy-spark,
-.city-energy-mock.is-cooling .city-energy-flame,
-.city-energy-mock.is-cooling .city-energy-heat {
+.city-energy-mock.is-cooling .city-energy-flame-crest,
+.city-energy-mock.is-cooling .city-energy-ember {
   opacity: 0;
   visibility: hidden;
-}
-
-.city-energy-mock .city-energy-flame {
-  opacity: calc(0.45 + var(--energy-vibrance) * 0.55);
-  transition: opacity 0.8s ease;
-}
-
-.city-energy-mock.is-blazing .city-energy-flame {
-  height: 16px;
-  filter: blur(0.5px) saturate(calc(0.8 + var(--energy-vibrance) * 0.4));
-}
-
-.city-energy-flame-3 {
-  right: 22%;
-  height: 14px;
-  width: 7px;
-  animation: flame-flicker 0.62s ease-in-out infinite 0.28s;
 }
 
 .city-energy-ember {

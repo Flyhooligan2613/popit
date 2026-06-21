@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import CityEnergyFlames from "./CityEnergyFlames";
 import type { EnergyTier } from "./types";
 
 type CityEnergyMeterProps = {
@@ -91,6 +92,17 @@ export default function CityEnergyMeter({
           animate={{ width: fillPct }}
           transition={{ duration: reducedMotion ? 0.2 : 0.9, ease: [0.16, 1, 0.3, 1] }}
         />
+        {showFlames && (
+          <motion.div
+            className="city-energy-flame-crest"
+            initial={false}
+            animate={{ width: fillPct }}
+            transition={{ duration: reducedMotion ? 0.2 : 0.9, ease: [0.16, 1, 0.3, 1] }}
+            aria-hidden
+          >
+            <CityEnergyFlames intensity={vibrance} blazing={blazing} reducedMotion={reducedMotion} />
+          </motion.div>
+        )}
         <div className="city-energy-charge" aria-hidden />
         <div className="city-energy-stream" aria-hidden />
         {!reducedMotion && (
@@ -107,19 +119,11 @@ export default function CityEnergyMeter({
             <span className="city-energy-spark city-energy-spark-3" aria-hidden />
           </>
         )}
-        {!reducedMotion && showFlames && (
+        {!reducedMotion && blazing && (
           <>
-            <span className="city-energy-flame city-energy-flame-1" aria-hidden />
-            <span className="city-energy-flame city-energy-flame-2" aria-hidden />
-            <span className="city-energy-flame city-energy-flame-3" aria-hidden />
-            <span className="city-energy-heat" aria-hidden />
-            {blazing && (
-              <>
-                <span className="city-energy-ember city-energy-ember-1" aria-hidden />
-                <span className="city-energy-ember city-energy-ember-2" aria-hidden />
-                <span className="city-energy-ember city-energy-ember-3" aria-hidden />
-              </>
-            )}
+            <span className="city-energy-ember city-energy-ember-1" aria-hidden />
+            <span className="city-energy-ember city-energy-ember-2" aria-hidden />
+            <span className="city-energy-ember city-energy-ember-3" aria-hidden />
           </>
         )}
       </div>
