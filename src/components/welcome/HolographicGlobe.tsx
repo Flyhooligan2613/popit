@@ -11,6 +11,13 @@ type HolographicGlobeProps = {
   large?: boolean;
 };
 
+const TRAVEL_PATHS = [
+  "M 68 62 Q 50 38 72 42",
+  "M 62 48 Q 48 55 52 56",
+  "M 22 50 Q 45 48 68 62",
+  "M 72 42 Q 58 50 62 48",
+];
+
 export default function HolographicGlobe({
   energyNorm,
   tier,
@@ -34,10 +41,13 @@ export default function HolographicGlobe({
   for (let i = 0; i < activeNodes.length - 1; i++) {
     arcs.push({ from: activeNodes[i], to: activeNodes[i + 1] });
   }
+  if (activeNodes.length > 2) {
+    arcs.push({ from: activeNodes[0], to: activeNodes[activeNodes.length - 1] });
+  }
 
   return (
     <div
-      className={`holo-globe holo-globe-v3 holo-globe-mock holo-globe-polish ${large ? "is-large" : ""} ${ignited ? "is-ignited" : ""} tier-${tier}`}
+      className={`holo-globe holo-globe-v3 holo-globe-mock holo-globe-polish holo-globe-v2 ${large ? "is-large" : ""} ${ignited ? "is-ignited" : ""} tier-${tier}`}
       aria-label="POP'IT network core"
       style={{ "--globe-energy": String(energyNorm) } as Record<string, string>}
     >
@@ -54,8 +64,20 @@ export default function HolographicGlobe({
             <span className="holo-globe-scan-ring" aria-hidden />
             <span className="holo-globe-scan-ring holo-globe-scan-ring-2" aria-hidden />
             <span className="holo-globe-energy-wave" aria-hidden />
-            <span className="holo-globe-travel-pulse" aria-hidden />
-            {Array.from({ length: 6 }).map((_, i) => (
+            {TRAVEL_PATHS.map((path, i) => (
+              <span
+                key={path}
+                className="holo-globe-travel-pulse"
+                aria-hidden
+                style={
+                  {
+                    offsetPath: `path('${path}')`,
+                    animationDelay: `${i * 0.65}s`,
+                  } as Record<string, string>
+                }
+              />
+            ))}
+            {Array.from({ length: 8 }).map((_, i) => (
               <span key={i} className={`holo-globe-particle holo-globe-particle-${(i % 4) + 1}`} aria-hidden />
             ))}
           </>
@@ -78,6 +100,15 @@ export default function HolographicGlobe({
                 style={{ animationDelay: `${i * 0.25}s` }}
               />
             ))}
+            {!reducedMotion &&
+              arcs.map(({ from, to }, i) => (
+                <path
+                  key={`flow-${from.id}-${to.id}`}
+                  className="holo-globe-energy-flow"
+                  d={`M ${from.x} ${from.y} Q 50 ${50 - energyNorm * 12} ${to.x} ${to.y}`}
+                  style={{ animationDelay: `${i * 0.4 + 0.2}s` }}
+                />
+              ))}
           </svg>
 
           {nodes.map((node) => (

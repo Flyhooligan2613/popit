@@ -18,6 +18,7 @@ export function useCityEnergy({
 }: UseCityEnergyOptions) {
   const [energy, setEnergy] = useState(initialEnergy);
   const [exploringCount, setExploringCount] = useState(initialExploring);
+  const [minuteGain, setMinuteGain] = useState(18);
   const [pulse, setPulse] = useState<PulseChannel[]>(PULSE_CHANNELS);
 
   const tier = energyTierFromValue(energy);
@@ -50,7 +51,8 @@ export function useCityEnergy({
 
     const exploreTimer = setInterval(() => {
       setExploringCount((c) => c + 1 + Math.floor(Math.random() * 3));
-    }, 3200);
+      setMinuteGain((m) => m + 1 + Math.floor(Math.random() * 2));
+    }, 4200);
 
     const pulseTimer = setInterval(() => {
       setPulse((channels) =>
@@ -67,10 +69,15 @@ export function useCityEnergy({
       );
     }, 5500);
 
+    const minuteReset = setInterval(() => {
+      setMinuteGain(8 + Math.floor(Math.random() * 14));
+    }, 60_000);
+
     return () => {
       clearInterval(energyTimer);
       clearInterval(exploreTimer);
       clearInterval(pulseTimer);
+      clearInterval(minuteReset);
     };
   }, [reducedMotion]);
 
@@ -79,6 +86,7 @@ export function useCityEnergy({
     pulse,
     displayEnergy,
     displayExploring,
+    minuteGain,
     energyNorm: energy / 100,
   };
 }

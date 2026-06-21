@@ -6,20 +6,28 @@ import { useAnimatedNumber } from "@/components/pulse/useAnimatedNumber";
 type LiveNowBadgeProps = {
   exploringCount: number;
   todayGain?: number;
+  minuteGain?: number;
   avatarUrls?: string[];
+  compact?: boolean;
 };
 
-export default function LiveNowBadge({ exploringCount, todayGain = 342, avatarUrls = [] }: LiveNowBadgeProps) {
+export default function LiveNowBadge({
+  exploringCount,
+  todayGain = 342,
+  minuteGain,
+  avatarUrls = [],
+  compact = false,
+}: LiveNowBadgeProps) {
   const reducedMotion = useReducedMotion();
-  const display = useAnimatedNumber(exploringCount, reducedMotion ? 0 : 650);
-  const gain = useAnimatedNumber(todayGain, reducedMotion ? 0 : 800);
+  const display = useAnimatedNumber(exploringCount, reducedMotion ? 0 : 720);
+  const minute = useAnimatedNumber(minuteGain ?? todayGain, reducedMotion ? 0 : 850);
 
   return (
-    <div className="live-now-badge live-now-badge-mock live-now-badge-polish">
+    <div className={`live-now-badge live-now-badge-mock live-now-badge-polish live-now-badge-v2 ${compact ? "is-compact" : ""}`}>
       <motion.span
         className="live-now-pill font-body"
-        animate={reducedMotion ? undefined : { scale: [1, 1.025, 1] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        animate={reducedMotion ? undefined : { scale: [1, 1.018, 1] }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <span className="live-now-dot" aria-hidden />
         <span className="live-now-pill-glow" aria-hidden />
@@ -28,14 +36,16 @@ export default function LiveNowBadge({ exploringCount, todayGain = 342, avatarUr
       <motion.span
         key={display}
         className="live-now-count font-display"
-        initial={{ opacity: 0.85, y: 1 }}
+        initial={{ opacity: 0.88, y: 1 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         {display.toLocaleString()} Exploring
       </motion.span>
-      <span className="live-now-today font-body">+{gain.toLocaleString()} today</span>
-      {avatarUrls.length > 0 && (
+      <span className="live-now-minute font-body">
+        +{minute.toLocaleString()} this minute
+      </span>
+      {!compact && avatarUrls.length > 0 && (
         <div className="live-now-avatars" aria-hidden>
           {avatarUrls.map((url, i) => (
             // eslint-disable-next-line @next/next/no-img-element

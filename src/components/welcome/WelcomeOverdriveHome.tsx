@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import BackNavButton from "@/components/nav/BackNavButton";
@@ -8,16 +8,12 @@ import AmbientField from "./AmbientField";
 import CategoryCard from "./CategoryCard";
 import CityEnergyMeter from "./CityEnergyMeter";
 import CityPulse from "./CityPulse";
-import CityStatusPanel from "./CityStatusPanel";
-import HolographicGlobe from "./HolographicGlobe";
-import LiveNowBadge from "./LiveNowBadge";
 import LiveVenueCards from "./LiveVenueCards";
 import StartExploringButton from "./StartExploringButton";
 import WelcomeHeroBackground from "./WelcomeHeroBackground";
 import WhatsPoppingNow from "./WhatsPoppingNow";
 import WelcomeBottomNav from "./WelcomeBottomNav";
-import WelcomeHeaderBrand from "./WelcomeHeaderBrand";
-import HeroAssembleText from "./HeroAssembleText";
+import WelcomeHeroSection from "./WelcomeHeroSection";
 import { CATEGORY_CARDS, LIVE_AVATAR_STACK, LIVE_VENUE_CARDS, SCENE_SLIDES, TRENDING_CREATORS } from "./data";
 import type { WelcomeHomeProps } from "./types";
 import { useCityEnergy } from "./useCityEnergy";
@@ -47,7 +43,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [isDesktop, setIsDesktop] = useState(false);
   const joinLock = useRef(false);
 
-  const { state, pulse, displayEnergy, displayExploring, energyNorm } = useCityEnergy({
+  const { state, pulse, displayEnergy, displayExploring, minuteGain, energyNorm } = useCityEnergy({
     reducedMotion: !!reducedMotion,
   });
 
@@ -153,7 +149,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
   return (
     <div
-      className={`popit-home popit-mock-match popit-polish-v1 popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
+      className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""}`}
       style={
         {
           "--city-energy": String(energyNorm),
@@ -172,6 +168,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         parallax={parallax}
         energyNorm={energyNorm}
         ambientHue={current.ambientHue}
+        cinematic
       />
       <div className="popit-lobby-fog" aria-hidden />
       <AmbientField active={!reducedMotion && contentVisible} intensity={energyNorm} />
@@ -188,31 +185,16 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           </div>
         )}
 
-        <header className="welcome-mock-header">
-          <CityStatusPanel city={city} />
-          <WelcomeHeaderBrand />
-          <LiveNowBadge exploringCount={displayExploring} todayGain={342} avatarUrls={LIVE_AVATAR_STACK} />
-        </header>
-
-        <section className="welcome-mock-hero-zone" aria-label="City network">
-          <AnimatePresence mode="wait">
-            <HeroAssembleText
-              key={current.id}
-              slideKey={current.id}
-              top={current.headlineTop}
-              accent={current.headlineAccent}
-              city={city ? `IN ${city.toUpperCase()}` : "NEAR YOU"}
-              subtitle={current.subtitle}
-            />
-          </AnimatePresence>
-          <HolographicGlobe
-            energyNorm={energyNorm}
-            tier={state.tier}
-            reducedMotion={!!reducedMotion}
-            focusCity={city}
-            large
-          />
-        </section>
+        <WelcomeHeroSection
+          slide={current}
+          city={city}
+          reducedMotion={!!reducedMotion}
+          energyNorm={energyNorm}
+          tier={state.tier}
+          exploringCount={displayExploring}
+          minuteGain={minuteGain}
+          avatarUrls={LIVE_AVATAR_STACK}
+        />
 
         <CityEnergyMeter
           value={displayEnergy}

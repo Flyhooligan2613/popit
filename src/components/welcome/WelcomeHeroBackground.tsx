@@ -10,6 +10,7 @@ type WelcomeHeroBackgroundProps = {
   parallax: { x: number; y: number };
   energyNorm: number;
   ambientHue: string;
+  cinematic?: boolean;
 };
 
 export default function WelcomeHeroBackground({
@@ -19,12 +20,13 @@ export default function WelcomeHeroBackground({
   parallax,
   energyNorm,
   ambientHue,
+  cinematic = false,
 }: WelcomeHeroBackgroundProps) {
   const fadeDuration = reducedMotion ? 0.4 : 3.8;
 
   return (
     <div
-      className="popit-bg-stage popit-bg-stage-v3"
+      className={`popit-bg-stage popit-bg-stage-v3 ${cinematic ? "is-cinematic-v2" : ""}`}
       aria-hidden
       style={
         {
@@ -44,7 +46,7 @@ export default function WelcomeHeroBackground({
             initial={false}
             animate={{
               opacity: active ? 1 : 0,
-              filter: active ? "blur(0px)" : "blur(8px)",
+              filter: active ? "blur(0px)" : "blur(10px)",
             }}
             transition={{ duration: fadeDuration, ease: [0.42, 0, 0.18, 1] }}
           >
@@ -60,6 +62,7 @@ export default function WelcomeHeroBackground({
               />
             </div>
             <div className="popit-bg-scene-overlay" style={{ opacity: slide.overlay }} />
+            {cinematic && <div className="popit-bg-depth-blur" aria-hidden />}
           </motion.div>
         );
       })}
@@ -72,6 +75,16 @@ export default function WelcomeHeroBackground({
       <div className="popit-bg-neon-reflect" />
       <div className="popit-bg-blur-veil" />
 
+      {cinematic && (
+        <>
+          <div className="popit-bg-rim-orange" aria-hidden />
+          <div className="popit-bg-rim-blue" aria-hidden />
+          <div className="popit-bg-rim-purple" aria-hidden />
+          <div className="popit-bg-light-leak popit-bg-light-leak-1" aria-hidden />
+          <div className="popit-bg-light-leak popit-bg-light-leak-2" aria-hidden />
+        </>
+      )}
+
       {!reducedMotion && (
         <>
           <div className="popit-bg-fog-drift" />
@@ -79,7 +92,11 @@ export default function WelcomeHeroBackground({
           <div className="popit-bg-city-shimmer" />
           <div className="popit-bg-headlight popit-bg-headlight-1" />
           <div className="popit-bg-headlight popit-bg-headlight-2" />
-          <div className="popit-bg-rain" />
+          <div className="popit-bg-dust-field">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <span key={i} className={`popit-bg-dust popit-bg-dust-${(i % 6) + 1}`} />
+            ))}
+          </div>
           <div className="popit-bg-float-particles">
             {Array.from({ length: 8 }).map((_, i) => (
               <span key={i} className={`popit-bg-particle popit-bg-particle-${i + 1}`} />

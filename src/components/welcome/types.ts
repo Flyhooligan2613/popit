@@ -43,6 +43,7 @@ export type SceneSlide = {
   alt: string;
   headlineTop: string;
   headlineAccent: string;
+  heroSupport: string;
   subtitle: string;
   overlay: number;
   ambientHue: string;
