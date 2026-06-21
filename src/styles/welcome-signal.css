@@ -486,8 +486,27 @@
   text-align: left;
   transform: translate(-50%, -50%) translateZ(var(--signal-z, 0px)) scale(var(--signal-scale, 1));
   filter: blur(var(--signal-blur, 0px));
-  transition: box-shadow 0.45s ease, border-color 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  transition: box-shadow 0.45s ease, border-color 0.45s ease;
+  will-change: left, top;
+}
+
+.signal-bubble-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.06rem;
+  width: 100%;
+}
+
+.signal-bubble:hover {
+  z-index: 15;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.signal-bubble:active {
+  transform: translate(-50%, -50%) translateZ(var(--signal-z, 0px)) scale(calc(var(--signal-scale, 1) * 0.97));
 }
 
 .signal-bubble-glass {
@@ -560,6 +579,161 @@
 
 .signal-bubble.is-illuminated .signal-bubble-glow {
   opacity: 1;
+}
+
+/* Lit bubbles — electric shock waves */
+.signal-bubble.is-lit {
+  border-color: color-mix(in srgb, var(--signal-accent) 50%, rgba(255, 255, 255, 0.2));
+}
+
+.signal-bubble.is-lit .signal-bubble-glow {
+  opacity: 0.85;
+  animation: signal-lit-glow-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes signal-lit-glow-pulse {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.signal-bubble-electric-rim {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.1) 0%, rgba(8, 12, 22, 0.82) 50%, rgba(6, 8, 14, 0.9) 100%) padding-box,
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--signal-accent) 90%, #fff),
+      #00d4ff,
+      color-mix(in srgb, var(--signal-accent) 70%, transparent),
+      #fff
+    ) border-box;
+  opacity: 0.75;
+  animation: signal-electric-rim 2.8s linear infinite;
+}
+
+@keyframes signal-electric-rim {
+  0% { filter: hue-rotate(0deg) brightness(1); opacity: 0.6; }
+  25% { opacity: 1; }
+  50% { filter: hue-rotate(25deg) brightness(1.15); opacity: 0.75; }
+  75% { opacity: 0.95; }
+  100% { filter: hue-rotate(0deg) brightness(1); opacity: 0.6; }
+}
+
+.signal-bubble-shock {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: visible;
+}
+
+.signal-shock-ring {
+  position: absolute;
+  inset: 18%;
+  border-radius: 0.65rem;
+  border: 1.5px solid color-mix(in srgb, var(--signal-accent) 75%, #fff);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--signal-accent) 70%, transparent),
+    0 0 20px color-mix(in srgb, #00d4ff 35%, transparent),
+    inset 0 0 8px color-mix(in srgb, var(--signal-accent) 25%, transparent);
+  opacity: 0;
+}
+
+.signal-shock-ring-1 {
+  animation: signal-shock-expand 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.signal-shock-ring-2 {
+  animation: signal-shock-expand 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite 0.8s;
+}
+
+.signal-shock-ring-3 {
+  animation: signal-shock-expand 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite 1.6s;
+}
+
+@keyframes signal-shock-expand {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.85;
+  }
+  65% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.signal-shock-arc {
+  position: absolute;
+  width: 130%;
+  height: 2px;
+  left: -15%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--signal-accent) 80%, transparent) 25%,
+    #fff 50%,
+    #00d4ff 75%,
+    transparent 100%
+  );
+  opacity: 0;
+  filter: blur(0.4px);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--signal-accent) 90%, transparent);
+}
+
+.signal-shock-arc-1 {
+  top: 18%;
+  transform: rotate(-28deg);
+  animation: signal-shock-flicker 2.1s ease-in-out infinite;
+}
+
+.signal-shock-arc-2 {
+  bottom: 22%;
+  transform: rotate(32deg);
+  animation: signal-shock-flicker 2.6s ease-in-out infinite 0.7s;
+}
+
+@keyframes signal-shock-flicker {
+  0%, 100% { opacity: 0; }
+  6%, 14% { opacity: 0.95; }
+  22% { opacity: 0; }
+  48%, 52% { opacity: 0.7; }
+  58% { opacity: 0; }
+}
+
+.signal-shock-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px #00d4ff, 0 0 10px var(--signal-accent);
+  opacity: 0;
+}
+
+.signal-shock-spark-1 {
+  top: 8%;
+  right: 12%;
+  animation: signal-shock-spark 1.9s ease-in-out infinite;
+}
+
+.signal-shock-spark-2 {
+  bottom: 10%;
+  left: 10%;
+  animation: signal-shock-spark 2.3s ease-in-out infinite 0.9s;
+}
+
+@keyframes signal-shock-spark {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  12%, 18% { opacity: 1; transform: scale(1.2); }
+  30% { opacity: 0; transform: scale(0.5); }
 }
 
 .signal-bubble.is-discovered {
@@ -723,7 +897,16 @@
   .signal-broadcast-wave,
   .signal-env-flare,
   .signal-env-particle,
-  .signal-bubble.is-discovered {
+  .signal-bubble.is-discovered,
+  .signal-bubble.is-lit .signal-bubble-glow,
+  .signal-bubble-electric-rim,
+  .signal-shock-ring,
+  .signal-shock-arc,
+  .signal-shock-spark {
     animation: none !important;
+  }
+
+  .signal-bubble.is-lit .signal-bubble-glow {
+    opacity: 0.85;
   }
 }

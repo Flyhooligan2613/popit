@@ -19,11 +19,11 @@ export function orbitPosition(
 ): Pick<SignalBubble, "x" | "y" | "z" | "scale"> {
   const userPull = hubMode === "user" ? reorganizeT * bubble.personalWeight * 0.22 : 0;
   const pull = userPull + discoveryPull * 0.12;
-  const radius = Math.max(12, (bubble.orbitRadius - pull * bubble.orbitRadius) + Math.sin(bubble.wobblePhase) * bubble.wobbleAmp);
+  const radius = Math.max(12, (bubble.orbitRadius - pull * bubble.orbitRadius) + Math.sin(bubble.wobblePhase) * bubble.wobbleAmp * 0.55);
   const x = HUB_CENTER.x + Math.cos(bubble.orbitAngle) * radius * 0.92;
   const y = HUB_CENTER.y + Math.sin(bubble.orbitAngle) * radius * 0.68;
   const depthNorm = bubble.orbitRadius / 42;
-  const z = bubble.z + Math.sin(bubble.wobblePhase * 0.7) * 8;
+  const z = bubble.z + Math.sin(bubble.wobblePhase * 0.7) * 4;
   const scale = bubble.scale * (hubMode === "user" && bubble.personalWeight > 0.6 ? 1 + reorganizeT * 0.06 : 1);
 
   return { x, y, z, scale: scale * (0.92 + (1 - depthNorm) * 0.12) };
