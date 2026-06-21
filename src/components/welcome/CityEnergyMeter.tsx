@@ -91,7 +91,9 @@ export default function CityEnergyMeter({
           initial={false}
           animate={{ width: fillPct }}
           transition={{ duration: reducedMotion ? 0.2 : 0.9, ease: [0.16, 1, 0.3, 1] }}
-        />
+        >
+          {showFlames && <div className="city-energy-fill-fire-coat" aria-hidden />}
+        </motion.div>
         {showFlames && (
           <motion.div
             className="city-energy-flame-crest"
