@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import BackNavButton from "@/components/nav/BackNavButton";
 import AmbientField from "./AmbientField";
+import WelcomeBackgroundMark from "./WelcomeBackgroundMark";
 import CategoryCard from "./CategoryCard";
 import CityEnergyMeter from "./CityEnergyMeter";
 import CityPulse from "./CityPulse";
@@ -270,6 +271,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
         cinematic={!mobileLite}
       />
       <div className="popit-lobby-fog" aria-hidden />
+      <WelcomeBackgroundMark />
       <AmbientField active={!motionLite && contentVisible} intensity={energyNorm} />
 
       <motion.div

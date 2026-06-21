@@ -596,3 +596,69 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
+
+/* Permanent bottom P mark — embedded in the background, never over UI */
+.popit-home-brand-watermark {
+  position: fixed;
+  left: 50%;
+  bottom: calc(-2.5rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(94vw, 26rem);
+  height: min(72vw, 19.5rem);
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.popit-home-brand-watermark__wash {
+  position: absolute;
+  inset: -15% -10% 0;
+  background:
+    radial-gradient(ellipse 85% 70% at 50% 88%, rgba(168, 85, 247, 0.07) 0%, transparent 62%),
+    radial-gradient(ellipse 75% 55% at 50% 95%, rgba(255, 77, 109, 0.05) 0%, transparent 58%),
+    linear-gradient(to top, #050505 8%, rgba(5, 5, 5, 0.92) 38%, rgba(5, 5, 5, 0.55) 62%, transparent 100%);
+}
+
+.popit-home-brand-watermark__mark {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+  filter: saturate(0.75) blur(0.35px);
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 72%,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 68% at 50% 72%,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    transparent 78%
+  );
+}
+
+@media (min-width: 480px) {
+  .popit-home-brand-watermark {
+    width: min(88vw, 30rem);
+    height: min(62vw, 22rem);
+    bottom: calc(-3rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .popit-home-brand-watermark__mark {
+    opacity: 0.18;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popit-home-brand-watermark__mark {
+    filter: saturate(0.7);
+  }
+}
