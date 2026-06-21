@@ -1,49 +1,89 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { SignalNode } from "./types";
-import { buildInitialNetwork, bumpNodeStat, rotateNodeActivity } from "./nodes";
+import { useCallback, useEffect, useState } from "react";
+import type { SignalBroadcast, SignalBubble } from "./types";
+import {
+  buildInitialField,
+  bumpBubbleStats,
+  bubbleDistanceFromHub,
+  rotateBubbleContent,
+  spawnBubble,
+} from "./nodes";
 
 export function useSignalNetwork(reducedMotion: boolean) {
-  const [nodes, setNodes] = useState<SignalNode[]>(() => buildInitialNetwork());
-  const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
-  const [burstTargetId, setBurstTargetId] = useState<string | null>(null);
-  const [burstKey, setBurstKey] = useState(0);
+  const [bubbles, setBubbles] = useState<SignalBubble[]>(() => buildInitialField());
+  const [broadcast, setBroadcast] = useState<SignalBroadcast>({ key: 0, illuminatedIds: [], beam: null });
+  const [waveActive, setWaveActive] = useState(false);
+
+  const triggerBroadcast = useCallback(() => {
+    setBubbles((current) => {
+      if (current.length === 0) return current;
+
+      const sorted = [...current].sort((a, b) => bubbleDistanceFromHub(a) - bubbleDistanceFromHub(b));
+      const near = sorted.slice(0, Math.min(3, sorted.length));
+      const beamTarget = near[Math.floor(Math.random() * near.length)];
+      const illuminated = near.map((b) => b.id);
+
+      setWaveActive(true);
+      setBroadcast({
+        key: Date.now(),
+        illuminatedIds: illuminated,
+        beam: beamTarget
+          ? {
+              key: Date.now(),
+              toBubbleId: beamTarget.id,
+              toX: beamTarget.x,
+              toY: beamTarget.y,
+            }
+          : null,
+      });
+
+      window.setTimeout(() => setWaveActive(false), 1400);
+      window.setTimeout(() => {
+        setBroadcast((b) => ({ ...b, illuminatedIds: [], beam: null }));
+      }, 2200);
+
+      return current;
+    });
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) return;
 
-    const burstTimer = setInterval(() => {
-      setNodes((current) => {
-        const target = current[Math.floor(Math.random() * current.length)];
-        if (!target) return current;
-        setBurstTargetId(target.id);
-        setActiveNodeId(target.id);
-        setBurstKey((k) => k + 1);
-        window.setTimeout(() => {
-          setActiveNodeId((id) => (id === target.id ? null : id));
-        }, 2400);
-        return current;
-      });
-    }, 4300);
+    const broadcastTimer = setInterval(triggerBroadcast, 4500);
+    triggerBroadcast();
 
     const statTimer = setInterval(() => {
-      setNodes((prev) => prev.map((n) => (Math.random() > 0.55 ? bumpNodeStat(n) : n)));
-    }, 3500);
+      setBubbles((prev) => prev.map((b) => (Math.random() > 0.5 ? bumpBubbleStats(b) : b)));
+    }, 3200);
 
-    const rotateTimer = setInterval(() => {
-      setNodes((prev) => {
-        const idx = Math.floor(Math.random() * prev.length);
-        return prev.map((n, i) => (i === idx ? rotateNodeActivity(n) : n));
+    const evolveTimer = setInterval(() => {
+      setBubbles((prev) => {
+        const roll = Math.random();
+        if (roll < 0.35) {
+          const idx = Math.floor(Math.random() * prev.length);
+          return prev.map((b, i) => (i === idx ? rotateBubbleContent(b) : b));
+        }
+        if (roll < 0.55 && prev.length >= 6) {
+          const removeIdx = Math.floor(Math.random() * prev.length);
+          const removed = prev[removeIdx];
+          const titles = prev.map((b) => b.title);
+          const fresh = spawnBubble(
+            { x: removed.x, y: removed.y, z: removed.z, scale: removed.scale },
+            titles
+          );
+          return prev.map((b, i) => (i === removeIdx ? fresh : b));
+        }
+        return prev.map((b, i) => (i === 0 ? bumpBubbleStats(b) : b));
       });
-    }, 8500);
+    }, 7500);
 
     return () => {
-      clearInterval(burstTimer);
+      clearInterval(broadcastTimer);
       clearInterval(statTimer);
-      clearInterval(rotateTimer);
+      clearInterval(evolveTimer);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, triggerBroadcast]);
 
-  return { nodes, activeNodeId, burstTargetId, burstKey };
+  return { bubbles, broadcast, waveActive };
 }

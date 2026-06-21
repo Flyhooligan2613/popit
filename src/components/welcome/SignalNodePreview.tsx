@@ -1,17 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { SignalNode } from "./signal/types";
+import type { SignalBubble } from "./signal/types";
 import { SIGNAL_CATEGORY_COLOR } from "./signal/types";
 
 type SignalNodePreviewProps = {
-  node: SignalNode;
+  node: SignalBubble;
   onOpen: () => void;
   onClose: () => void;
 };
 
 export default function SignalNodePreview({ node, onOpen, onClose }: SignalNodePreviewProps) {
-  const accent = SIGNAL_CATEGORY_COLOR[node.category];
+  const accent = SIGNAL_CATEGORY_COLOR[node.category] ?? "#00d4ff";
 
   return (
     <motion.div
@@ -22,7 +22,7 @@ export default function SignalNodePreview({ node, onOpen, onClose }: SignalNodeP
       style={{ "--signal-accent": accent } as Record<string, string>}
       onClick={(e) => e.stopPropagation()}
       role="dialog"
-      aria-label={`${node.title} preview`}
+      aria-label={`Preview ${node.title}`}
     >
       {node.image && (
         <div className="signal-preview-image-wrap">
@@ -31,10 +31,12 @@ export default function SignalNodePreview({ node, onOpen, onClose }: SignalNodeP
         </div>
       )}
       <div className="signal-preview-body">
-        <p className="signal-preview-status font-body">{node.status}</p>
+        {node.badge && <p className="signal-preview-status font-body">{node.badge}</p>}
         <h3 className="signal-preview-title font-display">
           {node.icon} {node.title}
         </h3>
+        <p className="signal-preview-meta font-body">{node.status}</p>
+        {node.detail && <p className="signal-preview-meta font-body">{node.detail}</p>}
         {node.distance && <p className="signal-preview-meta font-body">📍 {node.distance}</p>}
         {node.liveCount != null && (
           <p className="signal-preview-live font-body">{node.liveCount.toLocaleString()} active now</p>
