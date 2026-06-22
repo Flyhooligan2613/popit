@@ -7,6 +7,7 @@ import PopitPageWatermark from "@/components/welcome/PopitPageWatermark";
 import PulseFAB from "@/components/pulse/PulseFAB";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
+import { syncLiveProfileState } from "@/lib/identity/liveProfileSync";
 import { isOnboardingComplete, ONBOARDING_UPDATED_EVENT } from "@/lib/session";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const sync = () => setOnboarded(isOnboardingComplete());
     sync();
+    syncLiveProfileState();
     window.addEventListener(ONBOARDING_UPDATED_EVENT, sync);
     return () => window.removeEventListener(ONBOARDING_UPDATED_EVENT, sync);
   }, []);

@@ -2,7 +2,7 @@ import { SEED_SOCIAL_STATE } from "./seedData";
 import { getResolvedCity } from "@/lib/location/cityDetection";
 import type { PostKind, PostComment, SocialPost, SocialState } from "./types";
 
-const STORAGE_KEY = "popit:social:v1";
+const STORAGE_KEY = "popit:social:v2";
 export const SOCIAL_UPDATE_EVENT = "popit:social:update";
 
 function emitUpdate() {

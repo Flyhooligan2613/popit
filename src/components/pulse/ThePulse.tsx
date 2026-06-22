@@ -11,7 +11,8 @@ import CityProfileHero from "./CityProfileHero";
 import CommentThread from "@/components/comments/CommentThread";
 import StoriesStrip from "@/components/social/StoriesStrip";
 import CityLocalFeed from "@/components/social/CityLocalFeed";
-import { loadUserProfile } from "@/lib/identity/userProfile";
+import { loadUserProfile, PROFILE_UPDATE_EVENT } from "@/lib/identity/userProfile";
+import { syncLiveProfileState } from "@/lib/identity/liveProfileSync";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { useSocialStore } from "@/lib/social/useSocialStore";
 
@@ -22,7 +23,14 @@ export default function ThePulse() {
   const { state, refresh } = useSocialStore();
 
   useEffect(() => {
+    syncLiveProfileState();
     loadUserProfile().then(setUser);
+    const refresh = () => {
+      syncLiveProfileState();
+      void loadUserProfile().then(setUser);
+    };
+    window.addEventListener(PROFILE_UPDATE_EVENT, refresh);
+    return () => window.removeEventListener(PROFILE_UPDATE_EVENT, refresh);
   }, []);
 
   useEffect(() => {

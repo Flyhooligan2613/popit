@@ -55,12 +55,13 @@ function MapBottomSheet({ business, onClose }: MapBottomSheetProps) {
 
                 <div className="mb-3 flex items-center gap-3">
                   <LensProfileTransition
-                    name={business.name}
-                    followers={18400 + energy * 100}
-                    creatorLevel={6 + Math.floor(energy / 12)}
-                    influence={energy}
-                    verified
-                    live={business.live}
+                    user={{
+                      name: business.name,
+                      followers: 18400 + energy * 100,
+                      pulseScore: energy,
+                      verified: true,
+                      live: business.live,
+                    }}
                     accent={theme.primary}
                     href={`/business/${business.slug}`}
                     size={64}

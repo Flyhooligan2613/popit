@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import PopitLens from "@/components/profile/PopitLens";
 import { loadUserProfile, saveUserProfile, type UserProfile } from "@/lib/identity/userProfile";
+import { endLiveForCurrentUser } from "@/lib/identity/liveProfileSync";
 import { getIdentityAccent } from "@/lib/identity/types";
 import {
   requestLiveMedia,
@@ -15,7 +16,6 @@ import {
 import {
   addLiveComment,
   bumpLiveEngagement,
-  endLiveSession,
   getActiveLiveSession,
   simulateLiveActivity,
   startLiveSession,
@@ -64,7 +64,9 @@ export default function LiveBroadcastScreen() {
     })();
     return () => {
       stopMediaStream(streamRef.current);
-      if (sessionRef.current) endLiveSession();
+      if (sessionRef.current) {
+        endLiveForCurrentUser();
+      }
     };
   }, [bindStream]);
 
@@ -131,8 +133,9 @@ export default function LiveBroadcastScreen() {
 
   const endLive = async () => {
     stopMediaStream(streamRef.current);
-    endLiveSession();
-    if (user) saveUserProfile({ live: false });
+    endLiveForCurrentUser();
+    setIsLive(false);
+    sessionRef.current = null;
     router.push("/live");
   };
 

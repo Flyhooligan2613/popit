@@ -4,6 +4,8 @@ import { DEFAULT_CITY_LABEL } from "@/lib/location/constants";
 const IDENTITY_KEY = "popit:identity";
 const USER_KEY = "popit:user";
 
+export const PROFILE_UPDATE_EVENT = "popit:profile:update";
+
 export type UserProfile = {
   username: string;
   name: string;
@@ -19,6 +21,7 @@ export type UserProfile = {
   verified: boolean;
   live: boolean;
   currentVibe: string;
+  avatarMediaId?: string;
   platformBackgroundId?: string;
   zipCode?: string;
   state?: string;
@@ -28,17 +31,17 @@ export type UserProfile = {
 };
 
 export const DEFAULT_USER: UserProfile = {
-  username: "flygoon",
-  name: "Marcus",
+  username: "newuser",
+  name: "New User",
   city: DEFAULT_CITY_LABEL,
   identity: "personal",
-  followers: 18420,
-  following: 892,
-  pulseScore: 94,
-  energy: 87,
-  verified: true,
+  followers: 0,
+  following: 0,
+  pulseScore: 50,
+  energy: 50,
+  verified: false,
   live: false,
-  currentVibe: "The city is buzzing tonight",
+  currentVibe: "Exploring the city",
 };
 
 export function saveUserIdentity(identity: IdentityType) {
@@ -51,10 +54,17 @@ export function getUserIdentity(): IdentityType {
   return (localStorage.getItem(IDENTITY_KEY) as IdentityType) ?? "personal";
 }
 
+function emitProfileUpdate() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(PROFILE_UPDATE_EVENT));
+  }
+}
+
 export function saveUserProfile(profile: Partial<UserProfile>) {
   if (typeof window === "undefined") return;
   const current = getUserProfile();
   localStorage.setItem(USER_KEY, JSON.stringify({ ...current, ...profile }));
+  emitProfileUpdate();
 }
 
 export function getUserProfile(): UserProfile {

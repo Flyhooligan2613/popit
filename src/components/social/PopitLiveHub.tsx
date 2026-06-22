@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
@@ -9,6 +9,8 @@ import PopitLens from "@/components/profile/PopitLens";
 import { useResolvedCity } from "@/hooks/useResolvedCity";
 import { getLiveNearProfiles, type LiveNearFilter } from "@/lib/social/liveNearYou";
 import { formatCount } from "@/lib/social/socialStore";
+import { LIVE_UPDATE_EVENT } from "@/lib/social/liveStore";
+import { PROFILE_UPDATE_EVENT } from "@/lib/identity/userProfile";
 
 const FILTERS: { id: LiveNearFilter; label: string }[] = [
   { id: "near", label: "Near You" },
@@ -19,10 +21,24 @@ const FILTERS: { id: LiveNearFilter; label: string }[] = [
 
 export default function PopitLiveHub() {
   const [filter, setFilter] = useState<LiveNearFilter>("near");
+  const [refreshKey, setRefreshKey] = useState(0);
   const city = useResolvedCity();
 
-  const profiles = useMemo(() => getLiveNearProfiles(city, filter), [city, filter]);
+  const profiles = useMemo(
+    () => getLiveNearProfiles(city, filter),
+    [city, filter, refreshKey]
+  );
   const liveCount = profiles.filter((p) => p.live).length;
+
+  useEffect(() => {
+    const bump = () => setRefreshKey((k) => k + 1);
+    window.addEventListener(LIVE_UPDATE_EVENT, bump);
+    window.addEventListener(PROFILE_UPDATE_EVENT, bump);
+    return () => {
+      window.removeEventListener(LIVE_UPDATE_EVENT, bump);
+      window.removeEventListener(PROFILE_UPDATE_EVENT, bump);
+    };
+  }, []);
 
   const handleRefresh = async () => {
     await new Promise((r) => window.setTimeout(r, 500));
@@ -59,6 +75,11 @@ export default function PopitLiveHub() {
       </div>
 
       <div className="popit-live-hub__grid">
+        {profiles.length === 0 && (
+          <p className="col-span-full px-4 py-10 text-center font-body text-sm text-white/45">
+            No one live nearby yet. Go Live from your profile to be the first on air.
+          </p>
+        )}
         {profiles.map((profile) => (
           <Link
             key={profile.username}

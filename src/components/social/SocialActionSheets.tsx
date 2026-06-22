@@ -221,30 +221,8 @@ export default function SocialActionSheets() {
   };
 
   const startLive = async () => {
-    if (!mediaStream) {
-      setMediaError("Enable camera & mic preview before going live.");
-      return;
-    }
-    const user = await loadUserProfile();
-    if (!user) return;
-    const title = liveTitle.trim() || "Live in the city";
-    const trackLabel = selectedTrack ? `${selectedTrack.title} · ${selectedTrack.artist}` : undefined;
-
-    saveUserProfile({ live: true });
-    createPost({
-      kind: "reel",
-      text: title,
-      title: "Go Live",
-      authorUsername: user.username,
-      authorName: user.name,
-      authorAccent: getIdentityAccent(user.identity),
-      city: user.city,
-      musicTrack: trackLabel,
-    });
-
-    setLiveTitle("");
     closeSheet();
-    router.push("/live");
+    router.push("/broadcast");
   };
 
   const publishReel = async () => {

@@ -3,36 +3,31 @@
 import { memo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import PopitLens from "./PopitLens";
+import ProfileAvatarLens from "./ProfileAvatarLens";
+import type { UserProfile } from "@/lib/identity/userProfile";
 
 type LensProfileTransitionProps = {
-  name: string;
-  followers: number;
-  creatorLevel: number;
-  influence: number;
-  verified?: boolean;
-  live?: boolean;
+  user: Pick<UserProfile, "name" | "followers" | "pulseScore" | "verified" | "live" | "avatarMediaId">;
+  creatorLevel?: number;
   accent?: string;
   href: string;
   size?: number;
+  allowPhotoChange?: boolean;
 };
 
 function LensProfileTransition({
-  name,
-  followers,
-  creatorLevel,
-  influence,
-  verified,
-  live,
-  accent,
+  user,
+  creatorLevel = 5,
+  accent = "#FF4D6D",
   href,
   size = 72,
+  allowPhotoChange = false,
 }: LensProfileTransitionProps) {
   const router = useRouter();
   const [phase, setPhase] = useState<"idle" | "zoom" | "open">("idle");
 
   const handleTap = () => {
-    if (phase !== "idle") return;
+    if (allowPhotoChange || phase !== "idle") return;
     setPhase("zoom");
     setTimeout(() => setPhase("open"), 300);
     setTimeout(() => router.push(href), 750);
@@ -60,16 +55,14 @@ function LensProfileTransition({
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         style={{ transformOrigin: "center center" }}
       >
-        <PopitLens
-          name={name}
-          followers={followers}
-          creatorLevel={creatorLevel}
-          influence={influence}
-          verified={verified}
-          live={live}
+        <ProfileAvatarLens
+          user={user}
           accent={accent}
           size={size}
-          interactive
+          creatorLevel={creatorLevel}
+          followersBeneath
+          allowPhotoChange={allowPhotoChange}
+          interactive={!allowPhotoChange}
           onTap={handleTap}
         />
       </motion.div>

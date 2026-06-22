@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type CSSProperties, memo, useEffect, useMemo, useState, type ReactNode } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import ProfileAvatarLens from "@/components/profile/ProfileAvatarLens";
 import PlatformBackgroundOverlay from "@/components/pulse/PlatformBackgroundOverlay";
 import FeedPostCard from "@/components/social/FeedPostCard";
 import ThoughtCard from "@/components/social/ThoughtCard";
@@ -13,6 +14,9 @@ import { getPostsForUser } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
 import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 import type { UserProfile } from "@/lib/identity/userProfile";
+import { loadUserProfile, PROFILE_UPDATE_EVENT } from "@/lib/identity/userProfile";
+import { endLiveForCurrentUser } from "@/lib/identity/liveProfileSync";
+import { LIVE_UPDATE_EVENT } from "@/lib/social/liveStore";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import { createModeRoute } from "@/lib/social/createRoutes";
@@ -52,8 +56,9 @@ function useMinWidth(minPx: number): boolean {
   return matches;
 }
 
-function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialProfileLayoutProps) {
+function SocialProfileLayout({ user: userProp, isOwnProfile = false, children }: SocialProfileLayoutProps) {
   const [mode, setMode] = useState<ProfileMode>("city");
+  const [user, setUser] = useState(userProp);
   const isWide = useMinWidth(641);
   const lensSize = isWide ? 120 : 96;
   const social = useSocialActionsOptional();
@@ -78,6 +83,28 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
     () => getPostsForUser(user.username),
     [user.username, state]
   );
+
+  useEffect(() => {
+    setUser(userProp);
+  }, [userProp]);
+
+  useEffect(() => {
+    if (!isOwnProfile) return;
+    const refresh = () => {
+      void loadUserProfile().then(setUser);
+    };
+    window.addEventListener(PROFILE_UPDATE_EVENT, refresh);
+    window.addEventListener(LIVE_UPDATE_EVENT, refresh);
+    return () => {
+      window.removeEventListener(PROFILE_UPDATE_EVENT, refresh);
+      window.removeEventListener(LIVE_UPDATE_EVENT, refresh);
+    };
+  }, [isOwnProfile]);
+
+  const handleEndLive = () => {
+    endLiveForCurrentUser();
+    void loadUserProfile().then(setUser);
+  };
 
   const popItems = userPosts;
   const cityPosts = userPosts.filter((p) => p.kind !== "reel");
@@ -110,6 +137,29 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
       </div>
 
       <div className="profile-social__header-wrap">
+        {isOwnProfile && user.live && (
+          <div className="profile-social__live-bar mb-3 flex flex-wrap items-center justify-center gap-2 rounded-xl border border-[#FF4D6D]/40 bg-[#FF4D6D]/10 px-4 py-2">
+            <span className="flex items-center gap-1.5 font-body text-xs font-semibold uppercase tracking-wider text-[#FF4D6D]">
+              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[#FF4D6D]" aria-hidden />
+              You&apos;re LIVE
+            </span>
+            <button
+              type="button"
+              className="rounded-full bg-[#FF4D6D] px-3 py-1 font-body text-xs font-bold text-white"
+              onClick={handleEndLive}
+            >
+              End Live
+            </button>
+            <button
+              type="button"
+              className="rounded-full border border-white/20 px-3 py-1 font-body text-xs text-white/80"
+              onClick={() => router.push(createModeRoute("live"))}
+            >
+              Back to broadcast
+            </button>
+          </div>
+        )}
+
         {isOwnProfile && (
           <>
             <div className="profile-social__side-rail profile-social__side-rail--left">
@@ -147,16 +197,27 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
 
         <div className="profile-social__hero">
           <div className="profile-social__hero-top">
-            <PopitLens
-              name={user.name}
-              followers={user.followers}
-              influence={user.pulseScore}
-              verified={user.verified}
-              live={user.live}
-              accent={accent}
-              size={lensSize}
-              followersBeneath={false}
-            />
+            {isOwnProfile ? (
+              <ProfileAvatarLens
+                user={user}
+                accent={accent}
+                size={lensSize}
+                followersBeneath={false}
+                allowPhotoChange
+                onPhotoUpdated={() => void loadUserProfile().then(setUser)}
+              />
+            ) : (
+              <PopitLens
+                name={user.name}
+                followers={user.followers}
+                influence={user.pulseScore}
+                verified={user.verified}
+                live={user.live}
+                accent={accent}
+                size={lensSize}
+                followersBeneath={false}
+              />
+            )}
             <div className="profile-social__stats profile-social__stats--inline">
               <div className="profile-social__stat">
                 <span className="profile-social__stat-value">{formatCount(userPosts.length)}</span>
@@ -187,13 +248,23 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
 
         {isOwnProfile && (
           <div className="profile-social__quick-actions">
-            <button
-              type="button"
-              className="profile-social__quick-btn profile-social__quick-btn--live"
-              onClick={() => router.push(createModeRoute("live"))}
-            >
-              Go Live
-            </button>
+            {user.live ? (
+              <button
+                type="button"
+                className="profile-social__quick-btn profile-social__quick-btn--live"
+                onClick={handleEndLive}
+              >
+                End Live
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="profile-social__quick-btn profile-social__quick-btn--live"
+                onClick={() => router.push(createModeRoute("live"))}
+              >
+                Go Live
+              </button>
+            )}
             <button
               type="button"
               className="profile-social__quick-btn"

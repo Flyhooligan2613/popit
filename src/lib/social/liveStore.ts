@@ -50,12 +50,6 @@ function emitUpdate() {
   }
 }
 
-const SEED_COMMENTS: LiveComment[] = [
-  { id: "lc1", username: "maya_k", name: "Maya K.", text: "🔥🔥🔥 this energy!!", createdAt: Date.now() - 12000 },
-  { id: "lc2", username: "dj_wave", name: "DJ Wave", text: "Pull up to the city!!", createdAt: Date.now() - 8000 },
-  { id: "lc3", username: "pulse_fan", name: "Pulse Fan", text: "POP'IT live hits different", createdAt: Date.now() - 4000 },
-];
-
 export function loadLiveState(): LiveState {
   if (typeof window === "undefined") {
     return { activeSession: null, storyItems: [] };
@@ -214,7 +208,8 @@ export function getAllActiveStories(): StoryItem[] {
     .sort((a, b) => b.createdAt - a.createdAt);
 }
 
+
 export function getWatchCommentsForSession(session: LiveSession | null): LiveComment[] {
-  if (!session) return SEED_COMMENTS;
-  return [...SEED_COMMENTS, ...session.comments].slice(-40);
+  if (!session) return [];
+  return session.comments.slice(-40);
 }

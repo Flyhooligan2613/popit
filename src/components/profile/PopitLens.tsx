@@ -18,6 +18,11 @@ export type PopitLensProps = {
   achievementFlash?: boolean;
   /** Sprint 8: followers always beneath lens when true */
   followersBeneath?: boolean;
+  avatarUrl?: string | null;
+  /** Show + badge when user has no profile photo */
+  showPhotoPlus?: boolean;
+  /** Animate aperture open on tap (disable for photo picker taps) */
+  openApertureOnTap?: boolean;
 };
 
 function formatFollowers(n: number) {
@@ -40,6 +45,9 @@ function PopitLens({
   followSegments = 0,
   achievementFlash = false,
   followersBeneath = true,
+  avatarUrl = null,
+  showPhotoPlus = false,
+  openApertureOnTap = true,
 }: PopitLensProps) {
   const [apertureOpen, setApertureOpen] = useState(live);
   const initial = name[0]?.toUpperCase() ?? "?";
@@ -50,12 +58,12 @@ function PopitLens({
   const liveAccent = live ? "#FF4D6D" : accent;
 
   useEffect(() => {
-    if (live) setApertureOpen(true);
+    setApertureOpen(live);
   }, [live]);
 
   const handleClick = () => {
     if (!interactive) return;
-    setApertureOpen(true);
+    if (openApertureOnTap) setApertureOpen(true);
     onTap?.();
   };
 
@@ -182,13 +190,31 @@ function PopitLens({
 
         <motion.div
           className="absolute inset-0 flex items-center justify-center"
-          animate={{ opacity: apertureOpen && interactive ? 0 : 1, scale: apertureOpen && interactive ? 1.3 : 1 }}
+          animate={{ opacity: avatarUrl || (apertureOpen && interactive && openApertureOnTap) ? 0 : 1, scale: apertureOpen && interactive && openApertureOnTap ? 1.3 : 1 }}
         >
           <span className="text-poster text-white/95" style={{ fontSize: size * 0.24 }}>
             {initial}
           </span>
         </motion.div>
+
+        {avatarUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatarUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
       </div>
+
+      {showPhotoPlus && (
+        <div
+          className="absolute bottom-0 left-1/2 flex h-5 w-5 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border border-black/80 bg-[#FF4D6D] text-white shadow-lg"
+          aria-hidden
+        >
+          <span className="font-body text-sm font-bold leading-none">+</span>
+        </div>
+      )}
 
       {/* REC when live */}
       {live && (

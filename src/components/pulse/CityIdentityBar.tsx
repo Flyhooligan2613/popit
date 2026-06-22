@@ -27,15 +27,11 @@ function CityIdentityBar({ user }: CityIdentityBarProps) {
     <div className="pointer-events-auto flex items-start gap-3">
       <div className="flex flex-col items-center">
         <LensProfileTransition
-          name={user.name}
-          followers={user.followers}
-          creatorLevel={5}
-          influence={user.pulseScore}
-          verified={user.verified}
-          live={user.live}
+          user={user}
           accent="#FF4D6D"
           href="/pulse#profile"
           size={56}
+          allowPhotoChange
         />
       </div>
 

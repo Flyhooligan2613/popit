@@ -5,20 +5,20 @@ import { useParams, useRouter } from "next/navigation";
 import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
-import { SEARCH_DIRECTORY } from "@/lib/identity/searchData";
+import { findProfileByUsername } from "@/lib/identity/searchData";
 import Link from "next/link";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
 
-function resultToProfile(result: (typeof SEARCH_DIRECTORY)[number]): UserProfile {
+function resultToProfile(result: NonNullable<ReturnType<typeof findProfileByUsername>>): UserProfile {
   return {
     username: result.username,
     name: result.name,
     city: result.city,
     identity: result.identity,
     followers: result.followers,
-    following: Math.round(result.followers * 0.05),
-    pulseScore: 70 + (result.followers % 30),
-    energy: result.live ? 95 : 72,
+    following: 0,
+    pulseScore: 50,
+    energy: result.live ? 80 : 50,
     verified: result.verified,
     live: result.live,
     currentVibe: result.tagline,
@@ -54,9 +54,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const found = SEARCH_DIRECTORY.find(
-        (result) => result.username.trim().toLowerCase() === username.trim().toLowerCase()
-      );
+      const found = findProfileByUsername(username);
       setUser(found ? resultToProfile(found) : null);
       setIsOwnProfile(false);
       setLoading(false);

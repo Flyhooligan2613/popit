@@ -137,15 +137,11 @@ function CityHubChrome({ user, children }: CityHubChromeProps) {
     <div className="city-hub">
       <aside className="city-hub-dock city-hub-dock--left" aria-label="Your profile">
         <LensProfileTransition
-          name={user.name}
-          followers={user.followers}
-          creatorLevel={5}
-          influence={user.pulseScore}
-          verified={user.verified}
-          live={user.live}
+          user={user}
           accent={accent}
           href="/pulse#profile"
           size={92}
+          allowPhotoChange
         />
         <p className="city-hub-dock__name">{user.name.split(" ")[0]}</p>
         <p className="city-hub-dock__city">{user.city}</p>

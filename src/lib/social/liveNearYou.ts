@@ -1,5 +1,7 @@
 import type { IdentityType } from "@/lib/identity/types";
 import { getIdentityAccent } from "@/lib/identity/types";
+import { getUserProfile } from "@/lib/identity/userProfile";
+import { getActiveLiveSession } from "@/lib/social/liveStore";
 
 export type LiveNearProfile = {
   username: string;
@@ -16,129 +18,82 @@ export type LiveNearProfile = {
   accent: string;
 };
 
-export const LIVE_NEAR_DIRECTORY: Omit<LiveNearProfile, "accent">[] = [
-  {
-    username: "neon-lounge",
-    name: "Neon Lounge",
-    identity: "nightclub",
-    followers: 52100,
-    city: "Miami",
-    neighborhood: "Brickell",
-    verified: true,
-    live: true,
-    tagline: "Main room · 14K watching",
-    viewers: 14200,
-    distanceLabel: "0.4 mi",
-  },
-  {
-    username: "dj-kairo",
-    name: "KAIRO",
-    identity: "dj",
-    followers: 41200,
-    city: "Miami",
-    neighborhood: "Wynwood",
-    verified: true,
-    live: true,
-    tagline: "Techno set live",
-    viewers: 8900,
-    distanceLabel: "1.2 mi",
-  },
-  {
-    username: "pulse-kitchen",
-    name: "Pulse Kitchen",
-    identity: "restaurant",
-    followers: 28400,
-    city: "Miami",
-    neighborhood: "Wynwood",
-    verified: true,
-    live: true,
-    tagline: "Chef's table stream",
-    viewers: 2100,
-    distanceLabel: "1.8 mi",
-  },
-  {
-    username: "marcus-j",
-    name: "Marcus J",
-    identity: "athlete",
-    followers: 67300,
-    city: "Miami",
-    neighborhood: "South Beach",
-    verified: true,
-    live: true,
-    tagline: "Post-game city walk",
-    viewers: 5600,
-    distanceLabel: "2.1 mi",
-  },
-  {
-    username: "luna-creates",
-    name: "Luna",
-    identity: "content-creator",
-    followers: 94000,
-    city: "Miami",
-    neighborhood: "Design District",
-    verified: true,
-    live: true,
-    tagline: "Studio Q&A",
-    viewers: 3200,
-    distanceLabel: "2.6 mi",
-  },
-  {
-    username: "nova-games",
-    name: "Nova",
-    identity: "gamer",
-    followers: 18900,
-    city: "Miami",
-    neighborhood: "Gaming District",
-    verified: false,
-    live: true,
-    tagline: "Ranked grind · cam on",
-    viewers: 1800,
-    distanceLabel: "3.0 mi",
-  },
-  {
-    username: "skyline-co",
-    name: "Skyline Co",
-    identity: "business",
-    followers: 15200,
-    city: "Miami",
-    neighborhood: "Brickell",
-    verified: true,
-    live: false,
-    tagline: "Pop-up launch soon",
-    distanceLabel: "0.9 mi",
-  },
-  {
-    username: "flygoon",
-    name: "Marcus",
-    identity: "personal",
-    followers: 18420,
-    city: "Miami",
-    neighborhood: "Your block",
-    verified: true,
-    live: false,
-    tagline: "City explorer",
-    distanceLabel: "You",
-  },
-];
-
 export type LiveNearFilter = "near" | "live" | "creators" | "venues";
 
-export function getLiveNearProfiles(city: string, filter: LiveNearFilter = "near"): LiveNearProfile[] {
+function buildLiveNearPool(city: string): LiveNearProfile[] {
+  if (typeof window === "undefined") return [];
+
   const normalized = city.trim().toLowerCase();
-  let items = LIVE_NEAR_DIRECTORY.filter(
-    (p) => !normalized || p.city.toLowerCase() === normalized || normalized === "your city"
-  ).map((p) => ({ ...p, accent: getIdentityAccent(p.identity) }));
+  const items: LiveNearProfile[] = [];
+  const session = getActiveLiveSession();
+  const me = getUserProfile();
+
+  if (session) {
+    const matchesCity =
+      !normalized ||
+      normalized === "your city" ||
+      session.city.trim().toLowerCase() === normalized;
+
+    if (matchesCity) {
+      items.push({
+        username: session.broadcasterUsername,
+        name: session.broadcasterName,
+        identity: me.username.toLowerCase() === session.broadcasterUsername.toLowerCase() ? me.identity : "personal",
+        followers: me.username.toLowerCase() === session.broadcasterUsername.toLowerCase() ? me.followers : 0,
+        city: session.city,
+        neighborhood: session.city,
+        verified: me.username.toLowerCase() === session.broadcasterUsername.toLowerCase() ? me.verified : false,
+        live: true,
+        tagline: session.title,
+        viewers: session.viewerCount,
+        distanceLabel:
+          me.username.toLowerCase() === session.broadcasterUsername.toLowerCase() ? "You" : "Live now",
+        accent: session.broadcasterAccent,
+      });
+    }
+  }
+
+  const meOnAir =
+    session &&
+    session.broadcasterUsername.trim().toLowerCase() === me.username.trim().toLowerCase();
+
+  if (!meOnAir) {
+    const matchesCity =
+      !normalized || normalized === "your city" || me.city.trim().toLowerCase() === normalized;
+
+    if (matchesCity) {
+      items.push({
+        username: me.username,
+        name: me.name,
+        identity: me.identity,
+        followers: me.followers,
+        city: me.city,
+        neighborhood: "Your block",
+        verified: me.verified,
+        live: false,
+        tagline: me.currentVibe,
+        distanceLabel: "You",
+        accent: getIdentityAccent(me.identity),
+      });
+    }
+  }
+
+  return items;
+}
+
+export function getLiveNearProfiles(city: string, filter: LiveNearFilter = "near"): LiveNearProfile[] {
+  let items = buildLiveNearPool(city);
 
   if (filter === "live") items = items.filter((p) => p.live);
   if (filter === "creators") {
     items = items.filter((p) =>
-      ["content-creator", "dj", "music-artist", "gamer", "photographer", "videographer"].includes(p.identity)
+      ["content-creator", "dj", "music-artist", "gamer", "photographer", "videographer", "personal"].includes(
+        p.identity
+      )
     );
   }
   if (filter === "venues") {
-    items = items.filter((p) =>
-      ["restaurant", "nightclub", "business"].includes(p.identity)
-    );
+    items = items.filter((p) => ["restaurant", "nightclub", "business"].includes(p.identity));
   }
 
   return items.sort((a, b) => {

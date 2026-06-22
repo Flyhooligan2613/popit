@@ -24,6 +24,7 @@ import {
   getPlatformBackgroundId,
   savePlatformBackground,
 } from "@/lib/identity/platformBackgrounds";
+import ProfileAvatarLens from "@/components/profile/ProfileAvatarLens";
 import {
   loadUserProfile,
   saveUserIdentity,
@@ -196,8 +197,19 @@ export default function SettingsPanelContent({
           <SettingsField label="POP environment" hint="From your ZIP — change in Location settings">
             <SettingsInput value={locationLabel || city || "Set your ZIP in Location"} readOnly />
           </SettingsField>
-          <SettingsField label="Profile photo" hint="Photo upload coming soon">
-            <SettingsInput type="file" accept="image/*" disabled />
+          <SettingsField label="Profile photo" hint="Tap your lens to add or change your photo">
+            <div className="flex justify-center py-2">
+              {user && (
+                <ProfileAvatarLens
+                  user={user}
+                  accent={getIdentityAccent(user.identity)}
+                  size={88}
+                  followersBeneath={false}
+                  allowPhotoChange
+                  onPhotoUpdated={() => void loadUserProfile().then(onUserChange)}
+                />
+              )}
+            </div>
           </SettingsField>
         </SettingsPanelShell>
       );
