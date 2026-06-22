@@ -23,6 +23,12 @@
   min-height: 0;
 }
 
+.pulse-page-scroll--profile {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 .pulse-page-scroll__content {
   position: relative;
   z-index: 1;

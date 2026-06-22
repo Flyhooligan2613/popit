@@ -48,7 +48,7 @@ export default function ThePulse() {
 
   if (showProfile) {
     return (
-      <div className="pulse-page-scroll relative min-h-0">
+      <div className="pulse-page-scroll pulse-page-scroll--profile">
         <LivingCityBackground />
         <div className="relative z-[1]">
           <IdentityProfileRouter user={user} isOwnProfile />

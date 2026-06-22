@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, memo, useMemo, useState, type ReactNode } from "react";
+import { type CSSProperties, memo, useEffect, useMemo, useState, type ReactNode } from "react";
 import PopitLens from "@/components/profile/PopitLens";
 import PlatformBackgroundOverlay from "@/components/pulse/PlatformBackgroundOverlay";
 import FeedPostCard from "@/components/social/FeedPostCard";
@@ -36,8 +36,24 @@ function formatCount(n: number) {
   return String(n);
 }
 
+function useMinWidth(minPx: number): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${minPx}px)`);
+    const sync = () => setMatches(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, [minPx]);
+
+  return matches;
+}
+
 function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialProfileLayoutProps) {
   const [mode, setMode] = useState<ProfileMode>("city");
+  const isWide = useMinWidth(641);
+  const lensSize = isWide ? 120 : 96;
   const social = useSocialActionsOptional();
   const { like, save, repost, follow, state } = useSocialStore();
   const { commentPost, openComments, closeComments } = usePostCommentsSheet();
@@ -78,15 +94,10 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
       </div>
       <div className="profile-social__content">
       <div className="profile-social__topnav">
-        <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 10.5 12 3l9 7.5" />
-            <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
-          </svg>
+        <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Back">
+          ←
         </Link>
-        <span className="font-body text-xs font-semibold uppercase tracking-[0.18em] text-white/55">
-          @{user.username}
-        </span>
+        <span className="profile-social__handle">@{user.username}</span>
         <Link href="/settings" className="profile-social__topnav-btn" aria-label="Settings">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="3" />
@@ -132,16 +143,32 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
         )}
 
         <div className="profile-social__hero">
-          <PopitLens
-            name={user.name}
-            followers={user.followers}
-            influence={user.pulseScore}
-            verified={user.verified}
-            live={user.live}
-            accent={accent}
-            size={112}
-            followersBeneath={false}
-          />
+          <div className="profile-social__hero-top">
+            <PopitLens
+              name={user.name}
+              followers={user.followers}
+              influence={user.pulseScore}
+              verified={user.verified}
+              live={user.live}
+              accent={accent}
+              size={lensSize}
+              followersBeneath={false}
+            />
+            <div className="profile-social__stats profile-social__stats--inline">
+              <div className="profile-social__stat">
+                <span className="profile-social__stat-value">{formatCount(userPosts.length)}</span>
+                <span className="profile-social__stat-label">Posts</span>
+              </div>
+              <div className="profile-social__stat">
+                <span className="profile-social__stat-value">{formatCount(user.followers)}</span>
+                <span className="profile-social__stat-label">Followers</span>
+              </div>
+              <div className="profile-social__stat">
+                <span className="profile-social__stat-value">{formatCount(user.following)}</span>
+                <span className="profile-social__stat-label">Following</span>
+              </div>
+            </div>
+          </div>
           <div className="profile-social__identity">
             <h1 className="profile-social__name">{user.name}</h1>
             <p className="profile-social__meta">
@@ -149,25 +176,37 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
               {user.identityTopicLabel ? ` · ${user.identityTopicLabel}` : ""} · {user.city}
             </p>
             <p className="profile-social__bio">{user.currentVibe}</p>
+            <p className="profile-social__pop-score">
+              POP Score · {formatLifetimePopScore(reputation.lifetimePopScore)}
+            </p>
           </div>
         </div>
 
-        <div className="profile-social__stats">
-          <div className="profile-social__stat">
-            <span className="profile-social__stat-value">{formatCount(user.followers)}</span>
-            <span className="profile-social__stat-label">Followers</span>
+        {isOwnProfile && (
+          <div className="profile-social__quick-actions">
+            <button
+              type="button"
+              className="profile-social__quick-btn profile-social__quick-btn--live"
+              onClick={() => social?.openSheet("live")}
+            >
+              Go Live
+            </button>
+            <button
+              type="button"
+              className="profile-social__quick-btn"
+              onClick={() => social?.openSheet("story")}
+            >
+              Story
+            </button>
+            <button
+              type="button"
+              className="profile-social__quick-btn"
+              onClick={() => social?.openSheet("create")}
+            >
+              Create
+            </button>
           </div>
-          <div className="profile-social__stat">
-            <span className="profile-social__stat-value">{formatCount(user.following)}</span>
-            <span className="profile-social__stat-label">Following</span>
-          </div>
-          <div className="profile-social__stat">
-            <span className="profile-social__stat-value">
-              {formatLifetimePopScore(reputation.lifetimePopScore)}
-            </span>
-            <span className="profile-social__stat-label">POP Score</span>
-          </div>
-        </div>
+        )}
 
         {isOwnProfile && (
           <div className="profile-social__actions-row">
@@ -197,7 +236,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
         ))}
       </div>
 
-      <div className="profile-social__panel">
+      <div className={`profile-social__panel ${mode === "pop" ? "profile-social__panel--pop" : ""}`}>
         {mode === "pop" && (
           <div className="profile-social__pop-grid">
             {popItems.length === 0 && (
