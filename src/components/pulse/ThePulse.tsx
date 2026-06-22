@@ -36,9 +36,9 @@ export default function ThePulse() {
   const template = getProfileTemplate(user.identity);
 
   return (
-    <PullToRefresh onRefresh={handleRefresh} className="absolute inset-0 overflow-y-auto">
+    <PullToRefresh onRefresh={handleRefresh} className="pulse-page-scroll">
       <LivingCityBackground />
-      <div className="city-hub-main app-page-pad">
+      <div className="city-hub-main app-page-pad pulse-page-scroll__content">
         <StoriesStrip stories={state.stories} onView={refresh} />
         <CityProfileHero key={`hero-${feedKey}`} user={user} />
         <CityDistricts key={`districts-${feedKey}`} />

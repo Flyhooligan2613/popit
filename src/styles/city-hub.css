@@ -11,6 +11,23 @@
   padding: max(0.5rem, env(safe-area-inset-top, 0px)) 4.25rem 7rem;
 }
 
+.pulse-page {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+
+.pulse-page-scroll {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+
+.pulse-page-scroll__content {
+  position: relative;
+  z-index: 1;
+}
+
 .city-hub-dock {
   position: fixed;
   z-index: 30;

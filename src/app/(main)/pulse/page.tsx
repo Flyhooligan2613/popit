@@ -1,5 +1,9 @@
 import ThePulse from "@/components/pulse/ThePulse";
 
 export default function PulsePage() {
-  return <ThePulse />;
+  return (
+    <div className="pulse-page">
+      <ThePulse />
+    </div>
+  );
 }

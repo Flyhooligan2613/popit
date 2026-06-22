@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { memo, useEffect, useState } from "react";
 import LensProfileTransition from "@/components/profile/LensProfileTransition";
-import PopitLens from "@/components/profile/PopitLens";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
@@ -213,18 +212,6 @@ function AppSocialChrome() {
 
   return (
     <div className="app-social-chrome" aria-hidden={false}>
-      <Link href="/pulse#profile" className="app-social-chrome__corner-profile" aria-label="Your profile">
-        <PopitLens
-          name={user.name}
-          followers={user.followers}
-          verified={user.verified}
-          live={user.live}
-          accent={accent}
-          size={44}
-          followersBeneath={false}
-        />
-      </Link>
-
       <aside className="city-hub-dock city-hub-dock--left app-social-chrome__dock" aria-label="Your profile">
         <LensProfileTransition
           name={user.name}

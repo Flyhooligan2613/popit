@@ -219,15 +219,16 @@ export function createPost(input: CreatePostInput): SocialPost {
 export function getPostsForFeed(tab: "foryou" | "following" | "reels" | "thoughts"): SocialPost[] {
   const { posts, following } = loadSocialState();
   const sorted = [...posts].sort((a, b) => b.createdAt - a.createdAt);
+  const fromFollowing = (p: SocialPost) => following.includes(p.authorUsername);
 
   if (tab === "following") {
-    return sorted.filter((p) => following.includes(p.authorUsername) || p.following);
+    return sorted.filter(fromFollowing);
   }
   if (tab === "reels") {
-    return sorted.filter((p) => p.kind === "reel");
+    return sorted.filter((p) => p.kind === "reel" && fromFollowing(p));
   }
   if (tab === "thoughts") {
-    return sorted.filter((p) => p.kind === "thought");
+    return sorted.filter((p) => p.kind === "thought" && fromFollowing(p));
   }
   return sorted;
 }

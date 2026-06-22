@@ -54,25 +54,32 @@ export function usePullToRefresh({
     const onTouchStart = (event: TouchEvent) => {
       if (stateRef.current === "refreshing" || el.scrollTop > 2) return;
       startY.current = event.touches[0]?.clientY ?? 0;
-      pulling.current = true;
+      pulling.current = false;
     };
 
     const onTouchMove = (event: TouchEvent) => {
-      if (!pulling.current || stateRef.current === "refreshing") return;
+      if (stateRef.current === "refreshing") return;
+
       if (el.scrollTop > 2) {
         pulling.current = false;
-        setPull(0);
-        return;
-      }
-
-      const currentY = event.touches[0]?.clientY ?? startY.current;
-      const delta = currentY - startY.current;
-      if (delta <= 0) {
         setPull(0);
         setPullState("idle");
         return;
       }
 
+      const currentY = event.touches[0]?.clientY ?? startY.current;
+      const delta = currentY - startY.current;
+
+      if (delta <= 0) {
+        pulling.current = false;
+        setPull(0);
+        setPullState("idle");
+        return;
+      }
+
+      if (delta < 10) return;
+
+      pulling.current = true;
       event.preventDefault();
       const damped = Math.min(maxPull, delta * 0.42);
       setPull(damped);

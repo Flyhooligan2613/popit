@@ -12,14 +12,14 @@ import { useSocialStore } from "@/lib/social/useSocialStore";
 import type { FeedTab } from "@/lib/social/types";
 
 const TABS: { id: FeedTab; label: string; sub: string }[] = [
-  { id: "foryou", label: "For You", sub: "City + social" },
-  { id: "following", label: "Following", sub: "Friends" },
-  { id: "reels", label: "Reels", sub: "Pulse clips" },
-  { id: "thoughts", label: "Thoughts", sub: "City voice" },
+  { id: "following", label: "Following", sub: "Posts & videos" },
+  { id: "reels", label: "Reels", sub: "From people you follow" },
+  { id: "thoughts", label: "Thoughts", sub: "From people you follow" },
+  { id: "foryou", label: "Discover", sub: "City-wide" },
 ];
 
 export default function SocialFeedHub() {
-  const [tab, setTab] = useState<FeedTab>("foryou");
+  const [tab, setTab] = useState<FeedTab>("following");
   const { state, like, save, repost, follow, refresh } = useSocialStore();
 
   const posts = useMemo(() => getPostsForFeed(tab), [tab, state]);
@@ -80,6 +80,11 @@ export default function SocialFeedHub() {
         </div>
       ) : (
         <div className="social-feed-hub__posts">
+          {posts.length === 0 && (
+            <p className="social-feed-hub__empty">
+              Follow people in Search to see their posts and videos here.
+            </p>
+          )}
           {posts.map((post) =>
             post.kind === "thought" ? (
               <ThoughtCard

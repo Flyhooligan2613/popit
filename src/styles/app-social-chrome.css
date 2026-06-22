@@ -4,12 +4,14 @@
   inset: 0;
   z-index: 40;
   pointer-events: none;
+  touch-action: none;
 }
 
 .app-social-chrome__dock,
 .app-social-chrome__rail,
 .app-social-chrome__corner-profile {
   pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .app-social-chrome__corner-profile {
