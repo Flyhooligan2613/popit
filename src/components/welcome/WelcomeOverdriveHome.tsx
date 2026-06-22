@@ -6,6 +6,7 @@ import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onb
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import AppSocialChrome from "@/components/nav/AppSocialChrome";
 import AppTabBar from "@/components/nav/AppTabBar";
+import ProfileCornerButton from "@/components/nav/ProfileCornerButton";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import BackNavButton from "@/components/nav/BackNavButton";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
@@ -413,6 +414,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
 
   return (
     <SocialActionsProvider>
+      <ProfileCornerButton />
       <AppSocialChrome />
       <SocialActionSheets />
       <AppTabBar />
