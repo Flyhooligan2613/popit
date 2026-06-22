@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import PopitIcon from "./PopitIcon";
 import { FAB_ACTIONS } from "./data";
+import { createModeRoute } from "@/lib/social/createRoutes";
 
 const RADIUS = 112;
 
@@ -25,6 +26,22 @@ export default function PulseFAB() {
   const handleAction = (actionId: string) => {
     setOpen(false);
     if (actionId === "checkin") {
+      router.push("/map");
+      return;
+    }
+    if (actionId === "live") {
+      router.push(createModeRoute("live"));
+      return;
+    }
+    if (actionId === "photo") {
+      router.push(createModeRoute("page"));
+      return;
+    }
+    if (actionId === "video") {
+      router.push(createModeRoute("reel"));
+      return;
+    }
+    if (actionId === "event") {
       router.push("/map");
     }
   };

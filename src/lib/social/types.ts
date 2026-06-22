@@ -23,6 +23,9 @@ export type SocialPost = {
   reposted: boolean;
   musicTrack?: string;
   following?: boolean;
+  mediaId?: string;
+  mediaType?: "image" | "video";
+  effectId?: string;
 };
 
 export type StoryRing = {

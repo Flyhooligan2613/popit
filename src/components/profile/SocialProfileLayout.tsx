@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type CSSProperties, memo, useEffect, useMemo, useState, type ReactNode } from "react";
 import PopitLens from "@/components/profile/PopitLens";
 import PlatformBackgroundOverlay from "@/components/pulse/PlatformBackgroundOverlay";
@@ -14,6 +15,7 @@ import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
+import { createModeRoute } from "@/lib/social/createRoutes";
 import { buildUserReputation, formatLifetimePopScore } from "@/lib/reputation/reputationEngine";
 
 export type ProfileMode = "pop" | "city" | "pulse";
@@ -55,6 +57,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
   const isWide = useMinWidth(641);
   const lensSize = isWide ? 120 : 96;
   const social = useSocialActionsOptional();
+  const router = useRouter();
   const { like, save, repost, follow, state } = useSocialStore();
   const { commentPost, openComments, closeComments } = usePostCommentsSheet();
   const accent = getIdentityAccent(user.identity);
@@ -113,7 +116,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
               <button
                 type="button"
                 className="profile-social__side-action profile-social__side-action--live"
-                onClick={() => social?.openSheet("live")}
+                onClick={() => router.push(createModeRoute("live"))}
               >
                 <span className="profile-social__side-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" strokeWidth="2">
@@ -128,7 +131,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
               <button
                 type="button"
                 className="profile-social__side-action profile-social__side-action--story"
-                onClick={() => social?.openSheet("story")}
+                onClick={() => router.push(createModeRoute("story"))}
               >
                 <span className="profile-social__side-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -187,14 +190,14 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
             <button
               type="button"
               className="profile-social__quick-btn profile-social__quick-btn--live"
-              onClick={() => social?.openSheet("live")}
+              onClick={() => router.push(createModeRoute("live"))}
             >
               Go Live
             </button>
             <button
               type="button"
               className="profile-social__quick-btn"
-              onClick={() => social?.openSheet("story")}
+              onClick={() => router.push(createModeRoute("story"))}
             >
               Story
             </button>

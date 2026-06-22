@@ -24,6 +24,7 @@ import {
   tracksForUsage,
 } from "@/lib/social/musicLibrary";
 import type { MusicGenre } from "@/lib/social/musicLibrary";
+import { createModeRoute } from "@/lib/social/createRoutes";
 import { STORY_EFFECTS, storyEffectLabel, type StoryEffectId } from "@/lib/social/storyEffects";
 
 function SheetShell({
@@ -274,7 +275,10 @@ export default function SocialActionSheets() {
                 key={opt.id}
                 type="button"
                 className="social-sheet__create-option"
-                onClick={() => openSheet(opt.id)}
+                onClick={() => {
+                  closeSheet();
+                  router.push(createModeRoute(opt.id));
+                }}
               >
                 <span className="social-sheet__create-emoji">{opt.emoji}</span>
                 <strong>{opt.label}</strong>

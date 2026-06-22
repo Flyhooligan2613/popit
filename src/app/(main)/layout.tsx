@@ -27,10 +27,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, []);
 
   const yourCity = isYourCityRoute(pathname);
+  const immersiveMedia =
+    pathname.startsWith("/broadcast") ||
+    pathname.startsWith("/create/") ||
+    pathname.startsWith("/live/watch/") ||
+    pathname.startsWith("/stories/view");
   const showFab = pathname === "/map";
-  const hideTabBar = pathname.startsWith("/profile") || pathname === "/search" || pathname.startsWith("/settings") || pathname.startsWith("/help");
-  const showSocialChrome = onboarded && pathname !== "/settings";
-  const showCornerProfile = onboarded && !yourCity;
+  const hideTabBar =
+    pathname.startsWith("/profile") ||
+    pathname === "/search" ||
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/help") ||
+    immersiveMedia;
+  const showSocialChrome = onboarded && pathname !== "/settings" && !immersiveMedia;
+  const showCornerProfile = onboarded && !yourCity && !immersiveMedia;
 
   return (
     <SocialActionsProvider>

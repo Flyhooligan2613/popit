@@ -18,6 +18,7 @@
 @import "../styles/platform-backgrounds.css";
 @import "../styles/platform-tabs.css";
 @import "../styles/permission-settings.css";
+@import "../styles/camera-studio.css";
 @import "tailwindcss";
 
 html {

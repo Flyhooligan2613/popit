@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { memo } from "react";
+import { useRouter } from "next/navigation";
 import LensProfileTransition from "@/components/profile/LensProfileTransition";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
+import { createModeRoute } from "@/lib/social/createRoutes";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
 
 type SideAction = {
@@ -48,6 +50,7 @@ type CityHubChromeProps = {
 
 function CityHubChrome({ user, children }: CityHubChromeProps) {
   const accent = getIdentityAccent(user.identity);
+  const router = useRouter();
 
   const rightActions: SideAction[] = [
     {
@@ -65,7 +68,7 @@ function CityHubChrome({ user, children }: CityHubChromeProps) {
       id: "live",
       label: "Go Live",
       accent: "#FF4D6D",
-      onClick: () => {},
+      onClick: () => router.push(createModeRoute("live")),
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" strokeWidth="2">
           <circle cx="12" cy="12" r="3" />
@@ -77,7 +80,7 @@ function CityHubChrome({ user, children }: CityHubChromeProps) {
       id: "story",
       label: "Add Story",
       accent,
-      onClick: () => {},
+      onClick: () => router.push(createModeRoute("story")),
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="9" />

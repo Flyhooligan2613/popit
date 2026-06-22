@@ -171,6 +171,9 @@ type CreatePostInput = {
   city?: string;
   venue?: string;
   musicTrack?: string;
+  mediaId?: string;
+  mediaType?: "image" | "video";
+  effectId?: string;
 };
 
 export function createPost(input: CreatePostInput): SocialPost {
@@ -194,6 +197,9 @@ export function createPost(input: CreatePostInput): SocialPost {
     saved: false,
     reposted: false,
     musicTrack: input.musicTrack,
+    mediaId: input.mediaId,
+    mediaType: input.mediaType,
+    effectId: input.effectId,
     following: true,
   };
 

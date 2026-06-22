@@ -1,10 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import PopitLens from "@/components/profile/PopitLens";
 import PopSearchBar from "@/components/nav/PopSearchBar";
+import { loadUserProfile } from "@/lib/identity/userProfile";
+import { createModeRoute } from "@/lib/social/createRoutes";
+import { getStoryItemsForUser } from "@/lib/social/liveStore";
 import { markStoryViewed } from "@/lib/social/socialStore";
 import type { StoryRing } from "@/lib/social/types";
 import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
+import { useEffect, useState } from "react";
 
 type StoriesStripProps = {
   stories: StoryRing[];
@@ -13,15 +18,31 @@ type StoriesStripProps = {
 
 export default function StoriesStrip({ stories, onView }: StoriesStripProps) {
   const social = useSocialActionsOptional();
+  const router = useRouter();
+  const [myUsername, setMyUsername] = useState<string | null>(null);
   const ownStory = stories.find((s) => s.isOwn);
   const otherStories = stories.filter((s) => !s.isOwn);
 
+  useEffect(() => {
+    loadUserProfile().then((user) => setMyUsername(user?.username ?? null));
+  }, []);
+
   const handleStory = (story: StoryRing) => {
     if (story.isOwn) {
-      social?.openSheet("story");
+      const items = myUsername ? getStoryItemsForUser(myUsername) : [];
+      if (items.length > 0 && myUsername) {
+        router.push(`/stories/view?u=${encodeURIComponent(myUsername)}`);
+        return;
+      }
+      router.push(createModeRoute("story"));
+      return;
+    }
+    if (story.isLive) {
+      router.push(`/live/watch/${encodeURIComponent(story.username)}`);
       return;
     }
     markStoryViewed(story.id);
+    router.push(`/stories/view?u=${encodeURIComponent(story.username)}`);
     onView?.();
   };
 

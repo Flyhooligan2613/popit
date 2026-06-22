@@ -62,7 +62,7 @@ export default function PopitLiveHub() {
         {profiles.map((profile) => (
           <Link
             key={profile.username}
-            href={`/profile/${profile.username}`}
+            href={profile.live ? `/live/watch/${encodeURIComponent(profile.username)}` : `/profile/${profile.username}`}
             className={`popit-live-hub__tile ${profile.live ? "is-live" : ""}`}
             style={{
               background: `linear-gradient(145deg, ${profile.accent}44, #050505)`,
