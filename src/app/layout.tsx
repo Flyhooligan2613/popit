@@ -6,6 +6,7 @@ import PlatformBanner from "@/components/admin/PlatformBanner";
 import MaintenanceGate from "@/components/admin/MaintenanceGate";
 import AuthBootstrap from "@/components/auth/AuthBootstrap";
 import {
+  getFacebookAppId,
   OG_IMAGE_ALT,
   OG_IMAGE_HEIGHT,
   OG_IMAGE_URL,
@@ -87,6 +88,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const facebookAppId = getFacebookAppId();
+
   return (
     <html lang="en">
       <head>
@@ -96,6 +99,7 @@ export default function RootLayout({
         <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
         <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
         <meta property="og:image:alt" content={OG_IMAGE_ALT} />
+        {facebookAppId ? <meta property="fb:app_id" content={facebookAppId} /> : null}
       </head>
       <body className="font-body">
         <PwaRegister />
