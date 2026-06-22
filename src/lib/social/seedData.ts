@@ -5,6 +5,7 @@ const h = (hours: number) => now - hours * 60 * 60 * 1000;
 
 export const SEED_SOCIAL_STATE: SocialState = {
   following: ["neon-lounge", "dj-kairo", "pulse-kitchen", "marcus-j"],
+  postComments: {},
   stories: [
     { id: "s-own", username: "you", name: "Your Story", accent: "#A855F7", viewed: false, isOwn: true, previewHue: "#A855F7" },
     { id: "s1", username: "neon-lounge", name: "Neon Lounge", accent: "#FF4D6D", verified: true, viewed: false, isLive: true, previewHue: "#FF4D6D" },

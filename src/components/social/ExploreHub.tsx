@@ -5,8 +5,10 @@ import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import PopSearchBar from "@/components/nav/PopSearchBar";
 import FeedPostCard from "./FeedPostCard";
+import PostCommentsSheet from "./PostCommentsSheet";
 import { formatCount, getExplorePosts } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
+import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 
 type ExploreFilter = "all" | "reels" | "photos" | "trending";
 
@@ -20,6 +22,7 @@ const FILTERS: { id: ExploreFilter; label: string }[] = [
 export default function ExploreHub() {
   const [filter, setFilter] = useState<ExploreFilter>("all");
   const { state, like, save, repost, follow, refresh } = useSocialStore();
+  const { commentPost, openComments, closeComments } = usePostCommentsSheet();
   const posts = useMemo(() => getExplorePosts(filter), [filter, state]);
 
   const handleRefresh = async () => {
@@ -77,10 +80,13 @@ export default function ExploreHub() {
             onLike={() => like(post.id)}
             onSave={() => save(post.id)}
             onRepost={() => repost(post.id)}
+            onComment={() => openComments(post)}
             onFollow={() => follow(post.authorUsername)}
           />
         ))}
       </div>
+
+      <PostCommentsSheet post={commentPost} onClose={closeComments} />
     </PullToRefresh>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
 import ProfileIdentityExtras from "@/components/profile/ProfileIdentityExtras";
 import { getProfileTemplate } from "@/lib/identity/types";
 import LivingCityBackground from "./LivingCityBackground";
@@ -17,21 +18,36 @@ import { useSocialStore } from "@/lib/social/useSocialStore";
 export default function ThePulse() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [feedKey, setFeedKey] = useState(0);
+  const [showProfile, setShowProfile] = useState(false);
   const { state, refresh } = useSocialStore();
 
   useEffect(() => {
     loadUserProfile().then(setUser);
   }, []);
 
+  useEffect(() => {
+    const syncProfileView = () => {
+      setShowProfile(window.location.hash === "#profile");
+    };
+    syncProfileView();
+    window.addEventListener("hashchange", syncProfileView);
+    return () => window.removeEventListener("hashchange", syncProfileView);
+  }, []);
+
   const handleRefresh = useCallback(async () => {
     const profile = await loadUserProfile();
     setUser(profile);
     setFeedKey((key) => key + 1);
+    refresh();
     await new Promise((resolve) => window.setTimeout(resolve, 600));
-  }, []);
+  }, [refresh]);
 
   if (!user) {
     return <div className="absolute inset-0 bg-[#050505]" />;
+  }
+
+  if (showProfile) {
+    return <IdentityProfileRouter user={user} isOwnProfile />;
   }
 
   const template = getProfileTemplate(user.identity);

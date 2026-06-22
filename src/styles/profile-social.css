@@ -259,6 +259,36 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
   position: relative;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.profile-social__pop-cell-label,
+.profile-social__pop-cell-caption {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 0.35rem 0.4rem;
+}
+
+.profile-social__pop-cell-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.profile-social__pop-cell-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .profile-social__pop-cell::after {

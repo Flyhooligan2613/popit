@@ -75,9 +75,23 @@ export type SearchTab = "people" | "posts" | "tags" | "places" | "sections";
 
 export type SocialState = {
   posts: SocialPost[];
+  postComments: Record<string, PostComment[]>;
   stories: StoryRing[];
   conversations: MessagePreview[];
   chatMessages: Record<string, ChatMessage[]>;
   notifications: SocialNotification[];
   following: string[];
+};
+
+export type PostComment = {
+  id: string;
+  postId: string;
+  parentId?: string;
+  authorUsername: string;
+  authorName: string;
+  authorAccent: string;
+  text: string;
+  createdAt: number;
+  likes: number;
+  liked: boolean;
 };

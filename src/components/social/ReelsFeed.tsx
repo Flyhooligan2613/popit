@@ -12,9 +12,10 @@ type ReelsFeedProps = {
   onLike: (id: string) => void;
   onRepost: (id: string) => void;
   onSave: (id: string) => void;
+  onComment?: (post: SocialPost) => void;
 };
 
-export default function ReelsFeed({ reels, onLike, onRepost, onSave }: ReelsFeedProps) {
+export default function ReelsFeed({ reels, onLike, onRepost, onSave, onComment }: ReelsFeedProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +61,7 @@ export default function ReelsFeed({ reels, onLike, onRepost, onSave }: ReelsFeed
             <EngagementBar
               post={reel}
               onLike={() => onLike(reel.id)}
+              onComment={onComment ? () => onComment(reel) : undefined}
               onRepost={() => onRepost(reel.id)}
               onSave={() => onSave(reel.id)}
               compact

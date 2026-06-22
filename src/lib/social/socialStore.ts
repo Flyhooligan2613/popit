@@ -1,6 +1,6 @@
 import { SEED_SOCIAL_STATE } from "./seedData";
 import { getResolvedCity } from "@/lib/location/cityDetection";
-import type { PostKind, SocialPost, SocialState } from "./types";
+import type { PostKind, PostComment, SocialPost, SocialState } from "./types";
 
 const STORAGE_KEY = "popit:social:v1";
 export const SOCIAL_UPDATE_EVENT = "popit:social:update";
@@ -19,7 +19,12 @@ export function loadSocialState(): SocialState {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_SOCIAL_STATE));
       return SEED_SOCIAL_STATE;
     }
-    return JSON.parse(raw) as SocialState;
+    const parsed = JSON.parse(raw) as SocialState;
+    return {
+      ...SEED_SOCIAL_STATE,
+      ...parsed,
+      postComments: parsed.postComments ?? {},
+    };
   } catch {
     return SEED_SOCIAL_STATE;
   }
@@ -250,9 +255,86 @@ export function getPostsForCity(city: string): SocialPost[] {
 }
 
 export function getPostsForUser(username: string): SocialPost[] {
+  const normalized = username.trim().toLowerCase();
   return loadSocialState()
-    .posts.filter((p) => p.authorUsername === username)
+    .posts.filter((p) => p.authorUsername.trim().toLowerCase() === normalized)
     .sort((a, b) => b.createdAt - a.createdAt);
+}
+
+export function getCommentsForPost(postId: string): PostComment[] {
+  return loadSocialState().postComments[postId] ?? [];
+}
+
+export function addPostComment(input: {
+  postId: string;
+  text: string;
+  authorUsername: string;
+  authorName: string;
+  authorAccent: string;
+  parentId?: string;
+}): PostComment {
+  const comment: PostComment = {
+    id: `c-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    postId: input.postId,
+    parentId: input.parentId,
+    authorUsername: input.authorUsername,
+    authorName: input.authorName,
+    authorAccent: input.authorAccent,
+    text: input.text.trim(),
+    createdAt: Date.now(),
+    likes: 0,
+    liked: false,
+  };
+
+  mutate((state) => {
+    const existing = state.postComments[input.postId] ?? [];
+    return {
+      ...state,
+      posts: state.posts.map((post) =>
+        post.id === input.postId ? { ...post, comments: post.comments + 1 } : post
+      ),
+      postComments: {
+        ...state.postComments,
+        [input.postId]: [...existing, comment],
+      },
+      notifications: input.authorUsername
+        ? [
+            {
+              id: `n-${Date.now()}`,
+              type: "comment",
+              username: input.authorUsername,
+              name: input.authorName,
+              accent: input.authorAccent,
+              text: input.parentId ? "replied to a comment" : "commented on a post",
+              time: "now",
+              read: false,
+              postId: input.postId,
+            },
+            ...state.notifications,
+          ]
+        : state.notifications,
+    };
+  });
+
+  return comment;
+}
+
+export function toggleCommentLike(postId: string, commentId: string) {
+  return mutate((state) => ({
+    ...state,
+    postComments: {
+      ...state.postComments,
+      [postId]: (state.postComments[postId] ?? []).map((comment) =>
+        comment.id === commentId
+          ? {
+              ...comment,
+              liked: !comment.liked,
+              likes: comment.liked ? comment.likes - 1 : comment.likes + 1,
+            }
+          : comment
+      ),
+    },
+  }));
 }
 
 export function getReels(): SocialPost[] {

@@ -11,10 +11,18 @@ type FeedPostCardProps = {
   onLike: () => void;
   onRepost: () => void;
   onSave: () => void;
+  onComment?: () => void;
   onFollow?: () => void;
 };
 
-export default function FeedPostCard({ post, onLike, onRepost, onSave, onFollow }: FeedPostCardProps) {
+export default function FeedPostCard({
+  post,
+  onLike,
+  onRepost,
+  onSave,
+  onComment,
+  onFollow,
+}: FeedPostCardProps) {
   return (
     <article className="feed-post">
       <header className="feed-post__head">
@@ -53,7 +61,13 @@ export default function FeedPostCard({ post, onLike, onRepost, onSave, onFollow 
         </div>
       )}
 
-      <EngagementBar post={post} onLike={onLike} onRepost={onRepost} onSave={onSave} />
+      <EngagementBar
+        post={post}
+        onLike={onLike}
+        onComment={onComment}
+        onRepost={onRepost}
+        onSave={onSave}
+      />
 
       <div className="feed-post__body">
         {post.title && <strong className="feed-post__title">{post.title}</strong>}

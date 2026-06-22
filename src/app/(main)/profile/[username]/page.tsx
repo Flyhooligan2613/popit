@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import IdentityProfileRouter from "@/components/identity/IdentityProfileRouter";
 import { loadUserProfile } from "@/lib/identity/userProfile";
@@ -8,7 +8,6 @@ import type { UserProfile } from "@/lib/identity/userProfile";
 import { SEARCH_DIRECTORY } from "@/lib/identity/searchData";
 import Link from "next/link";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
-import { useState } from "react";
 
 function resultToProfile(result: (typeof SEARCH_DIRECTORY)[number]): UserProfile {
   return {
@@ -31,18 +30,45 @@ export default function ProfilePage() {
   const params = useParams();
   const username = typeof params.username === "string" ? params.username : "";
   const [user, setUser] = useState<UserProfile | null>(null);
-  const isOwnProfile = username === "me";
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isOwnProfile) {
-      router.replace("/pulse");
-      return;
-    }
-    const found = SEARCH_DIRECTORY.find((result) => result.username === username);
-    setUser(found ? resultToProfile(found) : null);
-  }, [username, isOwnProfile, router]);
+    let cancelled = false;
 
-  if (isOwnProfile) {
+    async function resolveProfile() {
+      setLoading(true);
+
+      if (username === "me") {
+        router.replace("/pulse#profile");
+        return;
+      }
+
+      const me = await loadUserProfile();
+      if (cancelled) return;
+
+      if (me.username.trim().toLowerCase() === username.trim().toLowerCase()) {
+        setUser(me);
+        setIsOwnProfile(true);
+        setLoading(false);
+        return;
+      }
+
+      const found = SEARCH_DIRECTORY.find(
+        (result) => result.username.trim().toLowerCase() === username.trim().toLowerCase()
+      );
+      setUser(found ? resultToProfile(found) : null);
+      setIsOwnProfile(false);
+      setLoading(false);
+    }
+
+    void resolveProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [username, router]);
+
+  if (username === "me" || loading) {
     return <div className="min-h-screen bg-[#050505]" />;
   }
 

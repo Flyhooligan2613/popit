@@ -7,8 +7,10 @@ import StoriesStrip from "./StoriesStrip";
 import FeedPostCard from "./FeedPostCard";
 import ThoughtCard from "./ThoughtCard";
 import ReelsFeed from "./ReelsFeed";
+import PostCommentsSheet from "./PostCommentsSheet";
 import { getPostsForFeed } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
+import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 import type { FeedTab } from "@/lib/social/types";
 
 const TABS: { id: FeedTab; label: string; sub: string }[] = [
@@ -20,6 +22,7 @@ const TABS: { id: FeedTab; label: string; sub: string }[] = [
 export default function SocialFeedHub() {
   const [tab, setTab] = useState<FeedTab>("following");
   const { state, like, save, repost, follow, refresh } = useSocialStore();
+  const { commentPost, openComments, closeComments } = usePostCommentsSheet();
 
   const posts = useMemo(() => getPostsForFeed(tab), [tab, state]);
 
@@ -63,6 +66,7 @@ export default function SocialFeedHub() {
           onLike={like}
           onRepost={repost}
           onSave={save}
+          onComment={openComments}
         />
       ) : tab === "thoughts" ? (
         <div className="social-feed-hub__thoughts">
@@ -73,6 +77,7 @@ export default function SocialFeedHub() {
               onLike={() => like(post.id)}
               onRepost={() => repost(post.id)}
               onSave={() => save(post.id)}
+              onComment={() => openComments(post)}
               onFollow={() => follow(post.authorUsername)}
             />
           ))}
@@ -92,6 +97,7 @@ export default function SocialFeedHub() {
                 onLike={() => like(post.id)}
                 onRepost={() => repost(post.id)}
                 onSave={() => save(post.id)}
+                onComment={() => openComments(post)}
                 onFollow={() => follow(post.authorUsername)}
               />
             ) : (
@@ -101,12 +107,15 @@ export default function SocialFeedHub() {
                 onLike={() => like(post.id)}
                 onRepost={() => repost(post.id)}
                 onSave={() => save(post.id)}
+                onComment={() => openComments(post)}
                 onFollow={() => follow(post.authorUsername)}
               />
             )
           )}
         </div>
       )}
+
+      <PostCommentsSheet post={commentPost} onClose={closeComments} />
     </PullToRefresh>
   );
 }

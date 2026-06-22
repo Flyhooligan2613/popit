@@ -11,10 +11,18 @@ type ThoughtCardProps = {
   onLike: () => void;
   onRepost: () => void;
   onSave: () => void;
+  onComment?: () => void;
   onFollow?: () => void;
 };
 
-export default function ThoughtCard({ post, onLike, onRepost, onSave, onFollow }: ThoughtCardProps) {
+export default function ThoughtCard({
+  post,
+  onLike,
+  onRepost,
+  onSave,
+  onComment,
+  onFollow,
+}: ThoughtCardProps) {
   return (
     <article className="thought-card">
       <div className="thought-card__row">
@@ -48,6 +56,7 @@ export default function ThoughtCard({ post, onLike, onRepost, onSave, onFollow }
           <EngagementBar
             post={post}
             onLike={onLike}
+            onComment={onComment}
             onRepost={onRepost}
             onSave={onSave}
             compact

@@ -5,9 +5,11 @@ import { type CSSProperties, memo, useMemo, useState, type ReactNode } from "rea
 import PopitLens from "@/components/profile/PopitLens";
 import FeedPostCard from "@/components/social/FeedPostCard";
 import ThoughtCard from "@/components/social/ThoughtCard";
+import PostCommentsSheet from "@/components/social/PostCommentsSheet";
 import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
 import { getPostsForUser } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
+import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
@@ -34,9 +36,10 @@ function formatCount(n: number) {
 }
 
 function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialProfileLayoutProps) {
-  const [mode, setMode] = useState<ProfileMode>("pop");
+  const [mode, setMode] = useState<ProfileMode>("city");
   const social = useSocialActionsOptional();
   const { like, save, repost, follow, state } = useSocialStore();
+  const { commentPost, openComments, closeComments } = usePostCommentsSheet();
   const accent = getIdentityAccent(user.identity);
   const identityLabel =
     IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label ?? "Personal";
@@ -54,14 +57,16 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
     [user.username, state]
   );
 
-  const popItems = userPosts.filter((p) => p.kind === "page" || p.kind === "checkin");
+  const popItems = userPosts;
   const cityPosts = userPosts.filter((p) => p.kind !== "reel");
   const pulseClips = userPosts.filter((p) => p.kind === "reel");
 
-  const fallbackPop = Array.from({ length: Math.max(0, 9 - popItems.length) }, (_, i) => ({
-    id: `empty-${i}`,
-    tint: i % 3 === 0 ? accent : i % 3 === 1 ? "#A855F7" : "#00D4FF",
-  }));
+  const kindLabel = (kind: string) => {
+    if (kind === "reel") return "REEL";
+    if (kind === "thought") return "THOUGHT";
+    if (kind === "checkin") return "CHECK-IN";
+    return "POST";
+  };
 
   return (
     <div className="profile-social" style={{ "--profile-accent": accent } as CSSProperties}>
@@ -188,21 +193,25 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
       <div className="profile-social__panel">
         {mode === "pop" && (
           <div className="profile-social__pop-grid">
+            {popItems.length === 0 && (
+              <p className="font-body col-span-3 px-2 py-6 text-center text-sm text-white/40">
+                {isOwnProfile ? "Your posts will appear here. Share from the side rail." : "No posts yet."}
+              </p>
+            )}
             {popItems.map((item) => (
-              <div
+              <button
                 key={item.id}
+                type="button"
                 className="profile-social__pop-cell"
                 style={{
                   background: `linear-gradient(145deg, ${item.mediaHue ?? accent}44, rgba(255,255,255,0.03))`,
                 }}
-              />
-            ))}
-            {fallbackPop.map((item) => (
-              <div
-                key={item.id}
-                className="profile-social__pop-cell profile-social__pop-cell--empty"
-                style={{ background: `linear-gradient(145deg, ${item.tint}33, rgba(255,255,255,0.03))` }}
-              />
+                onClick={() => setMode("city")}
+                aria-label={`View ${kindLabel(item.kind)}`}
+              >
+                <span className="profile-social__pop-cell-label">{kindLabel(item.kind)}</span>
+                {item.text && <span className="profile-social__pop-cell-caption">{item.text.slice(0, 40)}</span>}
+              </button>
             ))}
           </div>
         )}
@@ -220,6 +229,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
                   onLike={() => like(post.id)}
                   onRepost={() => repost(post.id)}
                   onSave={() => save(post.id)}
+                  onComment={() => openComments(post)}
                 />
               ) : (
                 <FeedPostCard
@@ -228,6 +238,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
                   onLike={() => like(post.id)}
                   onRepost={() => repost(post.id)}
                   onSave={() => save(post.id)}
+                  onComment={() => openComments(post)}
                 />
               )
             )}
@@ -252,6 +263,8 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
           </div>
         )}
       </div>
+
+      <PostCommentsSheet post={commentPost} onClose={closeComments} />
     </div>
   );
 }

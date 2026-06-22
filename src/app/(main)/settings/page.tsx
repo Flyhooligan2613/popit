@@ -154,6 +154,37 @@ export default function SettingsPage() {
       </div>
 
       <div className="profile-settings__section">
+        <p className="profile-settings__section-title">Monetization</p>
+        <div className="profile-settings__list">
+          <SettingsRow
+            label="Creator Program"
+            hint="Overview, levels, and how to earn"
+            href="/monetization"
+          />
+          <SettingsRow
+            label="Eligibility Requirements"
+            hint="Followers, POP Score, and account standing"
+            href="/monetization/requirements"
+          />
+          <SettingsRow
+            label="Creator Levels"
+            hint="POP Marks and unlocks by tier"
+            href="/monetization/levels"
+          />
+          <SettingsRow
+            label="How to Qualify"
+            hint="Step-by-step path to monetization"
+            href="/monetization/how-to-qualify"
+          />
+          <SettingsRow
+            label="Monetization Channels"
+            hint="Referrals, gifts, marketplace, and more"
+            href="/monetization/channels"
+          />
+        </div>
+      </div>
+
+      <div className="profile-settings__section">
         <p className="profile-settings__section-title">Legal</p>
         <div className="profile-settings__list">
           <SettingsRow label="Terms of Service" href="/legal/terms" />

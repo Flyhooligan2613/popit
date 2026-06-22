@@ -3,8 +3,10 @@
 import { useMemo } from "react";
 import FeedPostCard from "./FeedPostCard";
 import ThoughtCard from "./ThoughtCard";
+import PostCommentsSheet from "./PostCommentsSheet";
 import { getPostsForCity } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
+import { usePostCommentsSheet } from "@/hooks/usePostCommentsSheet";
 
 type CityLocalFeedProps = {
   city: string;
@@ -12,6 +14,7 @@ type CityLocalFeedProps = {
 
 export default function CityLocalFeed({ city }: CityLocalFeedProps) {
   const { state, like, save, repost, follow } = useSocialStore();
+  const { commentPost, openComments, closeComments } = usePostCommentsSheet();
   const posts = useMemo(() => getPostsForCity(city), [city, state]);
 
   return (
@@ -36,6 +39,7 @@ export default function CityLocalFeed({ city }: CityLocalFeedProps) {
               onLike={() => like(post.id)}
               onRepost={() => repost(post.id)}
               onSave={() => save(post.id)}
+              onComment={() => openComments(post)}
               onFollow={() => follow(post.authorUsername)}
             />
           ) : (
@@ -45,11 +49,14 @@ export default function CityLocalFeed({ city }: CityLocalFeedProps) {
               onLike={() => like(post.id)}
               onSave={() => save(post.id)}
               onRepost={() => repost(post.id)}
+              onComment={() => openComments(post)}
               onFollow={() => follow(post.authorUsername)}
             />
           )
         )}
       </div>
+
+      <PostCommentsSheet post={commentPost} onClose={closeComments} />
     </section>
   );
 }
