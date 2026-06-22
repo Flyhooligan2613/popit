@@ -1,5 +1,6 @@
-import { VERIFIED_BUSINESSES } from "@/lib/city/businesses";
 import { deriveDistrictEnergy } from "@/lib/city/vibeEngine";
+import { getVerifiedBusinessesForCity } from "./cityBusinesses";
+import { lookupBoost } from "./venueLookup";
 import { POP_WORLD_DISTRICTS } from "./districts";
 import type { GeoFeature, GeoFeatureCollection } from "./geojson";
 import type { PopWorldVenue } from "./types";
@@ -35,12 +36,22 @@ const VENUE_GEO: Record<
   "lan-arena": { lng: -80.1952, lat: 25.7702, kind: "stadium", baseHeight: 8, maxHeight: 28, w: 0.0006, d: 0.0005 },
   "bayfront-park": { lng: -80.1860, lat: 25.7753, kind: "pier", baseHeight: 2, maxHeight: 12, w: 0.001, d: 0.0006 },
   "design-district-popup": { lng: -80.1932, lat: 25.8132, kind: "shopping", baseHeight: 6, maxHeight: 24, w: 0.00045, d: 0.00038 },
+  "msg-garden": { lng: -73.9934, lat: 40.7505, kind: "stadium", baseHeight: 14, maxHeight: 58, w: 0.00085, d: 0.00065 },
+  "barclays-center": { lng: -73.9752, lat: 40.6826, kind: "stadium", baseHeight: 12, maxHeight: 48, w: 0.00075, d: 0.0006 },
+  "carbone-nyc": { lng: -74.0021, lat: 40.7261, kind: "restaurant", baseHeight: 6, maxHeight: 20, w: 0.00032, d: 0.00026 },
+  "marquee-nyc": { lng: -74.0042, lat: 40.7478, kind: "nightclub", baseHeight: 10, maxHeight: 38, w: 0.0005, d: 0.0004 },
+  "summit-vanderbilt": { lng: -73.9772, lat: 40.7527, kind: "shopping", baseHeight: 18, maxHeight: 65, w: 0.00055, d: 0.00042 },
+  "soho-house-nyc": { lng: -74.0078, lat: 40.7394, kind: "nightclub", baseHeight: 8, maxHeight: 30, w: 0.00048, d: 0.00038 },
 };
 
-export function buildPopWorldVenues(): PopWorldVenue[] {
-  return VERIFIED_BUSINESSES.map((biz) => {
+/** Build venues for the user's city world — verified anchors on real street grids */
+export function buildPopWorldVenues(city?: string | null): PopWorldVenue[] {
+  const businesses = getVerifiedBusinessesForCity(city);
+  return businesses.map((biz) => {
     const geo = VENUE_GEO[biz.slug];
     if (!geo) return null;
+
+    const boost = lookupBoost(biz.slug);
 
     return {
       id: biz.slug,
@@ -52,7 +63,7 @@ export function buildPopWorldVenues(): PopWorldVenue[] {
       footprint: footprint(geo.lng, geo.lat, geo.w, geo.d),
       baseHeight: geo.baseHeight,
       maxHeight: geo.maxHeight,
-      baseEnergy: biz.energy,
+      baseEnergy: Math.min(100, biz.energy + boost),
       signals: biz.vibeSignals,
       accentColor: biz.accentColor,
       verified: biz.verified,
@@ -112,6 +123,6 @@ export function districtsToGeoJSON(): GeoFeatureCollection {
   };
 }
 
-export function getVenueBySlug(slug: string): PopWorldVenue | undefined {
-  return buildPopWorldVenues().find((v) => v.businessSlug === slug);
+export function getVenueBySlug(slug: string, city?: string | null): PopWorldVenue | undefined {
+  return buildPopWorldVenues(city).find((v) => v.businessSlug === slug);
 }

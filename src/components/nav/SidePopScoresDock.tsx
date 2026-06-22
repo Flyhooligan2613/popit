@@ -39,18 +39,9 @@ function ScoreStack({ entries, side }: { entries: ScoreEntry[]; side: "left" | "
 function SidePopScoresDock({ user }: { user: UserProfile }) {
   const accent = getIdentityAccent(user.identity);
   const you: ScoreEntry = { label: user.name.split(" ")[0], score: user.pulseScore, accent, isYou: true };
-  const leftEntries: ScoreEntry[] = [you, ...CITY_LEADERBOARD.slice(0, 3)];
-  const rightEntries: ScoreEntry[] = CITY_LEADERBOARD.map((e, i) => ({
-    ...e,
-    score: Math.max(70, e.score - i * 2),
-  }));
+  const leftEntries: ScoreEntry[] = [you, ...CITY_LEADERBOARD];
 
-  return (
-    <>
-      <ScoreStack side="left" entries={leftEntries} />
-      <ScoreStack side="right" entries={rightEntries} />
-    </>
-  );
+  return <ScoreStack side="left" entries={leftEntries} />;
 }
 
 export default memo(SidePopScoresDock);

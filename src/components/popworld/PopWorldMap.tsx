@@ -12,15 +12,15 @@ import {
 } from "@/lib/popworld/mapLayers";
 import {
   getMapboxToken,
-  MIAMI_CENTER,
-  OPENING_CAMERA,
   POP_WORLD_STYLE,
 } from "@/lib/popworld/mapConfig";
+import { getOpeningCameraForCity } from "@/lib/popworld/cityWorlds";
 import { buildPopWorldVenues } from "@/lib/popworld/venues";
 import type { PopWorldCameraPhase } from "@/lib/popworld/types";
 import "./popworld.css";
 
 type PopWorldMapProps = {
+  city?: string;
   selectedVenueId: string | null;
   onVenueSelect: (venueId: string) => void;
   onPhaseChange?: (phase: PopWorldCameraPhase) => void;
@@ -38,6 +38,7 @@ const PHASE_DELAYS: Record<PopWorldCameraPhase, number> = {
 };
 
 export default function PopWorldMap({
+  city = "Miami",
   selectedVenueId,
   onVenueSelect,
   onPhaseChange,
@@ -45,7 +46,8 @@ export default function PopWorldMap({
 }: PopWorldMapProps) {
   const mapRef = useRef<MapRef>(null);
   const token = getMapboxToken();
-  const venues = buildPopWorldVenues();
+  const openingCamera = getOpeningCameraForCity(city);
+  const venues = buildPopWorldVenues(city);
   const [phase, setPhase] = useState<PopWorldCameraPhase>("satellite");
   const [mapLoaded, setMapLoaded] = useState(false);
   const openingRan = useRef(false);
@@ -56,10 +58,10 @@ export default function PopWorldMap({
     openingRan.current = true;
 
     map.jumpTo({
-      center: OPENING_CAMERA.satellite.center,
-      zoom: OPENING_CAMERA.satellite.zoom,
-      pitch: OPENING_CAMERA.satellite.pitch,
-      bearing: OPENING_CAMERA.satellite.bearing,
+      center: openingCamera.satellite.center,
+      zoom: openingCamera.satellite.zoom,
+      pitch: openingCamera.satellite.pitch,
+      bearing: openingCamera.satellite.bearing,
     });
 
     setDistrictLabelOpacity(map, 0);
@@ -84,7 +86,7 @@ export default function PopWorldMap({
         }
         if (p === "alive") {
           map.flyTo({
-            ...OPENING_CAMERA.alive,
+            ...openingCamera.alive,
             essential: true,
           });
           onReady?.();
@@ -94,7 +96,7 @@ export default function PopWorldMap({
 
     setTimeout(() => {
       map.flyTo({
-        center: OPENING_CAMERA.alive.center,
+        center: openingCamera.alive.center,
         zoom: 14.5,
         pitch: 35,
         bearing: -12,
@@ -102,7 +104,7 @@ export default function PopWorldMap({
         essential: true,
       });
     }, PHASE_DELAYS.descent);
-  }, [onPhaseChange, onReady]);
+  }, [onPhaseChange, onReady, openingCamera]);
 
   const handleLoad = useCallback(() => {
     const map = mapRef.current?.getMap();
@@ -124,15 +126,15 @@ export default function PopWorldMap({
       if (venue) {
         map.flyTo({
           center: venue.coordinates,
-          zoom: OPENING_CAMERA.venueFocus.zoom,
-          pitch: OPENING_CAMERA.venueFocus.pitch,
-          bearing: OPENING_CAMERA.venueFocus.bearing,
-          duration: OPENING_CAMERA.venueFocus.duration,
+          zoom: openingCamera.venueFocus.zoom,
+          pitch: openingCamera.venueFocus.pitch,
+          bearing: openingCamera.venueFocus.bearing,
+          duration: openingCamera.venueFocus.duration,
           essential: true,
         });
       }
     }
-  }, [selectedVenueId, mapLoaded, venues]);
+  }, [selectedVenueId, mapLoaded, venues, openingCamera]);
 
   const handleClick = useCallback(
     (event: MapMouseEvent) => {
@@ -175,9 +177,9 @@ export default function PopWorldMap({
         ref={mapRef}
         mapboxAccessToken={token}
         initialViewState={{
-          longitude: MIAMI_CENTER[0],
-          latitude: MIAMI_CENTER[1],
-          zoom: OPENING_CAMERA.satellite.zoom,
+          longitude: openingCamera.satellite.center[0],
+          latitude: openingCamera.satellite.center[1],
+          zoom: openingCamera.satellite.zoom,
           pitch: 0,
           bearing: 0,
         }}

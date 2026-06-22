@@ -15,9 +15,115 @@
 }
 
 .pop-scores-dock--right {
-  right: max(3.35rem, calc(env(safe-area-inset-right, 0px) + 2.85rem));
-  top: max(3.2rem, calc(env(safe-area-inset-top, 0px) + 2.5rem));
+  display: none;
 }
+
+.popit-live-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  padding-bottom: 6rem;
+}
+
+@media (min-width: 640px) {
+  .popit-live-hub__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.popit-live-hub__tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 0.65rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  overflow: hidden;
+  min-height: 9rem;
+}
+
+.popit-live-hub__tile.is-live {
+  border-color: rgba(255, 77, 109, 0.35);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.12);
+}
+
+.popit-live-hub__rec {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.35rem;
+  background: rgba(255, 77, 109, 0.9);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.popit-live-hub__rec-dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: #fff;
+  animation: popit-live-pulse 1s ease-in-out infinite;
+}
+
+@keyframes popit-live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.popit-live-hub__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.12rem;
+}
+
+.popit-live-hub__name {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.popit-live-hub__hood {
+  font-family: system-ui, sans-serif;
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.popit-live-hub__viewers {
+  font-family: system-ui, sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #ff4d6d;
+}
+
+.popit-live-hub__tag {
+  font-family: system-ui, sans-serif;
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.3;
+}
+
+.app-tab-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
 
 .pop-scores-dock__item {
   display: flex;
