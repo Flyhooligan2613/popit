@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import PopitLens from "@/components/profile/PopitLens";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
-import { EXPLORE_HOME_ROUTE, WELCOME_LOBBY_ROUTE, logoutAndGoLanding } from "@/lib/session";
+import { WELCOME_LOBBY_ROUTE, logoutAndGoLanding } from "@/lib/session";
+import {
+  itemsBySection,
+  searchSettingsHelp,
+  settingsSections,
+  type SettingsHelpItem,
+} from "@/lib/settings/settingsHelpIndex";
 
 function SettingsRow({
   label,
@@ -50,10 +55,14 @@ function SettingsRow({
   );
 }
 
+function HelpRow({ item }: { item: SettingsHelpItem }) {
+  return <SettingsRow label={item.label} hint={item.hint} href={item.href} />;
+}
+
 export default function SettingsPage() {
-  const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadUserProfile().then(setUser);
@@ -64,6 +73,9 @@ export default function SettingsPage() {
     await logoutAndGoLanding();
   };
 
+  const searchResults = useMemo(() => searchSettingsHelp(searchQuery), [searchQuery]);
+  const sections = useMemo(() => settingsSections(), []);
+
   const accent = user ? getIdentityAccent(user.identity) : "#FF4D6D";
   const identityLabel = user
     ? IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label
@@ -73,11 +85,8 @@ export default function SettingsPage() {
     <div className="profile-settings">
       <div className="profile-settings__hero">
         <div className="flex items-center justify-between">
-          <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 10.5 12 3l9 7.5" />
-              <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
-            </svg>
+          <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Back">
+            ←
           </Link>
           <p className="font-body text-xs font-bold uppercase tracking-[0.2em] text-white/50">Settings</p>
           <Link href="/pulse#profile" className="profile-social__topnav-btn" aria-label="Profile">
@@ -109,126 +118,94 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
-      </div>
 
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Your POP'IT</p>
-        <div className="profile-settings__list">
-          <SettingsRow label="Edit Profile" hint="Photo, name, bio, identity lane" href="/pulse#profile" />
-          <SettingsRow label="Identity & Specialty" hint="Update who you are in the city" href="/pulse#profile" />
-          <SettingsRow
-            label="Platform Background"
-            hint="Flags, identity vibes, city energy"
-            onClick={() => router.push("/onboarding?skipIntro=1&background=1")}
-          />
-          <SettingsRow label="Interests" hint="Tune your city feed" onClick={() => router.push("/onboarding?skipIntro=1")} />
-        </div>
-      </div>
-
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Experience</p>
-        <div className="profile-settings__list">
-          <SettingsRow label="Social Feed" hint="For You, Reels, Thoughts" href="/feed" />
-          <SettingsRow label="Lobby Home" hint="Your city landing" href={WELCOME_LOBBY_ROUTE} />
-          <SettingsRow label="Explore Tab" hint="Worldwide discovery grid" href={EXPLORE_HOME_ROUTE} />
-          <SettingsRow label="Your City" href="/pulse" />
-          <SettingsRow label="POP WORLD" href="/map" />
-          <SettingsRow label="Notifications" href="/notifications" />
-          <SettingsRow label="Messages" href="/messages" />
-        </div>
-      </div>
-
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Permissions & Privacy</p>
-        <div className="profile-settings__list">
-          <SettingsRow
-            label="Device Permissions"
-            hint="Location, camera, photos, mic, alerts"
-            href="/settings/permissions"
-          />
-          <SettingsRow
-            label="Help Center"
-            hint="Learn what each section does"
-            href="/help"
+        <div className="profile-settings__search">
+          <input
+            type="search"
+            className="profile-settings__search-input"
+            placeholder="Search settings & help…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search settings and help"
           />
         </div>
       </div>
 
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Location</p>
-        <div className="profile-settings__list">
-          <SettingsRow
-            label="Update My City"
-            hint="Re-detect from GPS or time zone"
-            onClick={() => {
-              void import("@/lib/location/cityDetection").then(({ detectAndSaveCity }) =>
-                detectAndSaveCity({ prompt: true })
-              );
-            }}
-          />
-          <SettingsRow
-            label="Location Permission"
-            hint="Turn location on or off"
-            href="/settings/permissions"
-          />
+      {searchQuery.trim() ? (
+        <div className="profile-settings__section">
+          <p className="profile-settings__section-title">Search results</p>
+          <div className="profile-settings__list">
+            {searchResults.length === 0 ? (
+              <p className="profile-settings__empty">No matches — try &quot;camera&quot;, &quot;location&quot;, or &quot;privacy&quot;</p>
+            ) : (
+              searchResults.map((item) => <HelpRow key={item.id} item={item} />)
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        sections.map((section) => {
+          const items = itemsBySection(section).filter((i) => i.id !== "edit-profile");
+          if (section === "Privacy & Account") {
+            return (
+              <div key={section} className="profile-settings__section">
+                <p className="profile-settings__section-title">{section}</p>
+                <div className="profile-settings__list">
+                  {items.map((item) => (
+                    <HelpRow key={item.id} item={item} />
+                  ))}
+                  <SettingsRow
+                    label={loggingOut ? "Signing out…" : "Log Out"}
+                    onClick={handleLogout}
+                    danger
+                  />
+                </div>
+              </div>
+            );
+          }
 
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Monetization</p>
-        <div className="profile-settings__list">
-          <SettingsRow
-            label="Creator Program"
-            hint="Overview, levels, and how to earn"
-            href="/monetization"
-          />
-          <SettingsRow
-            label="Eligibility Requirements"
-            hint="Followers, POP Score, and account standing"
-            href="/monetization/requirements"
-          />
-          <SettingsRow
-            label="Creator Levels"
-            hint="POP Marks and unlocks by tier"
-            href="/monetization/levels"
-          />
-          <SettingsRow
-            label="How to Qualify"
-            hint="Step-by-step path to monetization"
-            href="/monetization/how-to-qualify"
-          />
-          <SettingsRow
-            label="Monetization Channels"
-            hint="Referrals, gifts, marketplace, and more"
-            href="/monetization/channels"
-          />
-        </div>
-      </div>
+          if (section === "Your POP'IT") {
+            return (
+              <div key={section} className="profile-settings__section">
+                <p className="profile-settings__section-title">{section}</p>
+                <div className="profile-settings__list">
+                  <SettingsRow
+                    label="Edit Profile"
+                    hint="Photo, name, bio, identity lane"
+                    href="/pulse#profile"
+                  />
+                  {items.map((item) => (
+                    <HelpRow key={item.id} item={item} />
+                  ))}
+                </div>
+              </div>
+            );
+          }
 
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Legal</p>
-        <div className="profile-settings__list">
-          <SettingsRow label="Terms of Service" href="/legal/terms" />
-          <SettingsRow label="Privacy Policy" href="/legal/privacy" />
-          <SettingsRow label="Community Guidelines" href="/legal/community-guidelines" />
-          <SettingsRow label="Data Deletion" href="/legal/data-deletion" />
-          <SettingsRow label="All Policies" href="/legal" />
-        </div>
-      </div>
+          if (section === "Experience") {
+            return (
+              <div key={section} className="profile-settings__section">
+                <p className="profile-settings__section-title">{section}</p>
+                <div className="profile-settings__list">
+                  {items.map((item) => (
+                    <HelpRow key={item.id} item={item} />
+                  ))}
+                </div>
+              </div>
+            );
+          }
 
-      <div className="profile-settings__section">
-        <p className="profile-settings__section-title">Privacy & Account</p>
-        <div className="profile-settings__list">
-          <SettingsRow label="Privacy" hint="Who can see your POP card" />
-          <SettingsRow label="Security" hint="Password and login" />
-          <SettingsRow label="Blocked Accounts" />
-          <SettingsRow
-            label={loggingOut ? "Signing out…" : "Log Out"}
-            onClick={handleLogout}
-            danger
-          />
-        </div>
-      </div>
+          return (
+            <div key={section} className="profile-settings__section">
+              <p className="profile-settings__section-title">{section}</p>
+              <div className="profile-settings__list">
+                {items.map((item) => (
+                  <HelpRow key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          );
+        })
+      )}
     </div>
   );
 }

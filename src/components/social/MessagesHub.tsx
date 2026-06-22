@@ -78,7 +78,11 @@ export default function MessagesHub() {
   }
 
   return (
-    <SocialPageShell title="Messages" subtitle="Direct lens-to-lens · same on web & mobile">
+    <SocialPageShell
+      title="Messages"
+      subtitle="Direct lens-to-lens · same on web & mobile"
+      backHref="/onboarding?skipIntro=1&explore=1"
+    >
       <div className="messages-hub__list">
         {state.conversations.map((convo) => (
           <button

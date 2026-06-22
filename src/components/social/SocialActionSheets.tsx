@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import MediaPreview from "@/components/social/MediaPreview";
 import { useSocialActions } from "@/lib/social/SocialActionsContext";
-import { loadUserProfile } from "@/lib/identity/userProfile";
+import { loadUserProfile, saveUserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { createPost } from "@/lib/social/socialStore";
+import {
+  pickPhotoOrVideo,
+  requestCameraPreview,
+  requestLiveMedia,
+  requestVideoWithAudio,
+  stopMediaStream,
+} from "@/lib/media/mediaCapture";
 import {
   LIVE_SINGALONG_NOTICE,
   MUSIC_COPYRIGHT_NOTICE,
@@ -85,18 +94,91 @@ export default function SocialActionSheets() {
   const [reelCaption, setReelCaption] = useState("");
   const [storyEffect, setStoryEffect] = useState<StoryEffectId>("none");
   const [musicGenre, setMusicGenre] = useState<MusicGenre | "all">("all");
+  const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [mediaError, setMediaError] = useState<string | null>(null);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [attachedMedia, setAttachedMedia] = useState<string | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  mediaStreamRef.current = mediaStream;
+
+  const clearMedia = useCallback(() => {
+    stopMediaStream(mediaStreamRef.current);
+    setMediaStream(null);
+    setAttachedMedia(null);
+    setMediaError(null);
+  }, []);
+
+  useEffect(() => {
+    if (
+      !activeSheet ||
+      activeSheet === "create" ||
+      activeSheet === "music" ||
+      activeSheet === "thought" ||
+      activeSheet === "page"
+    ) {
+      clearMedia();
+    }
+  }, [activeSheet, clearMedia]);
 
   const resetCopyrightAck = () => setCopyrightAck(false);
+
+  const enableLivePreview = async () => {
+    setMediaLoading(true);
+    setMediaError(null);
+    stopMediaStream(mediaStreamRef.current);
+    const result = await requestLiveMedia();
+    setMediaLoading(false);
+    if (!result.ok || !result.stream) {
+      setMediaError(result.error ?? "Could not access camera and microphone.");
+      return;
+    }
+    setMediaStream(result.stream);
+  };
+
+  const enableCameraPreview = async () => {
+    setMediaLoading(true);
+    setMediaError(null);
+    stopMediaStream(mediaStreamRef.current);
+    const result = await requestCameraPreview();
+    setMediaLoading(false);
+    if (!result.ok || !result.stream) {
+      setMediaError(result.error ?? "Could not access camera.");
+      return;
+    }
+    setMediaStream(result.stream);
+  };
+
+  const enableReelCapture = async () => {
+    setMediaLoading(true);
+    setMediaError(null);
+    stopMediaStream(mediaStreamRef.current);
+    const result = await requestVideoWithAudio();
+    setMediaLoading(false);
+    if (!result.ok || !result.stream) {
+      setMediaError(result.error ?? "Could not access camera and microphone.");
+      return;
+    }
+    setMediaStream(result.stream);
+  };
+
+  const attachFromGallery = async () => {
+    setMediaError(null);
+    const file = await pickPhotoOrVideo();
+    if (!file) return;
+    clearMedia();
+    setAttachedMedia(file.name);
+  };
 
   const publish = async (kind: "thought" | "page" | "reel", text: string, title?: string) => {
     const user = await loadUserProfile();
     if (!user || !text.trim()) return;
     const trackLabel = selectedTrack ? `${selectedTrack.title} · ${selectedTrack.artist}` : undefined;
     const effectNote = storyEffect !== "none" ? ` · ${storyEffectLabel(storyEffect)}` : "";
+    const mediaNote = attachedMedia ? ` · ${attachedMedia}` : mediaStream ? " · recorded" : "";
     createPost({
       kind,
       text: text.trim(),
-      title: title ? `${title}${effectNote}` : title,
+      title: title ? `${title}${effectNote}${mediaNote}` : title,
       authorUsername: user.username,
       authorName: user.name,
       authorAccent: getIdentityAccent(user.identity),
@@ -107,18 +189,23 @@ export default function SocialActionSheets() {
     setPageText("");
     setReelCaption("");
     setStoryEffect("none");
+    clearMedia();
     closeSheet();
     router.push(kind === "reel" ? "/explore" : "/feed");
   };
 
   const postStory = async () => {
+    if (!mediaStream && !attachedMedia) {
+      setMediaError("Turn on camera or pick a photo/video first.");
+      return;
+    }
     const user = await loadUserProfile();
     if (!user) return;
     const trackLabel = selectedTrack ? `${selectedTrack.title} · ${selectedTrack.artist}` : undefined;
     const effect = storyEffectLabel(storyEffect);
     createPost({
       kind: "page",
-      text: `Story moment · ${effect}`,
+      text: `Story moment · ${effect}${attachedMedia ? ` · ${attachedMedia}` : ""}`,
       title: `Story · ${effect}`,
       authorUsername: user.username,
       authorName: user.name,
@@ -127,9 +214,55 @@ export default function SocialActionSheets() {
       musicTrack: trackLabel,
     });
     setStoryEffect("none");
+    clearMedia();
     closeSheet();
     router.push("/feed");
   };
+
+  const startLive = async () => {
+    if (!mediaStream) {
+      setMediaError("Enable camera & mic preview before going live.");
+      return;
+    }
+    const user = await loadUserProfile();
+    if (!user) return;
+    const title = liveTitle.trim() || "Live in the city";
+    const trackLabel = selectedTrack ? `${selectedTrack.title} · ${selectedTrack.artist}` : undefined;
+
+    saveUserProfile({ live: true });
+    createPost({
+      kind: "reel",
+      text: title,
+      title: "Go Live",
+      authorUsername: user.username,
+      authorName: user.name,
+      authorAccent: getIdentityAccent(user.identity),
+      city: user.city,
+      musicTrack: trackLabel,
+    });
+
+    setLiveTitle("");
+    closeSheet();
+    router.push("/live");
+  };
+
+  const publishReel = async () => {
+    if (!reelCaption.trim()) return;
+    if (!mediaStream && !attachedMedia) {
+      setMediaError("Record with camera or attach a video from your gallery.");
+      return;
+    }
+    await publish("reel", reelCaption);
+  };
+
+  const MediaErrorBlock = mediaError ? (
+    <div className="social-sheet__media-error">
+      <p>{mediaError}</p>
+      <Link href="/settings/permissions" className="social-sheet__media-error-link">
+        Fix in Settings →
+      </Link>
+    </div>
+  ) : null;
 
   return (
     <AnimatePresence>
@@ -155,6 +288,18 @@ export default function SocialActionSheets() {
       {activeSheet === "live" && (
         <SheetShell title="Go Live" subtitle="Broadcast from the club — sing along on camera" onClose={closeSheet}>
           <p className="social-sheet__notice">{LIVE_SINGALONG_NOTICE}</p>
+          {MediaErrorBlock}
+          <MediaPreview stream={mediaStream} label="Live preview" />
+          {!mediaStream && (
+            <button
+              type="button"
+              className="social-sheet__secondary"
+              disabled={mediaLoading}
+              onClick={() => void enableLivePreview()}
+            >
+              {mediaLoading ? "Starting camera…" : "Enable Camera & Mic"}
+            </button>
+          )}
           {selectedTrack && (musicUsage === "liveSingAlong" || musicUsage === "liveBackground") && (
             <p className="social-sheet__track-pill">
               🎤 Sing along · {selectedTrack.title} · {selectedTrack.artist}
@@ -177,7 +322,8 @@ export default function SocialActionSheets() {
           <button
             type="button"
             className="social-sheet__primary"
-            onClick={() => publish("reel", liveTitle || "Live in the city", "Go Live")}
+            onClick={() => void startLive()}
+            disabled={!mediaStream}
           >
             Start Live
           </button>
@@ -187,6 +333,26 @@ export default function SocialActionSheets() {
       {activeSheet === "story" && (
         <SheetShell title="Post to Story" subtitle="24h city moment · motion & loop effects" onClose={closeSheet}>
           <p className="social-sheet__notice">{MUSIC_COPYRIGHT_NOTICE}</p>
+          {MediaErrorBlock}
+          <MediaPreview stream={mediaStream} label="Story camera" />
+          {!mediaStream && !attachedMedia && (
+            <>
+              <button
+                type="button"
+                className="social-sheet__secondary"
+                disabled={mediaLoading}
+                onClick={() => void enableCameraPreview()}
+              >
+                {mediaLoading ? "Starting camera…" : "Open Camera"}
+              </button>
+              <button type="button" className="social-sheet__secondary" onClick={() => void attachFromGallery()}>
+                Choose Photo or Video
+              </button>
+            </>
+          )}
+          {attachedMedia && (
+            <p className="social-sheet__track-pill">📎 {attachedMedia}</p>
+          )}
 
           <label className="social-sheet__label">Motion effects</label>
           <div className="social-sheet__effects">
@@ -212,8 +378,8 @@ export default function SocialActionSheets() {
             </p>
           )}
 
-          <button type="button" className="social-sheet__secondary" onClick={postStory}>
-            Capture Story · {storyEffectLabel(storyEffect)}
+          <button type="button" className="social-sheet__primary" onClick={() => void postStory()}>
+            Post Story · {storyEffectLabel(storyEffect)}
           </button>
           <button
             type="button"
@@ -227,6 +393,26 @@ export default function SocialActionSheets() {
 
       {activeSheet === "reel" && (
         <SheetShell title="Make Reel" subtitle="Short vertical clip for Explore & Feed" onClose={closeSheet}>
+          {MediaErrorBlock}
+          <MediaPreview stream={mediaStream} label="Reel camera" />
+          {!mediaStream && !attachedMedia && (
+            <>
+              <button
+                type="button"
+                className="social-sheet__secondary"
+                disabled={mediaLoading}
+                onClick={() => void enableReelCapture()}
+              >
+                {mediaLoading ? "Starting camera…" : "Record with Camera & Mic"}
+              </button>
+              <button type="button" className="social-sheet__secondary" onClick={() => void attachFromGallery()}>
+                Upload Video from Gallery
+              </button>
+            </>
+          )}
+          {attachedMedia && (
+            <p className="social-sheet__track-pill">📎 {attachedMedia}</p>
+          )}
           <textarea
             className="social-sheet__textarea"
             placeholder="Caption your reel…"
@@ -245,7 +431,7 @@ export default function SocialActionSheets() {
           <button
             type="button"
             className="social-sheet__primary"
-            onClick={() => publish("reel", reelCaption || "New reel in the city")}
+            onClick={() => void publishReel()}
             disabled={!reelCaption.trim()}
           >
             Publish Reel

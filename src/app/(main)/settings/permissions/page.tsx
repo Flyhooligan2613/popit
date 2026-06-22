@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MapPin, Camera, ImageIcon, Mic, Bell } from "lucide-react";
+import SettingsPageHeader from "@/components/settings/SettingsPageHeader";
 import PermissionSettingsPanel, {
   type PermissionCardConfig,
 } from "@/components/settings/PermissionSettingsPanel";
@@ -58,23 +59,16 @@ const PERMISSIONS: PermissionCardConfig[] = [
 export default function PermissionsSettingsPage() {
   return (
     <div className="profile-settings">
-      <div className="profile-settings__hero">
-        <div className="flex items-center justify-between">
-          <Link href="/settings" className="profile-social__topnav-btn" aria-label="Back">
-            ←
-          </Link>
-          <p className="font-body text-xs font-bold uppercase tracking-[0.2em] text-white/50">
-            Permissions
-          </p>
+      <SettingsPageHeader
+        title="Permissions"
+        subtitle="Same controls as Step 4 onboarding — toggle anytime."
+        backHref="/settings"
+        right={
           <Link href="/help/permissions" className="profile-social__topnav-btn" aria-label="Help">
             ?
           </Link>
-        </div>
-        <h1 className="mt-4 font-body text-xl font-bold text-white">Device Permissions</h1>
-        <p className="mt-1 font-body text-sm text-white/40">
-          Same controls as Step 4 onboarding — toggle anytime.
-        </p>
-      </div>
+        }
+      />
 
       <div className="profile-settings__section px-4">
         <PermissionSettingsPanel permissions={PERMISSIONS} variant="settings" />

@@ -23,8 +23,6 @@
 
 .ptr-indicator-btn {
   pointer-events: none;
-  opacity: 0;
-  transform: translateY(-6px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,18 +32,8 @@
   left: 50%;
   translate: -50% 0;
   padding: 0.35rem 0.85rem 0.5rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
   color: rgba(255, 255, 255, 0.72);
   font-family: system-ui, -apple-system, sans-serif;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.ptr-indicator-btn.is-visible {
-  pointer-events: auto;
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .ptr-indicator-ring {
@@ -100,13 +88,6 @@
 @keyframes ptr-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (hover: hover) {
-  .ptr-indicator-btn:not(:disabled):hover .ptr-indicator-ring {
-    border-color: rgba(255, 77, 109, 0.45);
-    transform: scale(1.04);
   }
 }
 

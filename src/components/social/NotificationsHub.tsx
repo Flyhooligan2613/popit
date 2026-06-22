@@ -37,6 +37,7 @@ export default function NotificationsHub() {
     <SocialPageShell
       title="Notifications"
       subtitle="Likes, follows, live alerts & city pulses"
+      backHref="/onboarding?skipIntro=1&explore=1"
       headerRight={
         unread > 0 ? (
           <button type="button" className="notifications-hub__read-all" onClick={handleReadAll}>

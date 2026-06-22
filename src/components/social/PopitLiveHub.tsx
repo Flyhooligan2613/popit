@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import PopSearchBar from "@/components/nav/PopSearchBar";
 import PopitLens from "@/components/profile/PopitLens";
 import { useResolvedCity } from "@/hooks/useResolvedCity";
@@ -30,7 +31,12 @@ export default function PopitLiveHub() {
   return (
     <PullToRefresh onRefresh={handleRefresh} className="explore-hub popit-live-hub">
       <div className="explore-hub__head app-page-pad">
-        <h1 className="explore-hub__title">POPIT Live</h1>
+        <div className="explore-hub__head-row">
+          <Link href={WELCOME_LOBBY_ROUTE} className="social-page__back" aria-label="Back">
+            ←
+          </Link>
+          <h1 className="explore-hub__title">POPIT Live</h1>
+        </div>
         <p className="explore-hub__sub">
           {liveCount} live near {city} · profiles &amp; venues on air right now
         </p>

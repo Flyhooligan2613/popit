@@ -13,24 +13,6 @@ export const CITY_UPDATED_EVENT = "popit:cityUpdated";
 
 export type CityUpdatedDetail = { city: string; source: CitySource };
 
-/** US & common IANA zones → display city for feed personalization */
-const TIMEZONE_CITY: Record<string, string> = {
-  "America/New_York": "New York",
-  "America/Detroit": "Detroit",
-  "America/Chicago": "Chicago",
-  "America/Denver": "Denver",
-  "America/Phoenix": "Phoenix",
-  "America/Los_Angeles": "Los Angeles",
-  "America/Anchorage": "Anchorage",
-  "Pacific/Honolulu": "Honolulu",
-  "America/Boise": "Boise",
-  "America/Indiana/Indianapolis": "Indianapolis",
-  "America/Kentucky/Louisville": "Louisville",
-  "America/Menominee": "Milwaukee",
-  "America/North_Dakota/Center": "Fargo",
-  "America/Juneau": "Juneau",
-};
-
 export function hasSeenLocationPrompt(): boolean {
   if (typeof window === "undefined") return true;
   return sessionStorage.getItem(LOCATION_PROMPT_KEY) === "1";
@@ -48,16 +30,13 @@ export function getCitySource(): CitySource {
   return "default";
 }
 
+/** Timezone hint only — never used as a display city unless user explicitly accepts fallback */
 export function inferCityFromTimezone(): string {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (TIMEZONE_CITY[tz]) return TIMEZONE_CITY[tz];
-    if (tz.startsWith("America/")) {
+    if (tz.startsWith("America/") || tz.startsWith("US/")) {
       const segment = tz.split("/").pop() ?? "";
-      return segment.replace(/_/g, " ");
-    }
-    if (tz.startsWith("US/")) {
-      return tz.replace("US/", "").replace(/_/g, " ");
+      if (segment) return segment.replace(/_/g, " ");
     }
   } catch {
     /* fall through */
@@ -121,9 +100,19 @@ export function getStoredCity(): string | null {
   return null;
 }
 
-/** Resolved label for UI — never silently assumes Miami */
+/** Resolved label for UI — only shows GPS-stored city or placeholder until detected */
 export function getResolvedCity(): string {
-  return getStoredCity() ?? inferCityFromTimezone();
+  const stored = getStoredCity();
+  if (stored) return stored;
+  const source = getCitySource();
+  if (source === "gps") return getUserProfile().city || DEFAULT_CITY_LABEL;
+  return DEFAULT_CITY_LABEL;
+}
+
+export function citySourceLabel(source: CitySource | null): string {
+  if (source === "gps") return "From your device GPS";
+  if (source === "timezone") return "Estimated from time zone";
+  return "Not detected yet";
 }
 
 /** Normalize profile/API city values (legacy Miami → detected city) */
@@ -132,7 +121,9 @@ export function normalizeProfileCity(city: string | null | undefined): string {
   return city;
 }
 
-export function requestGeolocationPosition(): Promise<GeolocationPosition | null> {
+export function requestGeolocationPosition(options?: {
+  highAccuracy?: boolean;
+}): Promise<GeolocationPosition | null> {
   return new Promise((resolve) => {
     if (typeof window === "undefined" || !navigator.geolocation) {
       resolve(null);
@@ -141,7 +132,11 @@ export function requestGeolocationPosition(): Promise<GeolocationPosition | null
     navigator.geolocation.getCurrentPosition(
       (pos) => resolve(pos),
       () => resolve(null),
-      { enableHighAccuracy: false, maximumAge: 900_000, timeout: 12_000 }
+      {
+        enableHighAccuracy: options?.highAccuracy ?? false,
+        maximumAge: options?.highAccuracy ? 0 : 900_000,
+        timeout: options?.highAccuracy ? 20_000 : 12_000,
+      }
     );
   });
 }
@@ -153,7 +148,7 @@ export async function detectAndSaveCity(options?: {
     markLocationPromptSeen();
   }
 
-  const pos = await requestGeolocationPosition();
+  const pos = await requestGeolocationPosition({ highAccuracy: Boolean(options?.prompt) });
   if (pos) {
     const name = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
     if (name) {
@@ -162,37 +157,46 @@ export async function detectAndSaveCity(options?: {
     }
   }
 
+  const existing = getStoredCity();
+  if (existing) {
+    return { city: existing, source: getCitySource(), region: inferRegionFromTimezone() };
+  }
+
   const tzCity = inferCityFromTimezone();
   const source: CitySource = tzCity === DEFAULT_CITY_LABEL ? "default" : "timezone";
-  persistCity(tzCity, source);
+  if (options?.prompt) {
+    persistCity(tzCity, source);
+  }
   return { city: tzCity, source, region: inferRegionFromTimezone() };
 }
 
-/** Run on boot when user has not picked a real city yet */
+/** Run on boot — prefer GPS when permission already granted */
 export async function bootstrapCityIfNeeded(): Promise<void> {
   if (typeof window === "undefined") return;
   const stored = getStoredCity();
   const source = getCitySource();
   if (stored && source === "gps") return;
-  if (stored && source === "timezone" && !isLegacyDefault(stored)) return;
 
   try {
     const perm = await navigator.permissions?.query({ name: "geolocation" as PermissionName });
     if (perm?.state === "granted") {
-      await detectAndSaveCity();
-      return;
+      const result = await detectAndSaveCity({ prompt: false });
+      if (result.source === "gps") return;
     }
   } catch {
-    /* permissions API unavailable — fall through */
+    /* permissions API unavailable */
   }
 
   if (!stored || isLegacyDefault(stored)) {
-    const tzCity = inferCityFromTimezone();
-    persistCity(tzCity, tzCity === DEFAULT_CITY_LABEL ? "default" : "timezone");
+    /* Do not persist timezone guess as city — wait for user GPS prompt */
+    const profileCity = getUserProfile().city;
+    if (isLegacyDefault(profileCity)) {
+      saveUserProfile({ city: DEFAULT_CITY_LABEL });
+    }
   }
 }
 
-/** User declined GPS — save timezone-inferred city */
+/** User declined GPS — save timezone-inferred city as fallback */
 export function saveTimezoneFallbackCity(): { city: string; source: CitySource } {
   const city = inferCityFromTimezone();
   const source: CitySource = city === DEFAULT_CITY_LABEL ? "default" : "timezone";

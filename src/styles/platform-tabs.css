@@ -208,6 +208,17 @@
   padding-top: 1rem;
 }
 
+.explore-hub__head-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.25rem;
+}
+
+.explore-hub__head-row .explore-hub__title {
+  margin: 0;
+}
+
 .explore-hub__title {
   margin: 0 0 0.25rem;
   font-family: var(--font-display), system-ui, sans-serif;

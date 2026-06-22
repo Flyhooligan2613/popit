@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import StoriesStrip from "./StoriesStrip";
 import FeedPostCard from "./FeedPostCard";
 import ThoughtCard from "./ThoughtCard";
@@ -33,6 +34,11 @@ export default function SocialFeedHub() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="social-feed-hub">
+      <div className="social-feed-hub__top app-page-pad">
+        <Link href={WELCOME_LOBBY_ROUTE} className="social-page__back" aria-label="Back">
+          ←
+        </Link>
+      </div>
       <div className="social-feed-hub__tabs" role="tablist">
         {TABS.map((t) => (
           <button

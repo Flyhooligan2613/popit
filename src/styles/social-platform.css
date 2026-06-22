@@ -24,6 +24,28 @@
   gap: 0.75rem;
 }
 
+.social-page__header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.social-page__back {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
 .social-page__title {
   margin: 0;
   font-family: var(--font-display), system-ui, sans-serif;
@@ -71,6 +93,14 @@
 
 .social-feed-hub::-webkit-scrollbar {
   display: none;
+}
+
+.social-feed-hub__top {
+  display: flex;
+  align-items: center;
+  padding: max(0.5rem, env(safe-area-inset-top, 0px)) 0.75rem 0;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .social-feed-hub__tabs {

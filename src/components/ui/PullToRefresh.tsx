@@ -17,7 +17,7 @@ function statusLabel(state: PullToRefreshState): string {
   if (state === "refreshing") return "Refreshing…";
   if (state === "ready") return "Release to refresh";
   if (state === "pulling") return "Pull to refresh";
-  return "Refresh feed";
+  return "";
 }
 
 export default function PullToRefresh({
@@ -29,21 +29,18 @@ export default function PullToRefresh({
   role,
   "aria-label": ariaLabel,
 }: PullToRefreshProps) {
-  const { scrollRef, pull, state, atTop, triggerRefresh, isRefreshing } = usePullToRefresh({
+  const { scrollRef, pull, state, atTop, isRefreshing } = usePullToRefresh({
     onRefresh,
     disabled,
   });
 
-  const showIndicator = atTop || pull > 0 || isRefreshing;
+  const showIndicator = pull > 0 || isRefreshing;
 
   const indicatorOpacity = useMemo(() => {
     if (!showIndicator) return 0;
     if (state === "refreshing") return 1;
-    if (pull <= 0) return 0.82;
     return Math.min(1, 0.35 + pull / 90);
   }, [pull, showIndicator, state]);
-
-  const canTapRefresh = !disabled && !isRefreshing && pull === 0 && atTop;
 
   return (
     <div
@@ -53,29 +50,26 @@ export default function PullToRefresh({
       role={role}
       aria-label={ariaLabel}
     >
-      <div
-        className="ptr-indicator"
-        style={{
-          height: state === "refreshing" ? 72 : Math.max(0, pull),
-          opacity: indicatorOpacity,
-        }}
-        aria-hidden={!showIndicator}
-      >
-        <button
-          type="button"
-          className={`ptr-indicator-btn ${isRefreshing ? "is-refreshing" : ""} ${state === "ready" ? "is-ready" : ""} ${showIndicator ? "is-visible" : ""}`}
-          onClick={() => {
-            if (canTapRefresh) void triggerRefresh();
+      {showIndicator && (
+        <div
+          className="ptr-indicator"
+          style={{
+            height: state === "refreshing" ? 72 : Math.max(0, pull),
+            opacity: indicatorOpacity,
           }}
-          disabled={!canTapRefresh}
-          aria-label={statusLabel(state)}
+          aria-hidden={!showIndicator}
         >
-          <span className="ptr-indicator-ring">
-            <span className="ptr-indicator-icon">↻</span>
-          </span>
-          <span className="ptr-indicator-label">{statusLabel(state)}</span>
-        </button>
-      </div>
+          <div
+            className={`ptr-indicator-btn ${isRefreshing ? "is-refreshing" : ""} ${state === "ready" ? "is-ready" : ""} is-visible`}
+            aria-label={statusLabel(state)}
+          >
+            <span className="ptr-indicator-ring">
+              <span className="ptr-indicator-icon">↻</span>
+            </span>
+            <span className="ptr-indicator-label">{statusLabel(state)}</span>
+          </div>
+        </div>
+      )}
 
       <div
         className="ptr-content"
