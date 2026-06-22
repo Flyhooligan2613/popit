@@ -43,6 +43,10 @@
 .app-page-pad.popit-home-content {
   padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
   padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
+  max-width: min(680px, calc(100vw - 8rem));
+  margin-inline: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .app-social-chrome-active .city-hub-main.app-page-pad {
@@ -56,6 +60,7 @@
   .app-social-chrome-active .city-hub-main.app-page-pad {
     padding-left: 3.85rem;
     padding-right: 3.85rem;
+    max-width: calc(100vw - 7.5rem);
   }
 }
 
@@ -63,11 +68,12 @@
 .social-sheet-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 200;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 0.75rem max(0.75rem, env(safe-area-inset-bottom, 0px));
+  padding: 0 max(0.75rem, env(safe-area-inset-right, 0px)) max(0.75rem, env(safe-area-inset-bottom, 0px))
+    max(0.75rem, env(safe-area-inset-left, 0px));
   background: rgba(0, 0, 0, 0.62);
   backdrop-filter: blur(6px);
 }
@@ -282,4 +288,32 @@
 .social-sheet__copyright input {
   margin-top: 0.15rem;
   accent-color: #ff4d6d;
+}
+
+.social-sheet__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  max-height: 5.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.social-sheet__genre {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  font-family: system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.social-sheet__genre.is-active {
+  color: #fff;
+  border-color: rgba(255, 77, 109, 0.45);
+  background: rgba(255, 77, 109, 0.12);
 }

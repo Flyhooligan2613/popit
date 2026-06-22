@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import PopitLens from "@/components/profile/PopitLens";
 import GlassPanel from "./GlassPanel";
 import LiveDot from "./LiveDot";
 import { LIVE_STATS } from "./data";
@@ -59,19 +60,34 @@ export default function CityProfileHero({ user }: CityProfileHeroProps) {
       className="relative mb-5"
     >
       <p
-        className="mb-2 font-body text-[0.62rem] font-bold uppercase tracking-[0.2em]"
+        className="mb-3 font-body text-[0.62rem] font-bold uppercase tracking-[0.2em]"
         style={{ color: `${accent}e6` }}
       >
         {isPersonalized ? `${identityLabel} · Your City` : "Your City · Living Platform"}
       </p>
 
-      <h1 className="text-poster mb-1 text-[clamp(2rem,7vw,3rem)] uppercase text-white">
+      <div className="city-profile-identity mb-4">
+        <PopitLens
+          name={user.name}
+          followers={user.followers}
+          verified={user.verified}
+          live={user.live}
+          accent={accent}
+          size={64}
+          followersBeneath={false}
+        />
+        <div className="city-profile-identity__text min-w-0">
+          <p className="city-profile-identity__name">{user.name}</p>
+          <p className="city-profile-identity__handle">@{user.username}</p>
+          <p className="city-profile-identity__bio">{user.currentVibe}</p>
+        </div>
+      </div>
+
+      <h1 className="text-poster mb-1 text-[clamp(1.75rem,6vw,2.75rem)] uppercase text-white">
         {user.city}
       </h1>
-      <p className="mb-1 font-body text-lg font-bold text-white/88">@{user.username}</p>
       <p className="mb-1 font-body text-sm font-semibold text-white/65">{greeting}</p>
       <p className="mb-3 font-body text-sm font-medium text-white/40">{subGreeting}</p>
-      <p className="mb-4 font-body text-sm italic text-white/55">{user.currentVibe}</p>
 
       <GlassPanel
         hover={false}

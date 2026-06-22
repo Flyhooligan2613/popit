@@ -1268,11 +1268,26 @@
   padding: inherit;
 }
 
-/* Weather sheet */
+/* Weather sheet — portaled to body for mobile-safe positioning */
+.weather-sheet-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.weather-sheet-portal .weather-sheet-backdrop {
+  pointer-events: auto;
+}
+
+.weather-sheet-portal .weather-sheet {
+  pointer-events: auto;
+}
+
 .weather-sheet-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 120;
+  z-index: 201;
   background: rgba(0, 0, 0, 0.62);
   border: none;
   cursor: pointer;
@@ -1280,16 +1295,20 @@
 
 .weather-sheet {
   position: fixed;
-  left: 50%;
-  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  z-index: 121;
-  width: min(92vw, 22rem);
-  padding: 1rem 1rem 1.1rem;
+  left: 0;
+  right: 0;
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  z-index: 202;
+  width: min(calc(100vw - 1.5rem), 22rem);
+  max-height: min(85dvh, 32rem);
+  overflow-y: auto;
+  margin-inline: auto;
+  padding: 1rem 1rem max(1.1rem, env(safe-area-inset-bottom, 0px));
   border-radius: 1.1rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(165deg, rgba(14, 18, 32, 0.98) 0%, rgba(6, 8, 14, 0.99) 100%);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 32px rgba(0, 212, 255, 0.12);
+  scrollbar-width: none;
 }
 
 .weather-sheet-handle {

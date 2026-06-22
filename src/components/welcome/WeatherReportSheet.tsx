@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import type { TimePeriod } from "./types";
 
 type WeatherReportSheetProps = {
@@ -33,15 +35,20 @@ function conditionForPeriod(period: TimePeriod): { label: string; icon: string; 
 }
 
 export default function WeatherReportSheet({ open, city, period, onClose }: WeatherReportSheetProps) {
+  const [mounted, setMounted] = useState(false);
   const cityLabel = city ?? "Your City";
   const temp = tempForPeriod(period, city);
   const condition = conditionForPeriod(period);
   const feelsLike = temp + (period === "afternoon" ? 3 : period === "night" ? -2 : 0);
 
-  return (
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
-        <>
+        <div className="weather-sheet-portal">
           <motion.button
             type="button"
             className="weather-sheet-backdrop"
@@ -56,9 +63,9 @@ export default function WeatherReportSheet({ open, city, period, onClose }: Weat
             role="dialog"
             aria-modal="true"
             aria-labelledby="weather-sheet-title"
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="weather-sheet-handle" aria-hidden />
@@ -102,8 +109,9 @@ export default function WeatherReportSheet({ open, city, period, onClose }: Weat
               Got it
             </button>
           </motion.div>
-        </>
+        </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

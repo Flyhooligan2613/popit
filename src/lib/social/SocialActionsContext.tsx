@@ -39,8 +39,13 @@ export function SocialActionsProvider({ children }: { children: ReactNode }) {
   const closeSheet = useCallback(() => setActiveSheet(null), []);
 
   const confirmMusicSelection = useCallback(() => {
-    if (musicUsage === "story" || musicUsage === "thought" || musicUsage === "page") {
-      setActiveSheet(musicUsage);
+    if (
+      musicUsage === "story" ||
+      musicUsage === "thought" ||
+      musicUsage === "page" ||
+      musicUsage === "liveSingAlong"
+    ) {
+      setActiveSheet(musicUsage === "liveSingAlong" ? "live" : musicUsage);
       return;
     }
     setActiveSheet(null);

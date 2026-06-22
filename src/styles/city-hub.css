@@ -39,7 +39,68 @@
 
 .city-hub-dock--left {
   left: max(0.55rem, env(safe-area-inset-left, 0px));
-  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  top: max(3.35rem, calc(env(safe-area-inset-top, 0px) + 2.75rem));
+}
+
+.app-weather-corner {
+  position: fixed;
+  top: max(0.55rem, env(safe-area-inset-top, 0px));
+  left: max(0.55rem, env(safe-area-inset-left, 0px));
+  z-index: 42;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.app-weather-corner__icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.app-weather-corner__temp {
+  letter-spacing: 0.02em;
+}
+
+.city-profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.city-profile-identity__name {
+  margin: 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(0.95rem, 3.5vw, 1.05rem);
+  font-weight: 700;
+  color: #fff;
+}
+
+.city-profile-identity__handle {
+  margin: 0.1rem 0 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.city-profile-identity__bio {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(0.75rem, 2.6vw, 0.85rem);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.48);
+  word-break: break-word;
 }
 
 .city-hub-dock__name {
@@ -143,6 +204,10 @@
   .city-hub-main {
     padding-left: 3.85rem;
     padding-right: 3.85rem;
+  }
+
+  .city-hub-dock--left {
+    top: max(3rem, calc(env(safe-area-inset-top, 0px) + 2.5rem));
   }
 
   .city-hub-rail__label {

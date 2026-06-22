@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { memo, useEffect, useState } from "react";
 import LensProfileTransition from "@/components/profile/LensProfileTransition";
+import WeatherCornerButton from "@/components/nav/WeatherCornerButton";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
@@ -184,34 +185,10 @@ function AppSocialChrome() {
     },
   ];
 
-  const leftActions: SideAction[] = [
-    {
-      id: "thought",
-      label: "Thought",
-      onClick: () => open("thought"),
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      ),
-    },
-    {
-      id: "music",
-      label: "Music",
-      accent,
-      onClick: () => open("music", "thought"),
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M9 18V5l12-2v13" />
-          <circle cx="6" cy="18" r="3" />
-          <circle cx="18" cy="16" r="3" />
-        </svg>
-      ),
-    },
-  ];
-
   return (
     <div className="app-social-chrome" aria-hidden={false}>
+      <WeatherCornerButton />
+
       <aside className="city-hub-dock city-hub-dock--left app-social-chrome__dock" aria-label="Your profile">
         <LensProfileTransition
           name={user.name}
@@ -225,11 +202,6 @@ function AppSocialChrome() {
           size={88}
         />
         <p className="city-hub-dock__name">{user.name.split(" ")[0]}</p>
-        <nav className="city-hub-rail city-hub-rail--left-stack" aria-label="Profile actions">
-          {leftActions.map((action) => (
-            <SideRailButton key={action.id} action={action} />
-          ))}
-        </nav>
       </aside>
 
       <nav className="city-hub-rail city-hub-rail--right app-social-chrome__rail" aria-label="City actions">

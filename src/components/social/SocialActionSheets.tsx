@@ -8,10 +8,13 @@ import { loadUserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { createPost } from "@/lib/social/socialStore";
 import {
-  LIVE_MUSIC_NOTICE,
+  LIVE_SINGALONG_NOTICE,
   MUSIC_COPYRIGHT_NOTICE,
+  MUSIC_GENRES,
+  genreLabel,
   tracksForUsage,
 } from "@/lib/social/musicLibrary";
+import type { MusicGenre } from "@/lib/social/musicLibrary";
 
 function SheetShell({
   title,
@@ -71,6 +74,7 @@ export default function SocialActionSheets() {
   const [copyrightAck, setCopyrightAck] = useState(false);
   const [pageText, setPageText] = useState("");
   const [liveTitle, setLiveTitle] = useState("");
+  const [musicGenre, setMusicGenre] = useState<MusicGenre | "all">("all");
 
   const resetCopyrightAck = () => setCopyrightAck(false);
 
@@ -97,8 +101,13 @@ export default function SocialActionSheets() {
   return (
     <AnimatePresence>
       {activeSheet === "live" && (
-        <SheetShell title="Go Live" subtitle="Broadcast to the city" onClose={closeSheet}>
-          <p className="social-sheet__notice">{LIVE_MUSIC_NOTICE}</p>
+        <SheetShell title="Go Live" subtitle="Broadcast from the club — sing along on camera" onClose={closeSheet}>
+          <p className="social-sheet__notice">{LIVE_SINGALONG_NOTICE}</p>
+          {selectedTrack && (musicUsage === "liveSingAlong" || musicUsage === "liveBackground") && (
+            <p className="social-sheet__track-pill">
+              🎤 Sing along · {selectedTrack.title} · {selectedTrack.artist}
+            </p>
+          )}
           <label className="social-sheet__label">Stream title</label>
           <input
             className="social-sheet__input"
@@ -106,6 +115,13 @@ export default function SocialActionSheets() {
             value={liveTitle}
             onChange={(e) => setLiveTitle(e.target.value)}
           />
+          <button
+            type="button"
+            className="social-sheet__secondary"
+            onClick={() => openSheet("music", "liveSingAlong")}
+          >
+            Pick Sing-Along Track
+          </button>
           <button
             type="button"
             className="social-sheet__primary"
@@ -117,11 +133,11 @@ export default function SocialActionSheets() {
       )}
 
       {activeSheet === "story" && (
-        <SheetShell title="Post to Story" subtitle="24h city moment" onClose={closeSheet}>
+        <SheetShell title="Post to Story" subtitle="24h city moment · add music optional" onClose={closeSheet}>
           <p className="social-sheet__notice">{MUSIC_COPYRIGHT_NOTICE}</p>
           {selectedTrack && musicUsage === "story" && (
             <p className="social-sheet__track-pill">
-              ♪ {selectedTrack.title} · {selectedTrack.artist}
+              ♪ {selectedTrack.title} · {selectedTrack.artist} · {genreLabel(selectedTrack.genre)}
             </p>
           )}
           <button type="button" className="social-sheet__secondary" onClick={closeSheet}>
@@ -132,7 +148,7 @@ export default function SocialActionSheets() {
             className="social-sheet__secondary"
             onClick={() => openSheet("music", "story")}
           >
-            Add Licensed Music
+            Add Music (All Genres)
           </button>
         </SheetShell>
       )}
@@ -192,18 +208,42 @@ export default function SocialActionSheets() {
 
       {activeSheet === "music" && (
         <SheetShell
-          title="Add Music"
+          title="Music Catalog"
           subtitle={
-            musicUsage === "liveBackground"
-              ? "Live-safe tracks only"
-              : "Licensed for thoughts, stories, and posts"
+            musicUsage === "liveSingAlong"
+              ? "Sing along on camera · all genres"
+              : musicUsage === "liveBackground"
+                ? "Live-safe background tracks"
+                : "Browse by genre · like YouTube Music"
           }
           onClose={() => {
             resetCopyrightAck();
+            setMusicGenre("all");
             closeSheet();
           }}
         >
-          <p className="social-sheet__notice">{MUSIC_COPYRIGHT_NOTICE}</p>
+          <p className="social-sheet__notice">
+            {musicUsage === "liveSingAlong" ? LIVE_SINGALONG_NOTICE : MUSIC_COPYRIGHT_NOTICE}
+          </p>
+          <div className="social-sheet__genres">
+            <button
+              type="button"
+              className={`social-sheet__genre ${musicGenre === "all" ? "is-active" : ""}`}
+              onClick={() => setMusicGenre("all")}
+            >
+              All
+            </button>
+            {MUSIC_GENRES.map((g) => (
+              <button
+                key={g.id}
+                type="button"
+                className={`social-sheet__genre ${musicGenre === g.id ? "is-active" : ""}`}
+                onClick={() => setMusicGenre(g.id)}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
           <label className="social-sheet__copyright">
             <input
               type="checkbox"
@@ -211,12 +251,12 @@ export default function SocialActionSheets() {
               onChange={(e) => setCopyrightAck(e.target.checked)}
             />
             <span>
-              I understand licensed sync tracks cannot be used in live video backgrounds. POP&apos;IT
-              may remove content that violates music rights.
+              I understand music rights apply to how tracks are used in stories, posts, and live
+              streams. POP&apos;IT may adjust catalog access as licensing evolves.
             </span>
           </label>
           <div className="social-sheet__tracks">
-            {tracksForUsage(musicUsage).map((track) => (
+            {tracksForUsage(musicUsage, musicGenre).map((track) => (
               <button
                 key={track.id}
                 type="button"
@@ -225,11 +265,13 @@ export default function SocialActionSheets() {
               >
                 <span>
                   <strong>{track.title}</strong>
-                  <small>{track.artist} · {track.duration}</small>
+                  <small>
+                    {track.artist} · {track.duration} · {genreLabel(track.genre)}
+                  </small>
                   {track.note && <small className="social-sheet__track-note">{track.note}</small>}
                 </span>
                 <span className="social-sheet__track-badge">
-                  {track.usage.liveBackground ? "Live OK" : "No Live BG"}
+                  {track.usage.liveSingAlong ? "Sing-Along" : track.usage.liveBackground ? "Live OK" : "Story"}
                 </span>
               </button>
             ))}
@@ -240,6 +282,7 @@ export default function SocialActionSheets() {
             disabled={!selectedTrack || !copyrightAck}
             onClick={() => {
               resetCopyrightAck();
+              setMusicGenre("all");
               confirmMusicSelection();
             }}
           >

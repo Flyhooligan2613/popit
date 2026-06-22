@@ -161,11 +161,55 @@
   gap: 0.85rem;
 }
 
+/* Stories zone */
+.stories-zone {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 0.75rem 0.5rem;
+}
+
+.stories-thought-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin-bottom: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(0.75rem, 2.8vw, 0.82rem);
+  text-align: left;
+  cursor: pointer;
+}
+
+.stories-thought-bar__icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.stories-thought-bar__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stories-strip__ring--thought {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(0, 212, 255, 0.25));
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.stories-strip__ring--own {
+  background: linear-gradient(135deg, #ff4d6d, #a855f7, #00d4ff);
+}
+
 /* Stories */
 .stories-strip {
   max-width: 680px;
   margin: 0 auto;
-  padding: 0.75rem 0.75rem 0.25rem;
+  padding: 0 0 0.25rem;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
