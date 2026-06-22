@@ -10,7 +10,7 @@ import ProfileCornerButton from "@/components/nav/ProfileCornerButton";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import BackNavButton from "@/components/nav/BackNavButton";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
-import { isOnboardingComplete } from "@/lib/session";
+import { isOnboardingComplete, ONBOARDING_UPDATED_EVENT } from "@/lib/session";
 import { useResolvedCity } from "@/hooks/useResolvedCity";
 import AmbientField from "./AmbientField";
 import WelcomeBackgroundMark from "./WelcomeBackgroundMark";
@@ -100,7 +100,10 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const contentVisible = !showIntro;
 
   useEffect(() => {
-    setLoggedInExplore(isOnboardingComplete());
+    const sync = () => setLoggedInExplore(isOnboardingComplete());
+    sync();
+    window.addEventListener(ONBOARDING_UPDATED_EVENT, sync);
+    return () => window.removeEventListener(ONBOARDING_UPDATED_EVENT, sync);
   }, []);
 
   useEffect(() => {

@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { isOnboardingComplete, resetAppSession, WELCOME_LOBBY_ROUTE } from "@/lib/session";
+import { isOnboardingComplete, markOnboardingComplete, resetAppSession, WELCOME_LOBBY_ROUTE, hasRegisteredAccount } from "@/lib/session";
+import { getUserProfile } from "@/lib/identity/userProfile";
+import { loadAuthenticatedProfile } from "@/lib/supabase/auth";
 import Frame4 from "@/components/onboarding/frames/Frame4";
 import Frame5 from "@/components/onboarding/frames/Frame5";
 import Frame6 from "@/components/onboarding/frames/Frame6";
@@ -70,12 +72,36 @@ export default function OnboardingPage() {
     const isBackgroundPicker = params.get("background") === "1";
     const skip = shouldSkipIntro();
     setSkipIntro(skip);
-    setFrame(isBackgroundPicker ? 9 : resolveStartFrame(skip));
     setMounted(true);
 
-    if (isOnboardingComplete() && !isExploreHome && !isBackgroundPicker) {
-      window.location.replace(WELCOME_LOBBY_ROUTE);
-    }
+    void (async () => {
+      if (isOnboardingComplete()) {
+        if (!isExploreHome && !isBackgroundPicker) {
+          window.location.replace(WELCOME_LOBBY_ROUTE);
+        }
+        return;
+      }
+
+      const authProfile = await loadAuthenticatedProfile();
+      if (authProfile) {
+        markOnboardingComplete();
+        if (!isExploreHome && !isBackgroundPicker) {
+          window.location.replace(WELCOME_LOBBY_ROUTE);
+        }
+        return;
+      }
+
+      const profile = getUserProfile();
+      const resumeOnboarding =
+        skip &&
+        hasRegisteredAccount() &&
+        Boolean(profile.identityTopic) &&
+        !isBackgroundPicker;
+
+      setFrame(
+        isBackgroundPicker ? 9 : resumeOnboarding ? 8 : resolveStartFrame(skip)
+      );
+    })();
   }, []);
 
   const advance = useCallback(

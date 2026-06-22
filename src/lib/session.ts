@@ -4,9 +4,19 @@ const IDENTITY_KEY = "popit:identity";
 const USER_KEY = "popit:user";
 const LOCAL_AUTH_KEY = "popit:credentials";
 
+export const ONBOARDING_UPDATED_EVENT = "popit:onboardingUpdated";
+export const EMAIL_CONFIRM_PENDING_KEY = "popit:emailConfirmPending";
+
 export function markOnboardingComplete() {
   if (typeof window === "undefined") return;
   localStorage.setItem(ONBOARDING_KEY, "true");
+  window.dispatchEvent(new Event(ONBOARDING_UPDATED_EVENT));
+}
+
+/** True when user created credentials locally (signup finished or in progress). */
+export function hasRegisteredAccount(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(LOCAL_AUTH_KEY) != null;
 }
 
 /** Signed-in Explore tab — worldwide discovery */

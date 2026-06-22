@@ -12,7 +12,7 @@ import { getIdentityAccent } from "@/lib/identity/types";
 import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
 import { signUpWithEmail, signInWithIdentifier } from "@/lib/supabase/auth";
-import { markOnboardingComplete, WELCOME_LOBBY_ROUTE } from "@/lib/session";
+import { markOnboardingComplete, WELCOME_LOBBY_ROUTE, EMAIL_CONFIRM_PENDING_KEY } from "@/lib/session";
 import type { LoginMethod } from "@/lib/auth/localAuth";
 
 const LOGIN_METHODS: { id: LoginMethod; label: string; placeholder: string }[] = [
@@ -183,14 +183,18 @@ export default function Frame7({
         identity,
         identityTopic,
         identityTopicLabel: topicLabel,
+        followers: 0,
+        following: 0,
+        pulseScore: 50,
+        energy: 50,
+        verified: false,
+        live: false,
+        currentVibe: "Just joined the city",
       });
 
       if (result.needsEmailConfirmation) {
-        setError("Account created — check your email to confirm, then sign in.");
-        setMode("signin");
-        setStep("account");
-        setLoginMethod("email");
-        setLoginId(form.email);
+        sessionStorage.setItem(EMAIL_CONFIRM_PENDING_KEY, "1");
+        onNext();
         return;
       }
 

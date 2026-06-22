@@ -6,7 +6,7 @@ import ProfileCornerButton from "@/components/nav/ProfileCornerButton";
 import PulseFAB from "@/components/pulse/PulseFAB";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
-import { isOnboardingComplete } from "@/lib/session";
+import { isOnboardingComplete, ONBOARDING_UPDATED_EVENT } from "@/lib/session";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const [onboarded, setOnboarded] = useState(false);
 
   useEffect(() => {
-    setOnboarded(isOnboardingComplete());
+    const sync = () => setOnboarded(isOnboardingComplete());
+    sync();
+    window.addEventListener(ONBOARDING_UPDATED_EVENT, sync);
+    return () => window.removeEventListener(ONBOARDING_UPDATED_EVENT, sync);
   }, []);
 
   const yourCity = isYourCityRoute(pathname);

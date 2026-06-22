@@ -12,6 +12,7 @@ import {
 import { getInterestIcon } from "@/lib/identity/interestIcons";
 import { getUserIdentity } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
+import { EMAIL_CONFIRM_PENDING_KEY } from "@/lib/session";
 
 export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
   const identity = getUserIdentity();
@@ -20,10 +21,11 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
   const identityLabel = IDENTITY_OPTIONS.find((option) => option.id === identity)?.label ?? "Your";
 
   const [sel, setSel] = useState<Set<string>>(new Set());
+  const [emailPending, setEmailPending] = useState(false);
 
   useEffect(() => {
-    setSel(new Set());
-  }, [identity, config.interests]);
+    setEmailPending(sessionStorage.getItem(EMAIL_CONFIRM_PENDING_KEY) === "1");
+  }, []);
 
   const toggle = (id: string) =>
     setSel((prev) => {
@@ -35,6 +37,10 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
 
   const count = sel.size;
   const canGo = count >= config.minSelect;
+
+  useEffect(() => {
+    setSel(new Set());
+  }, [identity, config.interests]);
 
   const proceed = () => {
     const cityInterests = resolveInterestsForCity(identity, [...sel]) as InterestId[];
@@ -67,6 +73,24 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
       />
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "56px 20px 200px", position: "relative", zIndex: 1 }}>
+        {emailPending && (
+          <div
+            style={{
+              marginBottom: 20,
+              padding: "12px 16px",
+              borderRadius: 14,
+              border: "1px solid rgba(255,122,0,0.35)",
+              background: "rgba(255,122,0,0.08)",
+              color: "rgba(255,255,255,0.75)",
+              fontFamily: "system-ui, sans-serif",
+              fontSize: "0.88rem",
+              lineHeight: 1.5,
+              textAlign: "center",
+            }}
+          >
+            Check your email to confirm your account — you can keep setting up POP&apos;IT now.
+          </div>
+        )}
         <motion.div
           key={identity}
           initial={{ opacity: 0, y: 20 }}

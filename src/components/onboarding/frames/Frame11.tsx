@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { markOnboardingComplete, WELCOME_LOBBY_ROUTE } from "@/lib/session";
+import { markOnboardingComplete, WELCOME_LOBBY_ROUTE, EMAIL_CONFIRM_PENDING_KEY } from "@/lib/session";
 import { consumePendingRoute } from "@/lib/welcomeNavigation";
 
 export default function Frame11() {
@@ -11,6 +11,7 @@ export default function Frame11() {
 
   useEffect(() => {
     markOnboardingComplete();
+    sessionStorage.removeItem(EMAIL_CONFIRM_PENDING_KEY);
     const pending = consumePendingRoute();
     const timeout = setTimeout(() => {
       router.replace(pending ?? WELCOME_LOBBY_ROUTE);
