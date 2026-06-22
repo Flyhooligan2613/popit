@@ -24,10 +24,9 @@ type WelcomeHeroSectionProps = {
   hubPhase?: SignalHubPhase;
   userAvatar?: string | null;
   reorganizeT?: number;
-  onExplore?: () => void;
+  onVisit?: (href: string) => void;
   onWeatherClick?: () => void;
   onLiveClick?: () => void;
-  onSignalClick?: () => void;
 };
 
 export default function WelcomeHeroSection({
@@ -43,10 +42,9 @@ export default function WelcomeHeroSection({
   hubPhase = "inviting",
   userAvatar,
   reorganizeT = 0,
-  onExplore,
+  onVisit,
   onWeatherClick,
   onLiveClick,
-  onSignalClick,
 }: WelcomeHeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const scrollProgress = useHeroScrollProgress(heroRef);
@@ -102,7 +100,7 @@ export default function WelcomeHeroSection({
           hubPhase={hubPhase}
           userAvatar={userAvatar}
           reorganizeT={reorganizeT}
-          onNodeOpen={onSignalClick ?? onExplore}
+          onVisit={onVisit}
         />
       </div>
     </section>

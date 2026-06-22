@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isPageVisible } from "@/lib/mobilePerformance";
-import { HUB_CENTER, orbitPosition, tickOrbit, type OrbitalBubble } from "./orbit";
+import { HUB_CENTER, orbitPosition, tickOrbit, xyToOrbit, type OrbitalBubble } from "./orbit";
 import type { SignalBroadcast, SignalHubMode } from "./types";
 import {
   buildInitialField,
@@ -17,20 +17,41 @@ type UseSignalNetworkOptions = {
   mobileLite?: boolean;
   hubMode: SignalHubMode;
   reorganizeT: number;
+  motionEnabled: boolean;
 };
 
-export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, reorganizeT }: UseSignalNetworkOptions) {
+export function useSignalNetwork({
+  reducedMotion,
+  mobileLite = false,
+  hubMode,
+  reorganizeT,
+  motionEnabled,
+}: UseSignalNetworkOptions) {
   const orbitalRef = useRef<OrbitalBubble[]>(buildInitialField());
   const discoveryIdRef = useRef<string | null>(null);
   const hubModeRef = useRef(hubMode);
   const reorganizeRef = useRef(reorganizeT);
+  const motionRef = useRef(motionEnabled);
 
   hubModeRef.current = hubMode;
   reorganizeRef.current = reorganizeT;
+  motionRef.current = motionEnabled;
 
-  const [bubbles, setBubbles] = useState(() =>
-    orbitalRef.current.map((b) => ({ ...b, ...orbitPosition(b, hubMode, reorganizeT) }))
+  const paintBubbles = useCallback(
+    (pullId: string | null = discoveryIdRef.current) =>
+      orbitalRef.current.map((b) => ({
+        ...b,
+        ...orbitPosition(
+          b,
+          hubModeRef.current,
+          reorganizeRef.current,
+          b.id === pullId ? 1 : 0
+        ),
+      })),
+    []
   );
+
+  const [bubbles, setBubbles] = useState(() => paintBubbles());
   const [broadcast, setBroadcast] = useState<SignalBroadcast>({ key: 0, illuminatedIds: [], beam: null });
   const [waveActive, setWaveActive] = useState(false);
   const [discoveryId, setDiscoveryId] = useState<string | null>(null);
@@ -38,6 +59,7 @@ export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, r
   discoveryIdRef.current = discoveryId;
 
   const triggerBroadcast = useCallback(() => {
+    if (!motionRef.current) return;
     const current = orbitalRef.current;
     if (current.length === 0) return;
 
@@ -69,39 +91,33 @@ export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, r
     }, 2200);
   }, []);
 
-  useEffect(() => {
-    if (reducedMotion) {
-      setBubbles(
-        orbitalRef.current.map((b) => ({
-          ...b,
-          ...orbitPosition(b, hubMode, reorganizeT, b.id === discoveryId ? 1 : 0),
-        }))
+  const repositionBubble = useCallback(
+    (id: string, x: number, y: number) => {
+      const { orbitAngle, orbitRadius } = xyToOrbit(x, y);
+      orbitalRef.current = orbitalRef.current.map((b) =>
+        b.id === id ? { ...b, orbitAngle, orbitRadius } : b
       );
-      return;
-    }
+      setBubbles(paintBubbles());
+    },
+    [paintBubbles]
+  );
 
+  useEffect(() => {
+    setBubbles(paintBubbles());
+  }, [hubMode, reorganizeT, paintBubbles]);
+
+  useEffect(() => {
     let raf = 0;
     let lastPaint = 0;
     const PAINT_MS = mobileLite ? 150 : 50;
 
     const loop = (now: number) => {
-      if (isPageVisible()) {
+      if (isPageVisible() && motionRef.current) {
         orbitalRef.current = orbitalRef.current.map((b) => tickOrbit(b));
 
         if (now - lastPaint >= PAINT_MS) {
           lastPaint = now;
-          const pullId = discoveryIdRef.current;
-          setBubbles(
-            orbitalRef.current.map((b) => ({
-              ...b,
-              ...orbitPosition(
-                b,
-                hubModeRef.current,
-                reorganizeRef.current,
-                b.id === pullId ? 1 : 0
-              ),
-            }))
-          );
+          setBubbles(paintBubbles());
         }
       }
 
@@ -109,21 +125,22 @@ export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, r
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [reducedMotion, mobileLite, hubMode, reorganizeT, discoveryId]);
+  }, [mobileLite, paintBubbles]);
 
   useEffect(() => {
-    if (reducedMotion || mobileLite) return;
+    if (!motionEnabled || reducedMotion || mobileLite) return;
 
     const broadcastTimer = setInterval(triggerBroadcast, 6200);
-    triggerBroadcast();
 
     const statTimer = setInterval(() => {
+      if (!motionRef.current) return;
       orbitalRef.current = orbitalRef.current.map((b) =>
         Math.random() > 0.55 ? bumpBubbleStats(b) : b
       );
     }, 5200);
 
     const discoveryTimer = setInterval(() => {
+      if (!motionRef.current) return;
       const target = orbitalRef.current[Math.floor(Math.random() * orbitalRef.current.length)];
       if (!target) return;
       setDiscoveryId(target.id);
@@ -131,6 +148,7 @@ export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, r
     }, 8500);
 
     const evolveTimer = setInterval(() => {
+      if (!motionRef.current) return;
       const prev = orbitalRef.current;
       const roll = Math.random();
       if (roll < 0.38) {
@@ -158,7 +176,7 @@ export function useSignalNetwork({ reducedMotion, mobileLite = false, hubMode, r
       clearInterval(discoveryTimer);
       clearInterval(evolveTimer);
     };
-  }, [reducedMotion, mobileLite, triggerBroadcast]);
+  }, [motionEnabled, reducedMotion, mobileLite, triggerBroadcast]);
 
-  return { bubbles, broadcast, waveActive, hubCenter: HUB_CENTER, discoveryId };
+  return { bubbles, broadcast, waveActive, hubCenter: HUB_CENTER, discoveryId, repositionBubble };
 }

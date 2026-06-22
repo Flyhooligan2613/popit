@@ -292,13 +292,12 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           hubPhase={hubPhase}
           userAvatar={hubPhase === "inviting" || hubPhase === "pulsing" ? null : DEMO_USER_AVATAR}
           reorganizeT={reorganizeT}
-          onExplore={() => goTo(WELCOME_TAB_ROUTES.signal)}
+          onVisit={(href) => goTo(href)}
           onWeatherClick={() => {
             hapticTap();
             setWeatherOpen(true);
           }}
           onLiveClick={() => goTo(WELCOME_TAB_ROUTES.live)}
-          onSignalClick={() => goTo(WELCOME_TAB_ROUTES.signal)}
         />
 
         <CityEnergyMeter

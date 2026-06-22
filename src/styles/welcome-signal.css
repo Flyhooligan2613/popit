@@ -22,11 +22,53 @@
 .signal-field-drift {
   width: 100%;
   height: 100%;
-  animation: signal-field-drift 20s ease-in-out infinite alternate;
 }
 
 .signal-field-drift.is-static {
   animation: none;
+}
+
+.signal-field-drift.is-motion-on {
+  animation: signal-field-drift 20s ease-in-out infinite alternate;
+}
+
+/* Motion toggle */
+.signal-motion-toggle {
+  position: absolute;
+  top: 0.15rem;
+  right: 0;
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 10, 18, 0.72);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: system-ui, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.signal-motion-toggle.is-active {
+  border-color: rgba(0, 212, 255, 0.45);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.18);
+}
+
+.signal-motion-toggle__icon {
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.signal-motion-toggle__label {
+  white-space: nowrap;
 }
 
 @keyframes signal-field-drift {
@@ -753,6 +795,16 @@
   transform: translate(-50%, -50%) translateZ(calc(var(--signal-z, 0px) + 14px)) scale(calc(var(--signal-scale, 1) * 1.1));
 }
 
+.signal-bubble.is-dragging {
+  z-index: 35 !important;
+  cursor: grabbing;
+  border-color: rgba(0, 212, 255, 0.45);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.55),
+    0 0 24px color-mix(in srgb, var(--signal-accent) 35%, transparent);
+  transition: none;
+}
+
 /* Category rim glow */
 .signal-bubble-restaurant { --signal-accent: #ff8a00; }
 .signal-bubble-nightlife { --signal-accent: #ff4d6d; }
@@ -841,6 +893,103 @@
   color: rgba(255, 255, 255, 0.45);
   font-size: 0.625rem;
   cursor: pointer;
+}
+
+/* Fullscreen card preview */
+.signal-node-preview--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  transform: none;
+  left: auto;
+  bottom: auto;
+  width: auto;
+}
+
+.signal-node-preview__card {
+  position: relative;
+  width: min(100%, 22rem);
+  max-height: min(88dvh, 640px);
+  overflow-y: auto;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(165deg, rgba(14, 18, 32, 0.98) 0%, rgba(6, 8, 14, 0.99) 100%);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 32px color-mix(in srgb, var(--signal-accent) 22%, transparent);
+}
+
+.signal-preview-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.signal-preview-image-wrap--hero {
+  aspect-ratio: 4 / 3;
+  position: relative;
+}
+
+.signal-preview-image-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(6, 8, 14, 0.92) 0%, transparent 55%);
+}
+
+.signal-preview-body--fullscreen {
+  padding: 1rem 1rem 1.15rem;
+}
+
+.signal-preview-body--fullscreen .signal-preview-title {
+  font-size: 1.15rem;
+}
+
+.signal-preview-body--fullscreen .signal-preview-meta,
+.signal-preview-body--fullscreen .signal-preview-live {
+  font-size: 0.82rem;
+}
+
+.signal-preview-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.signal-preview-body--fullscreen .signal-preview-open {
+  margin-top: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+}
+
+.signal-preview-body--fullscreen .signal-preview-dismiss {
+  margin-top: 0;
+  padding: 0.65rem 1rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.signal-preview-route-hint {
+  margin: 0.55rem 0 0;
+  font-size: 0.62rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.28);
 }
 
 /* ── Hero integration ── */

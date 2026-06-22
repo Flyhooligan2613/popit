@@ -1,5 +1,6 @@
 "use client";
 
+import type { PointerEvent as ReactPointerEvent } from "react";
 import type { SignalBubble } from "./signal/types";
 import { SIGNAL_CATEGORY_COLOR } from "./signal/types";
 import { isSignalBubbleLit } from "./signal/bubbleLit";
@@ -9,8 +10,12 @@ type SignalBubbleCardProps = {
   illuminated: boolean;
   discovered?: boolean;
   selected: boolean;
+  isDragging?: boolean;
   reducedMotion: boolean;
-  onTap: () => void;
+  onPointerDown?: (e: ReactPointerEvent<HTMLButtonElement>) => void;
+  onPointerMove?: (e: ReactPointerEvent<HTMLButtonElement>) => void;
+  onPointerUp?: (e: ReactPointerEvent<HTMLButtonElement>) => void;
+  onPointerCancel?: () => void;
 };
 
 export default function SignalBubbleCard({
@@ -18,8 +23,12 @@ export default function SignalBubbleCard({
   illuminated,
   discovered = false,
   selected,
+  isDragging = false,
   reducedMotion,
-  onTap,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+  onPointerCancel,
 }: SignalBubbleCardProps) {
   const accent = SIGNAL_CATEGORY_COLOR[bubble.category] ?? "#00d4ff";
   const blur = bubble.z < -20 ? Math.min(3, Math.abs(bubble.z) / 25) : 0;
@@ -28,20 +37,24 @@ export default function SignalBubbleCard({
   return (
     <button
       type="button"
-      className={`signal-bubble signal-bubble-${bubble.category} ${illuminated ? "is-illuminated" : ""} ${discovered ? "is-discovered" : ""} ${selected ? "is-selected" : ""} ${isLit ? "is-lit" : ""}`}
+      className={`signal-bubble signal-bubble-${bubble.category} ${illuminated ? "is-illuminated" : ""} ${discovered ? "is-discovered" : ""} ${selected ? "is-selected" : ""} ${isLit ? "is-lit" : ""} ${isDragging ? "is-dragging" : ""}`}
       style={
         {
           left: `${bubble.x}%`,
           top: `${bubble.y}%`,
-          zIndex: Math.round(10 + bubble.z / 10),
+          zIndex: Math.round(10 + bubble.z / 10) + (isDragging ? 30 : 0),
           "--signal-accent": accent,
           "--signal-z": `${bubble.z}px`,
           "--signal-scale": String(bubble.scale),
           "--signal-blur": `${blur}px`,
+          touchAction: "none",
         } as React.CSSProperties
       }
-      onClick={onTap}
-      aria-label={`${bubble.title}, ${bubble.status}`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      aria-label={`${bubble.title}, ${bubble.status}. Tap to preview, drag to reposition.`}
     >
       {isLit && !reducedMotion && (
         <span className="signal-bubble-shock" aria-hidden>

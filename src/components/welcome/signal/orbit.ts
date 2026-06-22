@@ -36,3 +36,12 @@ export function tickOrbit(bubble: OrbitalBubble, dt = 1): OrbitalBubble {
     wobblePhase: bubble.wobblePhase + 0.018 * dt * (0.6 + bubble.personalWeight),
   };
 }
+
+export function xyToOrbit(x: number, y: number): { orbitAngle: number; orbitRadius: number } {
+  const dx = (x - HUB_CENTER.x) / 0.92;
+  const dy = (y - HUB_CENTER.y) / 0.68;
+  return {
+    orbitAngle: Math.atan2(dy, dx),
+    orbitRadius: Math.max(12, Math.min(46, Math.hypot(dx, dy))),
+  };
+}
