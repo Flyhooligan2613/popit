@@ -30,7 +30,7 @@ export default function PopitLiveHub() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="explore-hub popit-live-hub">
-      <div className="explore-hub__head app-page-pad">
+      <div className="explore-hub__head">
         <div className="explore-hub__head-row">
           <Link href={WELCOME_LOBBY_ROUTE} className="social-page__back" aria-label="Back">
             ←
@@ -43,7 +43,7 @@ export default function PopitLiveHub() {
         <PopSearchBar className="explore-hub__search" />
       </div>
 
-      <div className="explore-hub__filters app-page-pad" role="tablist">
+      <div className="explore-hub__filters" role="tablist">
         {FILTERS.map((f) => (
           <button
             key={f.id}
@@ -58,7 +58,7 @@ export default function PopitLiveHub() {
         ))}
       </div>
 
-      <div className="popit-live-hub__grid app-page-pad">
+      <div className="popit-live-hub__grid">
         {profiles.map((profile) => (
           <Link
             key={profile.username}

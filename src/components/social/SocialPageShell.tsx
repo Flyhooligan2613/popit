@@ -23,8 +23,8 @@ export default function SocialPageShell({
   className = "",
 }: SocialPageShellProps) {
   return (
-    <div className={`social-page ${className}`}>
-      <header className="social-page__header app-page-pad">
+    <div className={`social-page app-page-pad ${className}`}>
+      <header className="social-page__header">
         <div className="social-page__header-inner">
           <div className="social-page__header-left">
             {backHref && (
@@ -40,7 +40,7 @@ export default function SocialPageShell({
           {headerRight}
         </div>
       </header>
-      <div className="social-page__scroll app-page-pad">
+      <div className="social-page__scroll">
         <div className="social-page__inner">{children}</div>
       </div>
     </div>

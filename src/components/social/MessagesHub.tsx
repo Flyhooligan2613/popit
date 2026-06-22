@@ -34,8 +34,8 @@ export default function MessagesHub() {
 
   if (active) {
     return (
-      <div className="messages-hub messages-hub--thread">
-        <header className="messages-hub__thread-head app-page-pad">
+      <div className="messages-hub messages-hub--thread app-page-pad">
+        <header className="messages-hub__thread-head">
           <button type="button" className="messages-hub__back" onClick={() => setActiveId(null)}>
             ←
           </button>
@@ -48,7 +48,7 @@ export default function MessagesHub() {
           </Link>
         </header>
 
-        <div className="messages-hub__messages app-page-pad">
+        <div className="messages-hub__messages">
           <div className="messages-hub__messages-inner">
             {messages.map((msg) => (
               <div
@@ -62,7 +62,7 @@ export default function MessagesHub() {
           </div>
         </div>
 
-        <footer className="messages-hub__compose app-page-pad">
+        <footer className="messages-hub__compose">
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

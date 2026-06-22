@@ -32,13 +32,13 @@ export default function ExploreHub() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="explore-hub">
-      <div className="explore-hub__head app-page-pad">
+      <div className="explore-hub__head">
         <h1 className="explore-hub__title">Explore</h1>
         <p className="explore-hub__sub">Likes, searches &amp; creators from across the world</p>
         <PopSearchBar className="explore-hub__search" />
       </div>
 
-      <div className="explore-hub__filters app-page-pad" role="tablist">
+      <div className="explore-hub__filters" role="tablist">
         {FILTERS.map((f) => (
           <button
             key={f.id}
@@ -53,7 +53,7 @@ export default function ExploreHub() {
         ))}
       </div>
 
-      <div className="explore-hub__grid app-page-pad">
+      <div className="explore-hub__grid">
         {posts.map((post) => (
           <Link
             key={post.id}
@@ -71,7 +71,7 @@ export default function ExploreHub() {
         ))}
       </div>
 
-      <div className="explore-hub__feed app-page-pad">
+      <div className="explore-hub__feed">
         <h2 className="explore-hub__section-title">Recommended for you</h2>
         {posts.slice(0, 6).map((post) => (
           <FeedPostCard

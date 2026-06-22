@@ -4,7 +4,7 @@ import NotificationsHub from "@/components/social/NotificationsHub";
 
 export default function NotificationsPage() {
   return (
-    <div className="absolute inset-0">
+    <div className="main-page-scroll">
       <NotificationsHub />
     </div>
   );

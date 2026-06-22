@@ -34,7 +34,7 @@ export default function SocialFeedHub() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="social-feed-hub">
-      <div className="social-feed-hub__top app-page-pad">
+      <div className="social-feed-hub__top">
         <Link href={WELCOME_LOBBY_ROUTE} className="social-page__back" aria-label="Back">
           ←
         </Link>

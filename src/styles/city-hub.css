@@ -6,9 +6,9 @@
 .city-hub-main {
   position: relative;
   z-index: 1;
-  max-width: 680px;
+  max-width: min(680px, 100%);
   margin: 0 auto;
-  padding: max(0.5rem, env(safe-area-inset-top, 0px)) 4.25rem 7rem;
+  padding: max(0.5rem, env(safe-area-inset-top, 0px)) 0 7rem;
 }
 
 .pulse-page {
@@ -113,11 +113,6 @@
 }
 
 @media (max-width: 420px) {
-  .city-hub-main {
-    padding-left: 3.35rem;
-    padding-right: 3.35rem;
-  }
-
   .city-profile-identity {
     flex-wrap: wrap;
   }
@@ -290,11 +285,6 @@
 }
 
 @media (max-width: 380px) {
-  .city-hub-main {
-    padding-left: 3.85rem;
-    padding-right: 3.85rem;
-  }
-
   .city-hub-dock--left {
     top: max(3rem, calc(env(safe-area-inset-top, 0px) + 2.5rem));
   }

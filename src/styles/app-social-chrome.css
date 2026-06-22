@@ -89,28 +89,50 @@
   align-items: center;
 }
 
-/* Content padding when chrome is active */
-.app-social-chrome-active .app-page-pad,
-.app-page-pad.popit-home-content {
-  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
-  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
-  max-width: min(680px, calc(100vw - 8rem));
+/* Full-viewport scroll shell for main routes */
+.main-page-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #050505;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.help-scroll-shell .legal-index,
+.help-scroll-shell .legal-doc {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Content gutters — side chrome floats over content; don’t squeeze the column */
+.app-page-pad {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(680px, 100%);
   margin-inline: auto;
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+.app-social-chrome-active .app-page-pad,
+.app-page-pad.popit-home-content,
+.app-social-chrome-active .city-hub-main.app-page-pad,
+.app-social-chrome-active .profile-social__content,
+.app-social-chrome-active .profile-settings {
+  /* Small left inset for collapsed POP dock; right rail stays off-screen */
+  padding-left: max(2.65rem, calc(env(safe-area-inset-left, 0px) + 2.35rem));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+  max-width: min(680px, 100%);
+  width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
 .app-social-chrome-active .city-hub-main.app-page-pad {
-  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
-  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
-}
-
-.app-social-chrome-active .profile-social__content {
-  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
-  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
-  max-width: min(680px, calc(100vw - 8rem));
-  margin-inline: auto;
-  box-sizing: border-box;
+  padding-left: max(2.65rem, calc(env(safe-area-inset-left, 0px) + 2.35rem));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
 }
 
 .popit-page-watermark {
@@ -121,14 +143,67 @@
   overflow: hidden;
 }
 
-@media (max-width: 380px) {
+/* Mobile readability — full-width content, larger type */
+@media (max-width: 640px) {
   .app-social-chrome-active .app-page-pad,
-  .app-page-pad.popit-home-content,
-  .app-social-chrome-active .city-hub-main.app-page-pad,
-  .app-social-chrome-active .profile-social__content {
-    padding-left: 3.85rem;
-    padding-right: 3.85rem;
-    max-width: calc(100vw - 7.5rem);
+  .app-social-chrome-active .profile-social__content,
+  .app-social-chrome-active .profile-settings {
+    padding-left: max(2.5rem, calc(env(safe-area-inset-left, 0px) + 2.15rem));
+    padding-right: max(0.85rem, env(safe-area-inset-right, 0px));
+  }
+
+  .profile-settings__item {
+    font-size: 1rem;
+    padding: 1rem 0.95rem;
+  }
+
+  .profile-settings__section-title {
+    font-size: 0.68rem;
+  }
+
+  .settings-field__label {
+    font-size: 0.9rem;
+  }
+
+  .settings-field__input,
+  .settings-field__textarea,
+  .settings-field__select {
+    font-size: 1rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .pop-scores-dock__item {
+    transform: scale(0.82);
+  }
+
+  .social-page__title {
+    font-size: 1.45rem;
+  }
+
+  .social-page__subtitle {
+    font-size: 0.85rem;
+  }
+
+  .messages-hub__row-body strong {
+    font-size: 1rem;
+  }
+
+  .messages-hub__row-body p {
+    font-size: 0.9rem;
+  }
+
+  .messages-hub__bubble {
+    font-size: 0.95rem;
+  }
+
+  .messages-hub__compose input {
+    font-size: 1rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .legal-doc__body,
+  .legal-index__intro {
+    font-size: 1rem;
   }
 }
 

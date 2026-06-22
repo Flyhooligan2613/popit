@@ -4,7 +4,7 @@ import SocialFeedHub from "@/components/social/SocialFeedHub";
 
 export default function FeedPage() {
   return (
-    <div className="absolute inset-0 app-page-pad">
+    <div className="main-page-scroll app-page-pad">
       <SocialFeedHub />
     </div>
   );

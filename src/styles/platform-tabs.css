@@ -278,13 +278,13 @@
 
 .explore-hub__filter {
   flex-shrink: 0;
-  padding: 0.45rem 0.85rem;
+  padding: 0.5rem 0.95rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.45);
   font-family: system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-size: clamp(0.78rem, 2.8vw, 0.85rem);
   font-weight: 700;
   cursor: pointer;
 }
