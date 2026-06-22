@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import SettingsPanelContent from "@/components/settings/SettingsPanelContent";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
@@ -12,22 +13,32 @@ import {
   searchSettingsHelp,
   settingsSections,
   type SettingsHelpItem,
+  type SettingsPanelId,
 } from "@/lib/settings/settingsHelpIndex";
 
 function SettingsRow({
   label,
   hint,
+  active,
   onClick,
   href,
   danger,
 }: {
   label: string;
   hint?: string;
+  active?: boolean;
   onClick?: () => void;
   href?: string;
   danger?: boolean;
 }) {
-  const className = `profile-settings__item ${danger ? "profile-settings__item--danger" : ""}`;
+  const className = [
+    "profile-settings__item",
+    danger ? "profile-settings__item--danger" : "",
+    active ? "profile-settings__item--active" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const inner = (
     <>
       <span>
@@ -36,7 +47,9 @@ function SettingsRow({
           <span className="block font-body text-[0.72rem] font-normal text-white/35">{hint}</span>
         )}
       </span>
-      {!danger && <span className="profile-settings__chevron">›</span>}
+      {!danger && (
+        <span className="profile-settings__chevron">{href ? "›" : active ? "▾" : "▸"}</span>
+      )}
     </>
   );
 
@@ -49,24 +62,25 @@ function SettingsRow({
   }
 
   return (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={className} onClick={onClick} aria-expanded={active}>
       {inner}
     </button>
   );
-}
-
-function HelpRow({ item }: { item: SettingsHelpItem }) {
-  return <SettingsRow label={item.label} hint={item.hint} href={item.href} />;
 }
 
 export default function SettingsPage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activePanel, setActivePanel] = useState<SettingsPanelId | null>(null);
 
   useEffect(() => {
     loadUserProfile().then(setUser);
   }, []);
+
+  const togglePanel = (id: SettingsPanelId) => {
+    setActivePanel((current) => (current === id ? null : id));
+  };
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -81,6 +95,29 @@ export default function SettingsPage() {
     ? IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label
     : null;
 
+  const renderItem = (item: SettingsHelpItem) => {
+    if (item.href) {
+      return <SettingsRow key={item.id} label={item.label} hint={item.hint} href={item.href} />;
+    }
+    if (!item.panel) return null;
+    const active = activePanel === item.panel;
+    return (
+      <div key={item.id} className="profile-settings__item-wrap">
+        <SettingsRow
+          label={item.label}
+          hint={item.hint}
+          active={active}
+          onClick={() => togglePanel(item.panel!)}
+        />
+        {active && (
+          <div className="profile-settings__inline-panel">
+            <SettingsPanelContent panelId={item.panel} user={user} onUserChange={setUser} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="profile-settings">
       <div className="profile-settings__hero">
@@ -89,12 +126,7 @@ export default function SettingsPage() {
             ←
           </Link>
           <p className="font-body text-xs font-bold uppercase tracking-[0.2em] text-white/50">Settings</p>
-          <Link href="/pulse#profile" className="profile-social__topnav-btn" aria-label="Profile">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20a8 8 0 0 1 16 0" />
-            </svg>
-          </Link>
+          <span className="w-9" aria-hidden />
         </div>
 
         {user && (
@@ -123,10 +155,10 @@ export default function SettingsPage() {
           <input
             type="search"
             className="profile-settings__search-input"
-            placeholder="Search settings & help…"
+            placeholder="Search settings…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search settings and help"
+            aria-label="Search settings"
           />
         </div>
       </div>
@@ -136,23 +168,22 @@ export default function SettingsPage() {
           <p className="profile-settings__section-title">Search results</p>
           <div className="profile-settings__list">
             {searchResults.length === 0 ? (
-              <p className="profile-settings__empty">No matches — try &quot;camera&quot;, &quot;location&quot;, or &quot;privacy&quot;</p>
+              <p className="profile-settings__empty">No matches — try &quot;profile&quot;, &quot;location&quot;, or &quot;privacy&quot;</p>
             ) : (
-              searchResults.map((item) => <HelpRow key={item.id} item={item} />)
+              searchResults.map((item) => renderItem(item))
             )}
           </div>
         </div>
       ) : (
         sections.map((section) => {
-          const items = itemsBySection(section).filter((i) => i.id !== "edit-profile");
+          const items = itemsBySection(section);
+
           if (section === "Privacy & Account") {
             return (
               <div key={section} className="profile-settings__section">
                 <p className="profile-settings__section-title">{section}</p>
                 <div className="profile-settings__list">
-                  {items.map((item) => (
-                    <HelpRow key={item.id} item={item} />
-                  ))}
+                  {items.map((item) => renderItem(item))}
                   <SettingsRow
                     label={loggingOut ? "Signing out…" : "Log Out"}
                     onClick={handleLogout}
@@ -163,45 +194,10 @@ export default function SettingsPage() {
             );
           }
 
-          if (section === "Your POP'IT") {
-            return (
-              <div key={section} className="profile-settings__section">
-                <p className="profile-settings__section-title">{section}</p>
-                <div className="profile-settings__list">
-                  <SettingsRow
-                    label="Edit Profile"
-                    hint="Photo, name, bio, identity lane"
-                    href="/pulse#profile"
-                  />
-                  {items.map((item) => (
-                    <HelpRow key={item.id} item={item} />
-                  ))}
-                </div>
-              </div>
-            );
-          }
-
-          if (section === "Experience") {
-            return (
-              <div key={section} className="profile-settings__section">
-                <p className="profile-settings__section-title">{section}</p>
-                <div className="profile-settings__list">
-                  {items.map((item) => (
-                    <HelpRow key={item.id} item={item} />
-                  ))}
-                </div>
-              </div>
-            );
-          }
-
           return (
             <div key={section} className="profile-settings__section">
               <p className="profile-settings__section-title">{section}</p>
-              <div className="profile-settings__list">
-                {items.map((item) => (
-                  <HelpRow key={item.id} item={item} />
-                ))}
-              </div>
+              <div className="profile-settings__list">{items.map((item) => renderItem(item))}</div>
             </div>
           );
         })

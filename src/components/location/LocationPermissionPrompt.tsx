@@ -3,12 +3,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import ZipCodeEntry from "@/components/location/ZipCodeEntry";
 import {
-  detectAndSaveCity,
+  getPopitLocation,
   hasSeenLocationPrompt,
   markLocationPromptSeen,
-  saveTimezoneFallbackCity,
-} from "@/lib/location/cityDetection";
+} from "@/lib/location/zipLocation";
 
 type LocationPermissionPromptProps = {
   onResolved?: (city: string) => void;
@@ -16,34 +16,30 @@ type LocationPermissionPromptProps = {
 
 export default function LocationPermissionPrompt({ onResolved }: LocationPermissionPromptProps) {
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (hasSeenLocationPrompt()) return;
+    if (getPopitLocation()?.zipCode) {
+      markLocationPromptSeen();
+      return;
+    }
     const t = setTimeout(() => setOpen(true), 800);
     return () => clearTimeout(t);
   }, []);
 
   const finish = useCallback(
     (city: string) => {
+      markLocationPromptSeen();
       setOpen(false);
       onResolved?.(city);
     },
     [onResolved]
   );
 
-  const handleAllow = async () => {
-    setBusy(true);
-    markLocationPromptSeen();
-    const result = await detectAndSaveCity({ prompt: true });
-    setBusy(false);
-    finish(result.city);
-  };
-
   const handleSkip = () => {
     markLocationPromptSeen();
-    const { city } = saveTimezoneFallbackCity();
-    finish(city);
+    setOpen(false);
+    onResolved?.("Your City");
   };
 
   return (
@@ -79,38 +75,25 @@ export default function LocationPermissionPrompt({ onResolved }: LocationPermiss
             </div>
 
             <p className="mb-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#FF4D6D]">
-              Your City
+              Your ZIP Code
             </p>
             <h2 className="mb-2 font-sans text-xl font-extrabold text-white">
-              See what&apos;s popping near you
+              Set your POP environment
             </h2>
-            <p className="mb-6 font-sans text-[0.92rem] leading-relaxed text-white/45">
-              Allow location so POP&apos;IT can personalize your feed, map, and live discovery.
-              If you skip, we&apos;ll estimate your area from your device time zone in the U.S.
+            <p className="mb-4 font-sans text-[0.92rem] leading-relaxed text-white/45">
+              We use your ZIP code to match local feed, weather, and time to your area — without
+              tracking you everywhere. When you travel, update your ZIP in Settings.
             </p>
 
-            <div className="flex flex-col gap-3">
-              <button
-                type="button"
-                onClick={handleAllow}
-                disabled={busy}
-                className="w-full cursor-pointer rounded-full border-none px-4 py-[15px] font-sans text-base font-bold text-white disabled:opacity-70"
-                style={{
-                  background: "var(--gradient-primary)",
-                  boxShadow: "0 0 32px rgba(255,77,109,0.35)",
-                }}
-              >
-                {busy ? "Detecting…" : "Allow Location"}
-              </button>
-              <button
-                type="button"
-                onClick={handleSkip}
-                disabled={busy}
-                className="w-full cursor-pointer border-none bg-transparent px-2 py-2 font-sans text-[0.875rem] text-white/30"
-              >
-                Not Now — use time zone instead
-              </button>
-            </div>
+            <ZipCodeEntry compact onSaved={finish} />
+
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="mt-3 w-full cursor-pointer border-none bg-transparent px-2 py-2 font-sans text-[0.875rem] text-white/30"
+            >
+              Not Now
+            </button>
           </motion.div>
         </motion.div>
       )}

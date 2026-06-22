@@ -1,36 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import SettingsPageHeader from "@/components/settings/SettingsPageHeader";
+import SettingsPanelContent from "@/components/settings/SettingsPanelContent";
+import { loadUserProfile, type UserProfile } from "@/lib/identity/userProfile";
 
 export default function BlockedSettingsPage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    loadUserProfile().then(setUser);
+  }, []);
+
   return (
     <div className="profile-settings">
       <SettingsPageHeader
         title="Blocked"
-        subtitle="People you've blocked won't see your POP card or message you."
-        backHref="/settings/privacy"
+        subtitle="Manage blocked accounts."
+        backHref="/settings"
         right={
           <Link href="/help/blocked" className="profile-social__topnav-btn" aria-label="Help">
             ?
           </Link>
         }
       />
-
       <div className="profile-settings__section">
-        <p className="profile-settings__empty-state">
-          You haven&apos;t blocked anyone yet. Block someone from their profile menu when needed.
-        </p>
-        <div className="profile-settings__list mt-3">
-          <Link href="/help/blocked" className="profile-settings__item">
-            <span>
-              How blocking works
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                What happens when you block someone
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
+        <div className="profile-settings__list">
+          <div className="profile-settings__inline-panel profile-settings__inline-panel--page">
+            <SettingsPanelContent panelId="blocked" user={user} onUserChange={setUser} />
+          </div>
         </div>
       </div>
     </div>

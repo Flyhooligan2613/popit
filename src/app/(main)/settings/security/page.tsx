@@ -1,9 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import SettingsPageHeader from "@/components/settings/SettingsPageHeader";
+import SettingsPanelContent from "@/components/settings/SettingsPanelContent";
+import { loadUserProfile, type UserProfile } from "@/lib/identity/userProfile";
 
 export default function SecuritySettingsPage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    loadUserProfile().then(setUser);
+  }, []);
+
   return (
     <div className="profile-settings">
       <SettingsPageHeader
@@ -16,27 +25,11 @@ export default function SecuritySettingsPage() {
           </Link>
         }
       />
-
       <div className="profile-settings__section">
         <div className="profile-settings__list">
-          <Link href="/help/security" className="profile-settings__item">
-            <span>
-              Password &amp; login
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                Change password and secure your account
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
-          <Link href="/legal/data-deletion" className="profile-settings__item">
-            <span>
-              Delete my data
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                Request account and data removal
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
+          <div className="profile-settings__inline-panel profile-settings__inline-panel--page">
+            <SettingsPanelContent panelId="security" user={user} onUserChange={setUser} />
+          </div>
         </div>
       </div>
     </div>

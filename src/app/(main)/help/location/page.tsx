@@ -8,25 +8,25 @@ export const metadata: Metadata = {
 
 export default function HelpLocationPage() {
   return (
-    <LegalDocument title="Your City & Location" updated="June 22, 2026" backHref="/help" backLabel="Help">
-      <LegalSection title="How POP'IT finds your city">
+    <LegalDocument title="Your ZIP & POP Environment" updated="June 22, 2026" backHref="/help" backLabel="Help">
+      <LegalSection title="Why we use ZIP code">
         <p>
-          POP&apos;IT uses your device GPS to show the right local feed, weather, and nearby people.
-          We do not guess &quot;New York&quot; from your time zone — you need to allow location access.
+          POP&apos;IT uses your ZIP code — not continuous GPS tracking — to personalize your local feed,
+          weather, and time of day. When you travel, open Settings and enter a new ZIP to switch your
+          POP environment instantly.
         </p>
       </LegalSection>
-      <LegalSection title="Fix wrong city">
+      <LegalSection title="Change your ZIP">
         <ol>
-          <li>Open Settings → Update My City → Detect from GPS</li>
-          <li>Allow location when your browser asks</li>
-          <li>If still wrong, check Settings → Device Permissions → Location is On</li>
-          <li>On iPhone/Android, also enable location for your browser in system settings</li>
+          <li>Open Settings → Update My ZIP</li>
+          <li>Enter a 5-digit U.S. ZIP code and tap Set POP environment</li>
+          <li>Optional: use Find ZIP from device location once to auto-fill</li>
         </ol>
       </LegalSection>
       <LegalSection title="Manage location">
         <p>
-          <Link href="/settings/location" className="legal-doc__link">
-            Settings → Update My City
+          <Link href="/settings" className="legal-doc__link">
+            Settings → Location
           </Link>
         </p>
       </LegalSection>

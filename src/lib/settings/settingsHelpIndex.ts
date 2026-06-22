@@ -1,156 +1,184 @@
+export type SettingsPanelId =
+  | "edit-profile"
+  | "identity"
+  | "background"
+  | "interests"
+  | "feed"
+  | "lobby"
+  | "explore"
+  | "notifications"
+  | "messages"
+  | "permissions"
+  | "help"
+  | "location"
+  | "location-perm"
+  | "monetization"
+  | "requirements"
+  | "levels"
+  | "qualify"
+  | "channels"
+  | "privacy"
+  | "security"
+  | "blocked"
+  | "go-live"
+  | "posting";
+
 export type SettingsHelpItem = {
   id: string;
   label: string;
   hint?: string;
-  href: string;
   section: string;
   keywords: string[];
+  /** Opens inline editor on the settings page */
+  panel?: SettingsPanelId;
+  /** External page (legal docs, help articles only) */
+  href?: string;
 };
 
 export const SETTINGS_HELP_INDEX: SettingsHelpItem[] = [
   {
     id: "edit-profile",
     label: "Edit Profile",
-    hint: "Photo, name, bio, identity lane",
-    href: "/pulse#profile",
+    hint: "Photo, name, bio, username",
     section: "Your POP'IT",
     keywords: ["profile", "photo", "name", "bio", "username", "avatar"],
+    panel: "edit-profile",
   },
   {
     id: "identity",
     label: "Identity & Specialty",
     hint: "Update who you are in the city",
-    href: "/help/identities",
     section: "Your POP'IT",
     keywords: ["identity", "lane", "gamer", "creator", "business", "specialty"],
+    panel: "identity",
   },
   {
     id: "background",
     label: "Platform Background",
     hint: "Flags, identity vibes, city energy",
-    href: "/onboarding?skipIntro=1&background=1",
     section: "Your POP'IT",
     keywords: ["background", "flag", "theme", "wallpaper", "vibe"],
+    panel: "background",
   },
   {
     id: "interests",
     label: "Interests",
     hint: "Tune your city feed",
-    href: "/onboarding?skipIntro=1",
     section: "Your POP'IT",
     keywords: ["interests", "feed", "topics", "onboarding"],
+    panel: "interests",
   },
   {
     id: "feed",
     label: "Social Feed",
-    hint: "For You, Reels, Thoughts",
-    href: "/help/feed",
+    hint: "For You, Reels, Thoughts defaults",
     section: "Experience",
     keywords: ["feed", "posts", "reels", "thoughts", "following"],
+    panel: "feed",
   },
   {
     id: "lobby",
     label: "Lobby Home",
-    hint: "Your city landing",
-    href: "/onboarding?skipIntro=1&explore=1",
+    hint: "Landing layout preferences",
     section: "Experience",
     keywords: ["home", "lobby", "landing", "welcome"],
+    panel: "lobby",
   },
   {
     id: "explore",
     label: "Explore Tab",
-    hint: "Worldwide discovery grid",
-    href: "/explore",
+    hint: "Discovery grid preferences",
     section: "Experience",
     keywords: ["explore", "discover", "world", "grid"],
+    panel: "explore",
   },
   {
     id: "notifications",
     label: "Notifications",
     hint: "Likes, follows, live alerts",
-    href: "/notifications",
     section: "Experience",
     keywords: ["notifications", "alerts", "likes", "follows"],
+    panel: "notifications",
   },
   {
     id: "messages",
     label: "Messages",
-    hint: "Direct lens-to-lens chat",
-    href: "/messages",
+    hint: "DM privacy and read receipts",
     section: "Experience",
     keywords: ["messages", "dm", "chat", "inbox"],
+    panel: "messages",
   },
   {
     id: "permissions",
     label: "Device Permissions",
-    hint: "Location, camera, photos, mic, alerts",
-    href: "/settings/permissions",
+    hint: "Camera, photos, mic, alerts — ZIP for local",
     section: "Permissions & Privacy",
     keywords: ["permissions", "camera", "microphone", "location", "photos", "notifications"],
+    panel: "permissions",
   },
   {
     id: "help",
     label: "Help Center",
     hint: "Learn what each section does",
-    href: "/help",
     section: "Permissions & Privacy",
     keywords: ["help", "support", "guide", "faq"],
+    href: "/help",
   },
   {
     id: "location",
-    label: "Update My City",
-    hint: "Detect from GPS on your device",
-    href: "/settings/location",
+    label: "Update My ZIP",
+    hint: "Change your POP environment when you travel",
     section: "Location",
-    keywords: ["location", "city", "gps", "nearby", "detect", "new york"],
+    keywords: ["location", "city", "zip", "zipcode", "gps", "nearby", "travel"],
+    panel: "location",
   },
   {
     id: "location-perm",
-    label: "Location Permission",
-    hint: "Turn location on or off",
-    href: "/settings/permissions",
+    label: "ZIP & Location",
+    hint: "How POP'IT uses your ZIP code",
     section: "Location",
-    keywords: ["location permission", "gps access"],
+    keywords: ["location permission", "zip", "gps access"],
+    panel: "location-perm",
   },
   {
     id: "monetization",
     label: "Creator Program",
     hint: "Overview, levels, and how to earn",
-    href: "/monetization",
     section: "Monetization",
     keywords: ["monetization", "earn", "creator", "money", "payout"],
+    panel: "monetization",
   },
   {
     id: "requirements",
     label: "Eligibility Requirements",
     hint: "Followers, POP Score, account standing",
-    href: "/monetization/requirements",
     section: "Monetization",
     keywords: ["eligibility", "requirements", "followers", "pop score"],
+    panel: "requirements",
   },
   {
     id: "levels",
     label: "Creator Levels",
     hint: "POP Marks and unlocks by tier",
-    href: "/monetization/levels",
     section: "Monetization",
     keywords: ["levels", "tier", "pop marks"],
+    panel: "levels",
   },
   {
     id: "qualify",
     label: "How to Qualify",
     hint: "Step-by-step path to monetization",
-    href: "/monetization/how-to-qualify",
     section: "Monetization",
     keywords: ["qualify", "how to", "steps"],
+    panel: "qualify",
   },
   {
     id: "channels",
     label: "Monetization Channels",
     hint: "Referrals, gifts, marketplace",
-    href: "/monetization/channels",
     section: "Monetization",
     keywords: ["channels", "referrals", "gifts", "marketplace"],
+    panel: "channels",
   },
   {
     id: "terms",
@@ -184,41 +212,41 @@ export const SETTINGS_HELP_INDEX: SettingsHelpItem[] = [
     id: "privacy",
     label: "Privacy",
     hint: "Who can see your POP card",
-    href: "/settings/privacy",
     section: "Privacy & Account",
     keywords: ["privacy", "visibility", "who can see"],
+    panel: "privacy",
   },
   {
     id: "security",
     label: "Security",
     hint: "Password and login",
-    href: "/settings/security",
     section: "Privacy & Account",
     keywords: ["security", "password", "login", "2fa"],
+    panel: "security",
   },
   {
     id: "blocked",
     label: "Blocked Accounts",
     hint: "Manage blocked users",
-    href: "/settings/blocked",
     section: "Privacy & Account",
     keywords: ["blocked", "block", "mute"],
+    panel: "blocked",
   },
   {
     id: "go-live",
     label: "Go Live",
     hint: "Camera, mic, and broadcasting",
-    href: "/help/go-live",
     section: "Create",
     keywords: ["live", "broadcast", "stream", "camera", "microphone"],
+    panel: "go-live",
   },
   {
     id: "posting",
     label: "Posting & Stories",
     hint: "Pages, reels, and stories",
-    href: "/help/posting",
     section: "Create",
     keywords: ["post", "story", "reel", "video", "upload"],
+    panel: "posting",
   },
 ];
 
@@ -240,4 +268,8 @@ export function settingsSections(): string[] {
 
 export function itemsBySection(section: string): SettingsHelpItem[] {
   return SETTINGS_HELP_INDEX.filter((i) => i.section === section);
+}
+
+export function getSettingsItem(id: string): SettingsHelpItem | undefined {
+  return SETTINGS_HELP_INDEX.find((i) => i.id === id);
 }

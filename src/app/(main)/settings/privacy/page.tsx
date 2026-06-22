@@ -1,9 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import SettingsPageHeader from "@/components/settings/SettingsPageHeader";
+import SettingsPanelContent from "@/components/settings/SettingsPanelContent";
+import { loadUserProfile, type UserProfile } from "@/lib/identity/userProfile";
 
 export default function PrivacySettingsPage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    loadUserProfile().then(setUser);
+  }, []);
+
   return (
     <div className="profile-settings">
       <SettingsPageHeader
@@ -16,36 +25,11 @@ export default function PrivacySettingsPage() {
           </Link>
         }
       />
-
       <div className="profile-settings__section">
         <div className="profile-settings__list">
-          <Link href="/help/privacy" className="profile-settings__item">
-            <span>
-              Who can see your profile
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                Public, followers, or city-only visibility
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
-          <Link href="/legal/privacy" className="profile-settings__item">
-            <span>
-              Privacy Policy
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                How POP&apos;IT handles your data
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
-          <Link href="/settings/blocked" className="profile-settings__item">
-            <span>
-              Blocked Accounts
-              <span className="block font-body text-[0.72rem] font-normal text-white/35">
-                Manage blocked users
-              </span>
-            </span>
-            <span className="profile-settings__chevron">›</span>
-          </Link>
+          <div className="profile-settings__inline-panel profile-settings__inline-panel--page">
+            <SettingsPanelContent panelId="privacy" user={user} onUserChange={setUser} />
+          </div>
         </div>
       </div>
     </div>

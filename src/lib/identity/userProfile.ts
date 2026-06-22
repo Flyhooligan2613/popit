@@ -20,6 +20,11 @@ export type UserProfile = {
   live: boolean;
   currentVibe: string;
   platformBackgroundId?: string;
+  zipCode?: string;
+  state?: string;
+  timezone?: string;
+  latitude?: number;
+  longitude?: number;
 };
 
 export const DEFAULT_USER: UserProfile = {

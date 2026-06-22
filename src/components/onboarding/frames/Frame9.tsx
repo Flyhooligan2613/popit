@@ -16,9 +16,9 @@ import {
 const PERMISSIONS: PermissionCardConfig[] = [
   {
     id: "location",
-    label: "Location",
-    title: "Never miss what's happening nearby.",
-    description: "Find events, creators and communities around you.",
+    label: "ZIP Code",
+    title: "Set your POP environment.",
+    description: "We use your ZIP — not constant GPS — for local feed, weather, and time.",
     Icon: MapPin,
     accent: "from-[#FF4D6D]/20 to-[#FF7A00]/10",
     glow: "rgba(255,77,109,0.25)",

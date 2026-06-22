@@ -8,7 +8,7 @@ import { searchSettingsHelp } from "@/lib/settings/settingsHelpIndex";
 const GUIDES = [
   { href: "/help/pop-scores", title: "POP Scores", hint: "What they mean and how they grow" },
   { href: "/help/permissions", title: "Permissions", hint: "Location, camera, photos, mic, alerts" },
-  { href: "/help/location", title: "Your City & GPS", hint: "Fix wrong city or location issues" },
+  { href: "/help/location", title: "Your ZIP & City", hint: "Change ZIP when you travel" },
   { href: "/help/go-live", title: "Go Live", hint: "Camera, mic, and broadcasting" },
   { href: "/help/posting", title: "Posting & Stories", hint: "Pages, reels, and stories" },
   { href: "/help/identities", title: "Identities & Lanes", hint: "Gamer, creator, business, and more" },
@@ -26,7 +26,11 @@ export default function HelpIndexPage() {
   const results = useMemo(() => searchSettingsHelp(query), [query]);
 
   const list = query.trim()
-    ? results.map((r) => ({ href: r.href, title: r.label, hint: r.hint ?? r.section }))
+    ? results.map((r) => ({
+        href: r.href ?? "/settings",
+        title: r.label,
+        hint: r.hint ?? r.section,
+      }))
     : GUIDES;
 
   return (

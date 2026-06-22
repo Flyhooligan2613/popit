@@ -1,4 +1,4 @@
-import { detectAndSaveCity, saveTimezoneFallbackCity } from "@/lib/location/cityDetection";
+import { getPopitLocation, markLocationPromptSeen, saveTimezoneFallbackCity } from "@/lib/location/zipLocation";
 
 export type PlatformPermissionId =
   | "location"
@@ -169,8 +169,8 @@ export async function requestPlatformPermission(
 
   switch (id) {
     case "location": {
-      const result = await detectAndSaveCity({ prompt: true });
-      status = result.source === "gps" ? "granted" : "deferred";
+      const loc = getPopitLocation();
+      status = loc?.zipCode ? "granted" : "deferred";
       break;
     }
     case "camera": {
@@ -230,9 +230,8 @@ export async function togglePlatformPermission(
 }
 
 export async function requestAllPlatformPermissions(): Promise<StoredPermissions> {
-  const locationResult = await detectAndSaveCity({ prompt: true });
-  const location: PlatformPermissionStatus =
-    locationResult.source === "gps" ? "granted" : "deferred";
+  const loc = getPopitLocation();
+  const location: PlatformPermissionStatus = loc?.zipCode ? "granted" : "deferred";
 
   const { camera, microphone } = await requestCameraAndMicrophone();
   const notifications = await requestNotifications();
@@ -254,7 +253,7 @@ export function skipLocationPermissionFallback() {
   saveTimezoneFallbackCity();
 }
 
-export { markLocationPromptSeen } from "@/lib/location/cityDetection";
+export { markLocationPromptSeen } from "@/lib/location/zipLocation";
 
 export function isPermissionGranted(status: PlatformPermissionStatus | null | undefined): boolean {
   return status === "granted";

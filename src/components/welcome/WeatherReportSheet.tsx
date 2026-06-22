@@ -8,15 +8,17 @@ import type { TimePeriod } from "./types";
 type WeatherReportSheetProps = {
   open: boolean;
   city: string | null;
+  locationLabel?: string | null;
+  zipCode?: string;
   period: TimePeriod;
+  temp?: number;
   onClose: () => void;
 };
 
-function tempForPeriod(period: TimePeriod, city: string | null): number {
-  const base = city?.toLowerCase().includes("miami") ? 82 : 74;
+function tempForPeriod(period: TimePeriod, baseTemp: number): number {
   const offset =
     period === "morning" ? -4 : period === "afternoon" ? 2 : period === "sunset" ? 0 : period === "night" ? -6 : -2;
-  return base + offset;
+  return baseTemp + offset;
 }
 
 function conditionForPeriod(period: TimePeriod): { label: string; icon: string; detail: string } {
@@ -34,10 +36,19 @@ function conditionForPeriod(period: TimePeriod): { label: string; icon: string; 
   }
 }
 
-export default function WeatherReportSheet({ open, city, period, onClose }: WeatherReportSheetProps) {
+export default function WeatherReportSheet({
+  open,
+  city,
+  locationLabel,
+  zipCode,
+  period,
+  temp: tempProp,
+  onClose,
+}: WeatherReportSheetProps) {
   const [mounted, setMounted] = useState(false);
-  const cityLabel = city ?? "Your City";
-  const temp = tempForPeriod(period, city);
+  const cityLabel = locationLabel ?? city ?? "Your City";
+  const baseTemp = tempProp ?? 74;
+  const temp = tempForPeriod(period, baseTemp);
   const condition = conditionForPeriod(period);
   const feelsLike = temp + (period === "afternoon" ? 3 : period === "night" ? -2 : 0);
 
@@ -74,6 +85,9 @@ export default function WeatherReportSheet({ open, city, period, onClose }: Weat
               <h2 id="weather-sheet-title" className="weather-sheet-city font-display">
                 {cityLabel}
               </h2>
+              {zipCode && (
+                <p className="weather-sheet-zip font-body">ZIP {zipCode} · local time & weather</p>
+              )}
             </header>
 
             <div className="weather-sheet-hero">

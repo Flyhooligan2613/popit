@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import ZipCodeEntry from "@/components/location/ZipCodeEntry";
+import { getPopitLocation } from "@/lib/location/zipLocation";
 import {
   PERMISSIONS_UPDATED_EVENT,
   disablePlatformPermission,
@@ -46,7 +48,10 @@ export default function PermissionSettingsPanel({
 
   const refresh = useCallback(async () => {
     await syncPermissionsFromBrowser();
-    setStatuses(getAllStoredPermissions());
+    const stored = getAllStoredPermissions();
+    const loc = getPopitLocation();
+    if (loc?.zipCode) stored.location = "granted";
+    setStatuses(stored);
   }, []);
 
   useEffect(() => {
@@ -105,7 +110,7 @@ export default function PermissionSettingsPanel({
     <div className={`permission-panel permission-panel--${variant}`}>
       {permissions.map(({ id, label, title, description, Icon, accent, glow, photos }, i) => {
         const status = statuses[id];
-        const enabled = isPermissionGranted(status);
+        const enabled = id === "location" ? Boolean(getPopitLocation()?.zipCode) : isPermissionGranted(status);
         const loading = activeId === id;
         const isPhotos = id === "photos" || photos;
 
@@ -144,6 +149,19 @@ export default function PermissionSettingsPanel({
                     {loading ? "Updating…" : permissionStatusLabel(status)}
                     {status === "denied" && " — check browser site settings to re-enable"}
                   </p>
+
+                  {id === "location" && (
+                    <div className="permission-card__zip">
+                      <ZipCodeEntry
+                        compact
+                        showGpsHelper
+                        onSaved={() => {
+                          applyStatus("location", "granted");
+                          void refresh();
+                        }}
+                      />
+                    </div>
+                  )}
 
                   {isPhotos && (
                     <div className="permission-card__photos-actions">

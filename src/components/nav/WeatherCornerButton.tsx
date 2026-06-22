@@ -3,14 +3,15 @@
 import { memo, useState } from "react";
 import WeatherReportSheet from "@/components/welcome/WeatherReportSheet";
 import { useTimeOfDay } from "@/components/welcome/useTimeOfDay";
-import { useResolvedCity } from "@/hooks/useResolvedCity";
+import { usePopitLocation } from "@/hooks/usePopitLocation";
+import { estimateTempFromLocation, hourInTimezone } from "@/lib/location/zipLocation";
 
 function WeatherCornerButton() {
   const [open, setOpen] = useState(false);
-  const city = useResolvedCity();
+  const { city, label, location, timezone } = usePopitLocation();
   const timePeriod = useTimeOfDay();
-
-  const temp = city?.toLowerCase().includes("miami") ? 82 : 74;
+  const hour = hourInTimezone(timezone);
+  const temp = estimateTempFromLocation(location, hour);
 
   return (
     <>
@@ -25,7 +26,15 @@ function WeatherCornerButton() {
         </span>
         <span className="app-weather-corner__temp">{temp}°</span>
       </button>
-      <WeatherReportSheet open={open} city={city} period={timePeriod} onClose={() => setOpen(false)} />
+      <WeatherReportSheet
+        open={open}
+        city={city}
+        locationLabel={label}
+        zipCode={location?.zipCode}
+        period={timePeriod}
+        temp={temp}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 }
