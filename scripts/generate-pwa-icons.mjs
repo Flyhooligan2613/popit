@@ -90,6 +90,9 @@ async function main() {
   fs.writeFileSync(path.join(iconsDir, "og-image.png"), ogImage);
   console.log("✓ og-image.png");
 
+  fs.writeFileSync(path.join(appDir, "opengraph-image.png"), ogImage);
+  console.log("✓ src/app/opengraph-image.png");
+
   fs.writeFileSync(path.join(appDir, "icon.png"), pngMap.get("favicon-32x32.png"));
   fs.writeFileSync(path.join(appDir, "apple-icon.png"), pngMap.get("apple-touch-icon.png"));
   console.log("✓ src/app/icon.png");

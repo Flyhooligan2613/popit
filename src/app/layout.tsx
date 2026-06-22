@@ -5,15 +5,22 @@ import LocationBootstrap from "@/components/location/LocationBootstrap";
 import PlatformBanner from "@/components/admin/PlatformBanner";
 import MaintenanceGate from "@/components/admin/MaintenanceGate";
 import AuthBootstrap from "@/components/auth/AuthBootstrap";
+import {
+  OG_IMAGE_ALT,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_URL,
+  OG_IMAGE_WIDTH,
+  SITE_URL,
+} from "@/lib/seo/brandUrls";
 
 export const metadata: Metadata = {
   title: "POP'IT",
   description: "See What's Popping — discover live culture, creators, and venues in your city.",
   applicationName: "POP'IT",
   manifest: "/manifest.webmanifest",
-  metadataBase: new URL("https://www.getpopit.com"),
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: "https://www.getpopit.com",
+    canonical: SITE_URL,
   },
   appleWebApp: {
     capable: true,
@@ -23,16 +30,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.getpopit.com",
+    url: SITE_URL,
     siteName: "POP'IT",
     title: "POP'IT",
     description: "See What's Popping.",
     images: [
       {
-        url: "/icons/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "POP'IT camera lens",
+        url: OG_IMAGE_URL,
+        secureUrl: OG_IMAGE_URL,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
+        type: "image/png",
+        alt: OG_IMAGE_ALT,
       },
     ],
   },
@@ -40,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "POP'IT",
     description: "See What's Popping.",
-    images: ["/icons/og-image.png"],
+    images: [OG_IMAGE_URL],
   },
   icons: {
     icon: [
@@ -80,6 +89,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta property="og:image" content={OG_IMAGE_URL} />
+        <meta property="og:image:secure_url" content={OG_IMAGE_URL} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
+        <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
+        <meta property="og:image:alt" content={OG_IMAGE_ALT} />
+      </head>
       <body className="font-body">
         <PwaRegister />
         <AuthBootstrap />
