@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { isOnboardingComplete, markOnboardingComplete, resetAppSession, WELCOME_LOBBY_ROUTE, hasRegisteredAccount } from "@/lib/session";
+import { hasActiveAuthSession, syncAuthSessionFromCredentials } from "@/lib/auth/appSession";
 import { getUserProfile } from "@/lib/identity/userProfile";
 import { loadAuthenticatedProfile } from "@/lib/supabase/auth";
 import Frame4 from "@/components/onboarding/frames/Frame4";
@@ -76,6 +77,7 @@ export default function OnboardingPage() {
 
     void (async () => {
       if (isOnboardingComplete()) {
+        syncAuthSessionFromCredentials();
         if (!isExploreHome && !isBackgroundPicker) {
           window.location.replace(WELCOME_LOBBY_ROUTE);
         }
@@ -83,7 +85,8 @@ export default function OnboardingPage() {
       }
 
       const authProfile = await loadAuthenticatedProfile();
-      if (authProfile) {
+      if (authProfile || hasActiveAuthSession()) {
+        syncAuthSessionFromCredentials();
         markOnboardingComplete();
         if (!isExploreHome && !isBackgroundPicker) {
           window.location.replace(WELCOME_LOBBY_ROUTE);

@@ -10,6 +10,10 @@ import {
   tryLocalSignIn,
   type LoginMethod,
 } from "@/lib/auth/localAuth";
+import {
+  establishAuthSession,
+  establishAuthSessionFromCredentials,
+} from "@/lib/auth/appSession";
 
 type DbProfile = {
   username: string;
@@ -29,12 +33,19 @@ type DbProfile = {
   current_vibe: string | null;
 };
 
+export type SignUpResult = {
+  session: unknown;
+  user: unknown;
+  needsEmailConfirmation: boolean;
+  emailSent: boolean;
+  source: "supabase" | "local";
+};
+
 export function dbProfileToUser(row: DbProfile): UserProfile {
   return {
     username: row.username,
     name: row.name,
-    city:
-      row.city && row.city !== LEGACY_DEFAULT_CITY ? row.city : DEFAULT_CITY_LABEL,
+    city: row.city && row.city !== LEGACY_DEFAULT_CITY ? row.city : DEFAULT_CITY_LABEL,
     identity: row.identity as IdentityType,
     identityTopic: row.identity_topic ?? undefined,
     identityTopicLabel: row.identity_topic_label ?? undefined,
@@ -71,6 +82,57 @@ async function persistSessionProfile(userId: string) {
   return profile;
 }
 
+async function upsertRemoteProfile(
+  userId: string,
+  payload: {
+    identity: IdentityType;
+    username: string;
+    email: string;
+    phone?: string;
+    identityTopic?: string;
+    identityTopicLabel?: string;
+  }
+) {
+  const supabase = createClient();
+  if (!supabase) return;
+
+  const { error } = await supabase.from("profiles").upsert({
+    id: userId,
+    identity: payload.identity,
+    username: payload.username,
+    name: payload.username,
+    email: payload.email,
+    phone: payload.phone ?? null,
+    identity_topic: payload.identityTopic ?? null,
+    identity_topic_label: payload.identityTopicLabel ?? null,
+  });
+
+  if (error) {
+    console.warn("[auth] profile upsert failed:", error.message);
+  }
+}
+
+export async function resendSignupConfirmationEmail(email: string): Promise<boolean> {
+  const supabase = createClient();
+  if (!supabase) return false;
+
+  try {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim(),
+      options: {
+        emailRedirectTo:
+          typeof window !== "undefined"
+            ? `${window.location.origin}/onboarding?skipIntro=1&explore=1`
+            : undefined,
+      },
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
 export async function signUpWithEmail({
   email,
   password,
@@ -87,77 +149,113 @@ export async function signUpWithEmail({
   identityTopic?: string;
   identityTopicLabel?: string;
   phone?: string;
-}) {
+}): Promise<SignUpResult> {
+  const normalizedEmail = email.trim();
+  const normalizedUsername = username.trim();
   const normalizedPhone = phone ? normalizePhone(phone) : undefined;
 
   saveLocalCredentials({
-    email: email.trim(),
-    username: username.trim(),
+    email: normalizedEmail,
+    username: normalizedUsername,
     phone: normalizedPhone,
     password,
   });
 
   saveUserIdentity(identity);
   saveUserProfile({
-    username,
-    name: username,
+    username: normalizedUsername,
+    name: normalizedUsername,
     identity,
     identityTopic,
     identityTopicLabel,
   });
 
+  establishAuthSession({
+    email: normalizedEmail,
+    username: normalizedUsername,
+    phone: normalizedPhone,
+    source: "local",
+  });
+
   const supabase = createClient();
-  if (!supabase) return { session: null, user: null, needsEmailConfirmation: false };
+  if (!supabase) {
+    return {
+      session: null,
+      user: null,
+      needsEmailConfirmation: false,
+      emailSent: false,
+      source: "local",
+    };
+  }
 
   try {
     const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
+      email: normalizedEmail,
       password,
       options: {
         data: {
-          username,
-          name: username,
+          username: normalizedUsername,
+          name: normalizedUsername,
           identity,
           identity_topic: identityTopic,
           identity_topic_label: identityTopicLabel,
           phone: normalizedPhone,
         },
         emailRedirectTo:
-          typeof window !== "undefined" ? `${window.location.origin}/onboarding?skipIntro=1&explore=1` : undefined,
+          typeof window !== "undefined"
+            ? `${window.location.origin}/onboarding?skipIntro=1&explore=1`
+            : undefined,
       },
     });
 
     if (error) throw error;
 
     const userId = data.user?.id;
-    if (userId && data.session) {
-      const profilePayload = {
-        id: userId,
+    const needsEmailConfirmation = Boolean(data.user && !data.session);
+
+    if (userId) {
+      await upsertRemoteProfile(userId, {
         identity,
-        username,
-        name: username,
-        email: email.trim(),
-        phone: normalizedPhone ?? null,
-        identity_topic: identityTopic ?? null,
-        identity_topic_label: identityTopicLabel ?? null,
-      };
+        username: normalizedUsername,
+        email: normalizedEmail,
+        phone: normalizedPhone,
+        identityTopic,
+        identityTopicLabel,
+      });
 
-      const { error: profileError } = await supabase.from("profiles").upsert(profilePayload);
-      if (profileError) {
-        console.warn("[auth] profile upsert failed:", profileError.message);
+      if (data.session) {
+        await persistSessionProfile(userId);
+        establishAuthSession({
+          email: normalizedEmail,
+          username: normalizedUsername,
+          phone: normalizedPhone,
+          source: "supabase",
+        });
       }
+    }
 
-      await persistSessionProfile(userId);
+    let emailSent = false;
+    if (needsEmailConfirmation) {
+      // Supabase sends the first confirmation email on signUp when confirm email is enabled.
+      emailSent = true;
     }
 
     return {
       session: data.session,
       user: data.user,
-      needsEmailConfirmation: Boolean(data.user && !data.session),
+      needsEmailConfirmation,
+      emailSent,
+      source: data.session ? "supabase" : "local",
     };
   } catch (err) {
     if (isNetworkAuthError(err)) {
-      return { session: null, user: null, needsEmailConfirmation: false };
+      return {
+        session: null,
+        user: null,
+        needsEmailConfirmation: false,
+        emailSent: false,
+        source: "local",
+      };
     }
     throw formatAuthError(err);
   }
@@ -187,6 +285,7 @@ export async function signInWithIdentifier({
 
   if (!supabase) {
     if (tryLocalSignIn(method, trimmed, password)) {
+      establishAuthSessionFromCredentials("local");
       return { source: "local" as const };
     }
     throw new Error("Sign in is unavailable. Create an account first.");
@@ -200,7 +299,16 @@ export async function signInWithIdentifier({
         password,
       });
       if (error) throw error;
-      if (data.user) await persistSessionProfile(data.user.id);
+      if (data.user) {
+        await persistSessionProfile(data.user.id);
+        establishAuthSession({
+          email: data.user.email ?? trimmed,
+          username:
+            (data.user.user_metadata?.username as string | undefined) ??
+            trimmed.split("@")[0],
+          source: "supabase",
+        });
+      }
       return { source: "supabase" as const, data };
     }
 
@@ -208,6 +316,7 @@ export async function signInWithIdentifier({
       const email = await lookupEmailByUsername(trimmed);
       if (!email) {
         if (tryLocalSignIn(method, trimmed, password)) {
+          establishAuthSessionFromCredentials("local");
           return { source: "local" as const };
         }
         throw new Error("No account found with that username.");
@@ -218,7 +327,14 @@ export async function signInWithIdentifier({
         password,
       });
       if (error) throw error;
-      if (data.user) await persistSessionProfile(data.user.id);
+      if (data.user) {
+        await persistSessionProfile(data.user.id);
+        establishAuthSession({
+          email,
+          username: trimmed,
+          source: "supabase",
+        });
+      }
       return { source: "supabase" as const, data };
     }
 
@@ -230,10 +346,20 @@ export async function signInWithIdentifier({
       password,
     });
     if (error) throw error;
-    if (data.user) await persistSessionProfile(data.user.id);
+    if (data.user) {
+      await persistSessionProfile(data.user.id);
+      establishAuthSession({
+        email: data.user.email ?? "",
+        username:
+          (data.user.user_metadata?.username as string | undefined) ?? "user",
+        phone,
+        source: "supabase",
+      });
+    }
     return { source: "supabase" as const, data };
   } catch (err) {
     if (tryLocalSignIn(method, trimmed, password)) {
+      establishAuthSessionFromCredentials("local");
       return { source: "local" as const };
     }
     throw formatAuthError(err);
@@ -246,9 +372,15 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signOut() {
+  clearAuthSessionOnSignOut();
   const supabase = createClient();
   if (!supabase) return;
   await supabase.auth.signOut();
+}
+
+async function clearAuthSessionOnSignOut() {
+  const { clearAuthSession } = await import("@/lib/auth/appSession");
+  clearAuthSession();
 }
 
 export async function fetchProfileForUser(userId: string): Promise<UserProfile | null> {
@@ -263,14 +395,26 @@ export async function fetchProfileForUser(userId: string): Promise<UserProfile |
 
 export async function loadAuthenticatedProfile(): Promise<UserProfile | null> {
   const supabase = createClient();
-  if (!supabase) return null;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const remote = await persistSessionProfile(user.id);
+      if (remote) return remote;
+    }
+  }
 
-  return persistSessionProfile(user.id);
+  const { getAuthSession } = await import("@/lib/auth/appSession");
+  const { getUserProfile } = await import("@/lib/identity/userProfile");
+  const { getLocalCredentials } = await import("@/lib/auth/localAuth");
+
+  if (getAuthSession() || getLocalCredentials()) {
+    return getUserProfile();
+  }
+
+  return null;
 }
 
 export { isSupabaseConfigured };

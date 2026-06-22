@@ -169,32 +169,33 @@ export default function Frame7({
   };
 
   const handleIdentityNext = async () => {
-    if (!identity || !identityTopic) return;
+    const primaryIdentity = identity ?? identities[0];
+    if (!primaryIdentity || !identityTopic) return;
     setError(null);
     setLoading(true);
 
-    const topicLabel = getIdentityTopicLabel(identity, identityTopic) ?? identityTopic;
+    const topicLabel = getIdentityTopicLabel(primaryIdentity, identityTopic) ?? identityTopic;
 
     try {
       const result = await signUpWithEmail({
         email: form.email,
         password: form.password,
         username: form.username,
-        identity,
+        identity: primaryIdentity,
         identityTopic,
         identityTopicLabel: topicLabel,
         phone: form.phone || undefined,
       });
 
-      saveUserIdentity(identity!);
-      const bgMatch = PLATFORM_BACKGROUNDS.find((bg) => bg.identities?.includes(identity!));
+      saveUserIdentity(primaryIdentity);
+      const bgMatch = PLATFORM_BACKGROUNDS.find((bg) => bg.identities?.includes(primaryIdentity));
       if (bgMatch) savePlatformBackground(bgMatch.id);
 
       saveUserProfile({
         username: form.username,
         name: form.username,
-        identity: identity!,
-        identities,
+        identity: primaryIdentity,
+        identities: identities.length ? identities : [primaryIdentity],
         identityTopic,
         identityTopicLabel: topicLabel,
         platformBackgroundId: bgMatch?.id,
@@ -209,6 +210,11 @@ export default function Frame7({
 
       if (result.needsEmailConfirmation) {
         sessionStorage.setItem(EMAIL_CONFIRM_PENDING_KEY, "1");
+        if (!result.emailSent) {
+          setError(
+            "Account saved — verification email could not be sent. Use Resend on the next step or disable email confirmation in Supabase for launch."
+          );
+        }
         onNext();
         return;
       }

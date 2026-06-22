@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import AppStartupSplash from "@/components/brand/AppStartupSplash";
 import { isOnboardingComplete, WELCOME_LOBBY_ROUTE } from "@/lib/session";
+import { hasActiveAuthSession } from "@/lib/auth/appSession";
 import { loadAuthenticatedProfile } from "@/lib/supabase/auth";
 
 const SPLASH_KEY = "popit:splashSeen";
@@ -22,7 +23,7 @@ export default function Home() {
     if (sessionStorage.getItem(SPLASH_KEY) === "1") {
       void (async () => {
         const profile = await loadAuthenticatedProfile();
-        if (profile && isOnboardingComplete()) {
+        if ((profile || hasActiveAuthSession()) && isOnboardingComplete()) {
           goToHome();
           return;
         }
@@ -44,7 +45,7 @@ export default function Home() {
     const profile = await loadAuthenticatedProfile();
     const onboarded = isOnboardingComplete();
 
-    if (profile && onboarded) {
+    if ((profile || hasActiveAuthSession()) && onboarded) {
       goToHome();
       return;
     }

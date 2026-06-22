@@ -16,6 +16,11 @@ export function formatAuthError(err: unknown): Error {
     if (err.message === "Invalid login credentials") {
       return new Error("Wrong email, username, phone, or password.");
     }
+    if (err.message.toLowerCase().includes("email not confirmed")) {
+      return new Error(
+        "Confirm your email first — check your inbox or tap Resend on the next onboarding step."
+      );
+    }
     return new Error(err.message);
   }
 

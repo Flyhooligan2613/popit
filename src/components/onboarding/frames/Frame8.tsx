@@ -13,6 +13,8 @@ import { getInterestIcon } from "@/lib/identity/interestIcons";
 import { getUserIdentity } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { EMAIL_CONFIRM_PENDING_KEY } from "@/lib/session";
+import { getLocalCredentials } from "@/lib/auth/localAuth";
+import { resendSignupConfirmationEmail } from "@/lib/supabase/auth";
 
 export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
   const identity = getUserIdentity();
@@ -22,10 +24,25 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
 
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [emailPending, setEmailPending] = useState(false);
+  const [resendStatus, setResendStatus] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     setEmailPending(sessionStorage.getItem(EMAIL_CONFIRM_PENDING_KEY) === "1");
   }, []);
+
+  const handleResendEmail = async () => {
+    const email = getLocalCredentials()?.email;
+    if (!email) {
+      setResendStatus("No email on file — go back and create your account again.");
+      return;
+    }
+    setResending(true);
+    setResendStatus(null);
+    const sent = await resendSignupConfirmationEmail(email);
+    setResending(false);
+    setResendStatus(sent ? "Verification email sent — check your inbox." : "Could not send email. Check Supabase email settings.");
+  };
 
   const toggle = (id: string) =>
     setSel((prev) => {
@@ -89,6 +106,32 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
             }}
           >
             Check your email to confirm your account — you can keep setting up POP&apos;IT now.
+            <button
+              type="button"
+              onClick={() => void handleResendEmail()}
+              disabled={resending}
+              style={{
+                display: "block",
+                width: "100%",
+                marginTop: 10,
+                padding: "10px 12px",
+                borderRadius: 10,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(255,255,255,0.08)",
+                color: "#fff",
+                fontFamily: "system-ui, sans-serif",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                cursor: resending ? "wait" : "pointer",
+              }}
+            >
+              {resending ? "Sending…" : "Resend verification email"}
+            </button>
+            {resendStatus && (
+              <p style={{ margin: "10px 0 0", fontSize: "0.78rem", color: "rgba(255,255,255,0.65)" }}>
+                {resendStatus}
+              </p>
+            )}
           </div>
         )}
         <motion.div

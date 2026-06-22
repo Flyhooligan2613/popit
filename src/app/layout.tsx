@@ -4,6 +4,7 @@ import PwaRegister from "@/components/PwaRegister";
 import LocationBootstrap from "@/components/location/LocationBootstrap";
 import PlatformBanner from "@/components/admin/PlatformBanner";
 import MaintenanceGate from "@/components/admin/MaintenanceGate";
+import AuthBootstrap from "@/components/auth/AuthBootstrap";
 
 export const metadata: Metadata = {
   title: "POP'IT",
@@ -81,6 +82,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-body">
         <PwaRegister />
+        <AuthBootstrap />
         <LocationBootstrap />
         <PlatformBanner />
         <MaintenanceGate>{children}</MaintenanceGate>
