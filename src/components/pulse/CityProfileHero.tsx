@@ -10,14 +10,16 @@ import { useLiveClock } from "./useTimeOfDay";
 import { usePersonalizedCity } from "./usePersonalizedCity";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { IDENTITY_OPTIONS, getIdentityAccent } from "@/lib/identity/types";
+import Link from "next/link";
+import { useResolvedCity } from "@/hooks/useResolvedCity";
 import { formatLifetimePopScore, buildUserReputation } from "@/lib/reputation/reputationEngine";
 
-function StatPill({ label, value }: { label: string; value: number | string }) {
+function StatPill({ label, value, href }: { label: string; value: number | string; href?: string }) {
   const numeric = typeof value === "number";
   const animated = useAnimatedNumber(numeric ? value : 0);
 
-  return (
-    <div className="flex flex-1 flex-col items-center gap-0.5 rounded-2xl border border-white/[0.05] bg-white/[0.02] px-2 py-2 backdrop-blur-sm">
+  const content = (
+    <>
       <motion.span
         key={String(value)}
         initial={{ opacity: 0.6, y: 3 }}
@@ -29,8 +31,21 @@ function StatPill({ label, value }: { label: string; value: number | string }) {
       <span className="font-body text-[0.58rem] font-medium uppercase tracking-[0.12em] text-white/30">
         {label}
       </span>
-    </div>
+    </>
   );
+
+  const className =
+    "flex flex-1 flex-col items-center gap-0.5 rounded-2xl border border-white/[0.05] bg-white/[0.02] px-2 py-2 backdrop-blur-sm";
+
+  if (href) {
+    return (
+      <Link href={href} className={`${className} transition hover:border-white/15`}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }
 
 type CityProfileHeroProps = {
@@ -40,6 +55,8 @@ type CityProfileHeroProps = {
 export default function CityProfileHero({ user }: CityProfileHeroProps) {
   const { greeting, subGreeting, formatted } = useLiveClock();
   const { isPersonalized } = usePersonalizedCity();
+  const resolvedCity = useResolvedCity();
+  const displayCity = resolvedCity !== "Your City" ? resolvedCity : user.city;
   const accent = getIdentityAccent(user.identity);
   const identityLabel = IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label ?? "Personal";
   const reputation = buildUserReputation({
@@ -84,7 +101,7 @@ export default function CityProfileHero({ user }: CityProfileHeroProps) {
       </div>
 
       <h1 className="text-poster mb-1 text-[clamp(1.75rem,6vw,2.75rem)] uppercase text-white">
-        {user.city}
+        {displayCity}
       </h1>
       <p className="mb-1 font-body text-sm font-semibold text-white/65">{greeting}</p>
       <p className="mb-3 font-body text-sm font-medium text-white/40">{subGreeting}</p>
@@ -114,7 +131,7 @@ export default function CityProfileHero({ user }: CityProfileHeroProps) {
       </GlassPanel>
 
       <div className="flex gap-1.5">
-        <StatPill label="POP Score" value={formatLifetimePopScore(reputation.lifetimePopScore)} />
+        <StatPill label="POP Score" value={formatLifetimePopScore(reputation.lifetimePopScore)} href="/help/pop-scores" />
         <StatPill label="Moments" value={LIVE_STATS.moments} />
         <StatPill label="Events" value={LIVE_STATS.liveEvents} />
       </div>

@@ -1,30 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
-import { MapPin, Camera, ImageIcon, Mic, Bell, Check } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Camera, ImageIcon, Mic, Bell } from "lucide-react";
 import BackNavButton from "@/components/nav/BackNavButton";
+import PermissionSettingsPanel, {
+  type PermissionCardConfig,
+} from "@/components/settings/PermissionSettingsPanel";
 import {
-  getStoredPermissionStatus,
   markLocationPromptSeen,
   requestAllPlatformPermissions,
-  requestPlatformPermission,
   skipLocationPermissionFallback,
-  type PlatformPermissionId,
-  type PlatformPermissionStatus,
-  type StoredPermissions,
 } from "@/lib/permissions/platformPermissions";
 
-const PERMISSIONS: {
-  id: PlatformPermissionId;
-  label: string;
-  title: string;
-  description: string;
-  Icon: LucideIcon;
-  accent: string;
-  glow: string;
-}[] = [
+const PERMISSIONS: PermissionCardConfig[] = [
   {
     id: "location",
     label: "Location",
@@ -47,10 +36,11 @@ const PERMISSIONS: {
     id: "photos",
     label: "Photos",
     title: "Share your memories.",
-    description: "Upload your favorite moments directly from your gallery.",
+    description: "Choose whether uploads come from your gallery.",
     Icon: ImageIcon,
     accent: "from-[#00D4FF]/20 to-[#0099FF]/10",
     glow: "rgba(0,212,255,0.22)",
+    photos: true,
   },
   {
     id: "microphone",
@@ -72,55 +62,13 @@ const PERMISSIONS: {
   },
 ];
 
-function statusLabel(status: PlatformPermissionStatus | null | undefined): string {
-  if (status === "granted") return "Enabled";
-  if (status === "denied") return "Denied";
-  if (status === "deferred") return "Optional";
-  if (status === "unsupported") return "N/A";
-  return "Enable";
-}
-
-function isEnabled(status: PlatformPermissionStatus | null | undefined): boolean {
-  return status === "granted";
-}
-
 export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
   const [busy, setBusy] = useState(false);
-  const [activeId, setActiveId] = useState<PlatformPermissionId | null>(null);
-  const [statuses, setStatuses] = useState<StoredPermissions>({});
-
-  useEffect(() => {
-    const initial: StoredPermissions = {};
-    for (const { id } of PERMISSIONS) {
-      const stored = getStoredPermissionStatus(id);
-      if (stored) initial[id] = stored;
-    }
-    setStatuses(initial);
-  }, []);
-
-  const applyStatus = useCallback((id: PlatformPermissionId, status: PlatformPermissionStatus) => {
-    setStatuses((prev) => ({ ...prev, [id]: status }));
-  }, []);
-
-  const requestOne = async (id: PlatformPermissionId) => {
-    setActiveId(id);
-    try {
-      const status = await requestPlatformPermission(id);
-      applyStatus(id, status);
-      if (id === "camera") {
-        const mic = getStoredPermissionStatus("microphone");
-        if (mic) applyStatus("microphone", mic);
-      }
-    } finally {
-      setActiveId(null);
-    }
-  };
 
   const handleAllowAll = async () => {
     setBusy(true);
     try {
-      const result = await requestAllPlatformPermissions();
-      setStatuses((prev) => ({ ...prev, ...result }));
+      await requestAllPlatformPermissions();
       onNext();
     } finally {
       setBusy(false);
@@ -154,12 +102,12 @@ export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?
         }}
       />
 
-      <div className="relative z-[1] mx-auto max-w-[520px] px-5 pb-[220px] pt-14">
+      <div className="relative z-[1] mx-auto max-w-[520px] px-5 pb-[calc(11rem+env(safe-area-inset-bottom,0px))] pt-14">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="mb-10 text-center"
+          className="mb-8 text-center"
         >
           <p className="mb-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#FF4D6D]">
             Step 4 of 4
@@ -168,70 +116,17 @@ export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?
             Make POP&apos;IT Yours
           </h2>
           <p className="font-sans text-[0.95rem] text-white/40">
-            Enable camera, mic, location &amp; alerts — you stay in control.
+            Toggle each permission on or off — change anytime in Settings.
           </p>
         </motion.div>
 
-        <div className="flex flex-col gap-3">
-          {PERMISSIONS.map(({ id, label, title, description, Icon, accent, glow }, i) => {
-            const status = statuses[id];
-            const enabled = isEnabled(status);
-            const loading = activeId === id;
-
-            return (
-              <motion.button
-                key={id}
-                type="button"
-                disabled={busy || loading}
-                onClick={() => requestOne(id)}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className={`relative w-full overflow-hidden rounded-[22px] border border-white/[0.08] bg-gradient-to-br ${accent} p-[1px] text-left disabled:opacity-80`}
-              >
-                <div className="relative rounded-[21px] bg-[#0A0A0A]/90 px-5 py-5 backdrop-blur-sm">
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04]"
-                      style={{ boxShadow: `0 0 24px ${glow}` }}
-                    >
-                      <Icon size={20} strokeWidth={1.7} className="text-white/80" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="mb-1 flex items-center justify-between gap-2">
-                        <p className="font-sans text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/35">
-                          {label}
-                        </p>
-                        <span
-                          className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 font-sans text-[0.65rem] font-bold uppercase tracking-wide ${
-                            enabled
-                              ? "bg-[#FF4D6D]/20 text-[#FF8FA3]"
-                              : "bg-white/[0.06] text-white/40"
-                          }`}
-                        >
-                          {enabled && <Check size={12} strokeWidth={2.5} />}
-                          {loading ? "…" : statusLabel(status)}
-                        </span>
-                      </div>
-                      <h3 className="mb-1.5 font-sans text-[1.02rem] font-bold leading-snug text-white">
-                        {title}
-                      </h3>
-                      <p className="font-sans text-[0.88rem] leading-relaxed text-white/45">
-                        {description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
+        <PermissionSettingsPanel permissions={PERMISSIONS} variant="onboarding" disabled={busy} />
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-10 flex flex-col items-center gap-3 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent px-6 pb-9 pt-6">
+      <div className="fixed bottom-0 left-0 right-0 z-10 flex flex-col items-center gap-3 bg-gradient-to-t from-[#050505] via-[#050505]/98 to-transparent px-6 pb-[max(2rem,env(safe-area-inset-bottom,0px))] pt-4">
         <div className="w-full max-w-[320px]">
           <motion.button
-            onClick={handleAllowAll}
+            onClick={() => void handleAllowAll()}
             disabled={busy}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

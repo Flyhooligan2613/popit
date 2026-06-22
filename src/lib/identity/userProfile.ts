@@ -9,6 +9,7 @@ export type UserProfile = {
   name: string;
   city: string;
   identity: IdentityType;
+  identities?: IdentityType[];
   identityTopic?: string;
   identityTopicLabel?: string;
   followers: number;

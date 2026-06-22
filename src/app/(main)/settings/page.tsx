@@ -139,6 +139,22 @@ export default function SettingsPage() {
       </div>
 
       <div className="profile-settings__section">
+        <p className="profile-settings__section-title">Permissions & Privacy</p>
+        <div className="profile-settings__list">
+          <SettingsRow
+            label="Device Permissions"
+            hint="Location, camera, photos, mic, alerts"
+            href="/settings/permissions"
+          />
+          <SettingsRow
+            label="Help Center"
+            hint="Learn what each section does"
+            href="/help"
+          />
+        </div>
+      </div>
+
+      <div className="profile-settings__section">
         <p className="profile-settings__section-title">Location</p>
         <div className="profile-settings__list">
           <SettingsRow
@@ -149,6 +165,11 @@ export default function SettingsPage() {
                 detectAndSaveCity({ prompt: true })
               );
             }}
+          />
+          <SettingsRow
+            label="Location Permission"
+            hint="Turn location on or off"
+            href="/settings/permissions"
           />
         </div>
       </div>

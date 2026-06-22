@@ -47,7 +47,14 @@ export default function ThePulse() {
   }
 
   if (showProfile) {
-    return <IdentityProfileRouter user={user} isOwnProfile />;
+    return (
+      <div className="pulse-page-scroll relative min-h-0">
+        <LivingCityBackground />
+        <div className="relative z-[1]">
+          <IdentityProfileRouter user={user} isOwnProfile />
+        </div>
+      </div>
+    );
   }
 
   const template = getProfileTemplate(user.identity);

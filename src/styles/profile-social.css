@@ -1,8 +1,34 @@
 .profile-social {
   --profile-accent: #ff4d6d;
+  position: relative;
   min-height: 100dvh;
   background: #050505;
   padding-bottom: 6rem;
+}
+
+.profile-social--with-bg {
+  background: transparent;
+}
+
+.profile-social__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.profile-social__bg .platform-bg-overlay {
+  opacity: 0.92;
+  mix-blend-mode: normal;
+}
+
+.profile-social__bg .platform-bg-glow {
+  opacity: 1;
+}
+
+.profile-social__content {
+  position: relative;
+  z-index: 1;
 }
 
 .profile-social__topnav {

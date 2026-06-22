@@ -16,6 +16,8 @@ export type PlatformPermissionStatus =
 
 const STORAGE_KEY = "popit:permissions";
 
+export const PERMISSIONS_UPDATED_EVENT = "popit:permissionsUpdated";
+
 export type StoredPermissions = Partial<Record<PlatformPermissionId, PlatformPermissionStatus>>;
 
 function readStored(): StoredPermissions {
@@ -31,14 +33,39 @@ function readStored(): StoredPermissions {
 function writeStored(next: StoredPermissions) {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...readStored(), ...next }));
+  window.dispatchEvent(new Event(PERMISSIONS_UPDATED_EVENT));
 }
 
 export function getStoredPermissionStatus(id: PlatformPermissionId): PlatformPermissionStatus | null {
   return readStored()[id] ?? null;
 }
 
+export function getAllStoredPermissions(): StoredPermissions {
+  return readStored();
+}
+
+export function setPermissionStatus(id: PlatformPermissionId, status: PlatformPermissionStatus) {
+  writeStored({ [id]: status });
+}
+
 function stopStream(stream: MediaStream | null | undefined) {
   stream?.getTracks().forEach((track) => track.stop());
+}
+
+async function syncNotificationsFromBrowser(): Promise<PlatformPermissionStatus | null> {
+  if (typeof window === "undefined" || !("Notification" in window)) return "unsupported";
+  if (Notification.permission === "granted") return "granted";
+  if (Notification.permission === "denied") return "denied";
+  return "prompt";
+}
+
+export async function syncPermissionsFromBrowser(): Promise<StoredPermissions> {
+  const current = readStored();
+  const notifications = await syncNotificationsFromBrowser();
+  const next: StoredPermissions = { ...current };
+  if (notifications) next.notifications = notifications;
+  writeStored(next);
+  return next;
 }
 
 async function requestCamera(): Promise<PlatformPermissionStatus> {
@@ -63,7 +90,6 @@ async function requestMicrophone(): Promise<PlatformPermissionStatus> {
   }
 }
 
-/** Camera + mic together — best for Go Live onboarding */
 async function requestCameraAndMicrophone(): Promise<{
   camera: PlatformPermissionStatus;
   microphone: PlatformPermissionStatus;
@@ -97,10 +123,6 @@ async function requestNotifications(): Promise<PlatformPermissionStatus> {
   }
 }
 
-/**
- * Gallery access on the web is requested at pick time — no OS-level photos permission.
- * Opening a file picker once marks intent as granted/deferred.
- */
 export async function requestPhotosViaPicker(): Promise<PlatformPermissionStatus> {
   if (typeof window === "undefined") return "unsupported";
 
@@ -176,6 +198,37 @@ export async function requestPlatformPermission(
   return status;
 }
 
+export function disablePlatformPermission(id: PlatformPermissionId) {
+  if (id === "location") {
+    writeStored({ location: "deferred" });
+    return;
+  }
+  if (id === "camera") {
+    writeStored({ camera: "deferred", microphone: "deferred" });
+    return;
+  }
+  if (id === "microphone") {
+    writeStored({ microphone: "deferred" });
+    return;
+  }
+  writeStored({ [id]: "deferred" });
+}
+
+export function skipPhotosSharing() {
+  writeStored({ photos: "deferred" });
+}
+
+export async function togglePlatformPermission(
+  id: PlatformPermissionId,
+  currentlyGranted: boolean
+): Promise<PlatformPermissionStatus> {
+  if (currentlyGranted) {
+    disablePlatformPermission(id);
+    return getStoredPermissionStatus(id) ?? "deferred";
+  }
+  return requestPlatformPermission(id);
+}
+
 export async function requestAllPlatformPermissions(): Promise<StoredPermissions> {
   const locationResult = await detectAndSaveCity({ prompt: true });
   const location: PlatformPermissionStatus =
@@ -183,9 +236,7 @@ export async function requestAllPlatformPermissions(): Promise<StoredPermissions
 
   const { camera, microphone } = await requestCameraAndMicrophone();
   const notifications = await requestNotifications();
-
-  // Photos uses a picker — defer unless user selects files on the card
-  const photos: PlatformPermissionStatus = "deferred";
+  const photos: PlatformPermissionStatus = readStored().photos ?? "deferred";
 
   const result: StoredPermissions = {
     location,
@@ -204,3 +255,16 @@ export function skipLocationPermissionFallback() {
 }
 
 export { markLocationPromptSeen } from "@/lib/location/cityDetection";
+
+export function isPermissionGranted(status: PlatformPermissionStatus | null | undefined): boolean {
+  return status === "granted";
+}
+
+export function permissionStatusLabel(status: PlatformPermissionStatus | null | undefined): string {
+  if (status === "granted") return "On";
+  if (status === "denied") return "Denied";
+  if (status === "deferred") return "Off";
+  if (status === "unsupported") return "N/A";
+  if (status === "prompt") return "Off";
+  return "Off";
+}

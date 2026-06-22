@@ -27,7 +27,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   const yourCity = isYourCityRoute(pathname);
   const showFab = pathname === "/map";
-  const hideTabBar = pathname.startsWith("/profile") || pathname === "/search" || pathname === "/settings";
+  const hideTabBar = pathname.startsWith("/profile") || pathname === "/search" || pathname.startsWith("/settings") || pathname.startsWith("/help");
   const showSocialChrome = onboarded && pathname !== "/settings";
   const showCornerProfile = onboarded && !yourCity;
 

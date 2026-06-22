@@ -100,7 +100,26 @@
   font-size: clamp(0.75rem, 2.6vw, 0.85rem);
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.48);
-  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 420px) {
+  .city-hub-main {
+    padding-left: 3.35rem;
+    padding-right: 3.35rem;
+  }
+
+  .city-profile-identity {
+    flex-wrap: wrap;
+  }
+
+  .city-profile-identity__text {
+    flex: 1 1 8rem;
+    min-width: 0;
+  }
 }
 
 .city-hub-dock__name {

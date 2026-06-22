@@ -17,6 +17,7 @@
 @import "../styles/social-platform.css";
 @import "../styles/platform-backgrounds.css";
 @import "../styles/platform-tabs.css";
+@import "../styles/permission-settings.css";
 @import "tailwindcss";
 
 html {

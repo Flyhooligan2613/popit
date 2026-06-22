@@ -1,0 +1,151 @@
+.permission-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.permission-card {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.permission-card__inner {
+  padding: 1px;
+}
+
+.permission-card__body {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border-radius: 21px;
+  background: rgba(10, 10, 10, 0.92);
+  padding: 1.1rem 1.15rem;
+  backdrop-filter: blur(8px);
+}
+
+.permission-card__icon {
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.permission-card__copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.permission-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.permission-card__label {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.permission-card__title {
+  margin: 0 0 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #fff;
+}
+
+.permission-card__desc {
+  margin: 0 0 0.45rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.permission-card__status {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.permission-toggle {
+  position: relative;
+  width: 2.75rem;
+  height: 1.55rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.permission-toggle.is-on {
+  background: rgba(255, 77, 109, 0.35);
+  border-color: rgba(255, 77, 109, 0.55);
+}
+
+.permission-toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.permission-toggle__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.permission-toggle.is-on .permission-toggle__knob {
+  transform: translateX(1.15rem);
+}
+
+.permission-card__photos-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.permission-card__choice {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.45rem 0.75rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.permission-card__choice.is-active {
+  border-color: rgba(255, 77, 109, 0.55);
+  background: rgba(255, 77, 109, 0.15);
+  color: #fff;
+}
+
+.permission-card__choice:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

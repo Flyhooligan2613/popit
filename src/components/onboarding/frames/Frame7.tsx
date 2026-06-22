@@ -12,6 +12,7 @@ import type { IdentityType } from "@/lib/identity/types";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
+import { savePlatformBackground, PLATFORM_BACKGROUNDS } from "@/lib/identity/platformBackgrounds";
 import { signUpWithEmail, signInWithIdentifier } from "@/lib/supabase/auth";
 import { markOnboardingComplete, WELCOME_LOBBY_ROUTE, EMAIL_CONFIRM_PENDING_KEY } from "@/lib/session";
 import type { LoginMethod } from "@/lib/auth/localAuth";
@@ -75,6 +76,7 @@ export default function Frame7({
   const [loginMethod, setLoginMethod] = useState<LoginMethod>("email");
   const [loginId, setLoginId] = useState("");
   const [identity, setIdentity] = useState<IdentityType | null>(null);
+  const [identities, setIdentities] = useState<IdentityType[]>([]);
   const [identityTopic, setIdentityTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export default function Frame7({
     setIdentityTopic(null);
   };
 
-  const canClaimIdentity = Boolean(identity && identityTopic);
+  const canClaimIdentity = Boolean(identities.length > 0 && identityTopic);
   const isIdentityStep = step === "identity";
 
   const validateSignup = () => {
@@ -184,13 +186,18 @@ export default function Frame7({
         phone: form.phone || undefined,
       });
 
-      saveUserIdentity(identity);
+      saveUserIdentity(identity!);
+      const bgMatch = PLATFORM_BACKGROUNDS.find((bg) => bg.identities?.includes(identity!));
+      if (bgMatch) savePlatformBackground(bgMatch.id);
+
       saveUserProfile({
         username: form.username,
         name: form.username,
-        identity,
+        identity: identity!,
+        identities,
         identityTopic,
         identityTopicLabel: topicLabel,
+        platformBackgroundId: bgMatch?.id,
         followers: 0,
         following: 0,
         pulseScore: 50,
@@ -529,7 +536,14 @@ export default function Frame7({
             style={{ width: "100%" }}
             className="flex flex-col gap-4"
           >
-            <IdentityPicker selected={identity} onSelect={handleIdentitySelect} />
+            <IdentityPicker
+              selected={identity}
+              selectedMany={identities}
+              multi
+              max={3}
+              onSelect={handleIdentitySelect}
+              onToggleMany={setIdentities}
+            />
             {identity && (
               <IdentityTopicPicker
                 identity={identity}

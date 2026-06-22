@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { type CSSProperties, memo, useMemo, useState, type ReactNode } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import PlatformBackgroundOverlay from "@/components/pulse/PlatformBackgroundOverlay";
 import FeedPostCard from "@/components/social/FeedPostCard";
 import ThoughtCard from "@/components/social/ThoughtCard";
 import PostCommentsSheet from "@/components/social/PostCommentsSheet";
@@ -41,8 +42,10 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
   const { like, save, repost, follow, state } = useSocialStore();
   const { commentPost, openComments, closeComments } = usePostCommentsSheet();
   const accent = getIdentityAccent(user.identity);
-  const identityLabel =
-    IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label ?? "Personal";
+  const identityLabels = (user.identities?.length ? user.identities : [user.identity]).map(
+    (id) => IDENTITY_OPTIONS.find((option) => option.id === id)?.label ?? id
+  );
+  const identityLabel = identityLabels.join(" · ");
   const reputation = buildUserReputation({
     followers: user.followers,
     following: user.following,
@@ -69,7 +72,11 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
   };
 
   return (
-    <div className="profile-social" style={{ "--profile-accent": accent } as CSSProperties}>
+    <div className="profile-social profile-social--with-bg" style={{ "--profile-accent": accent } as CSSProperties}>
+      <div className="profile-social__bg" aria-hidden>
+        <PlatformBackgroundOverlay />
+      </div>
+      <div className="profile-social__content">
       <div className="profile-social__topnav">
         <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -265,6 +272,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
       </div>
 
       <PostCommentsSheet post={commentPost} onClose={closeComments} />
+      </div>
     </div>
   );
 }
