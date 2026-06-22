@@ -10,7 +10,6 @@ import { getIdentityAccent } from "@/lib/identity/types";
 import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import { useSocialStore } from "@/lib/social/useSocialStore";
 import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
-import type { MusicUsage } from "@/lib/social/musicLibrary";
 
 type SideAction = {
   id: string;
@@ -20,10 +19,18 @@ type SideAction = {
   onClick?: () => void;
   icon: React.ReactNode;
   badge?: number;
+  variant?: "create";
 };
 
 function SideRailButton({ action }: { action: SideAction }) {
-  const className = `city-hub-rail__btn ${action.accent ? "city-hub-rail__btn--accent" : ""}`;
+  const className = [
+    "city-hub-rail__btn",
+    action.accent ? "city-hub-rail__btn--accent" : "",
+    action.variant === "create" ? "city-hub-rail__btn--create" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   const inner = (
     <>
       <span className="city-hub-rail__icon">
@@ -64,24 +71,7 @@ function AppSocialChrome() {
   const msgBadge = state.conversations.reduce((sum, c) => sum + c.unread, 0);
   const alertBadge = state.notifications.filter((n) => !n.read).length;
 
-  const open = (sheet: "live" | "story" | "page" | "thought" | "music", musicUsage?: MusicUsage) => {
-    social?.openSheet(sheet, musicUsage);
-  };
-
   const rightActions: SideAction[] = [
-    {
-      id: "feed",
-      label: "Feed",
-      href: "/feed",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="3" y="3" width="7" height="7" rx="1" />
-          <rect x="14" y="3" width="7" height="7" rx="1" />
-          <rect x="3" y="14" width="7" height="7" rx="1" />
-          <rect x="14" y="14" width="7" height="7" rx="1" />
-        </svg>
-      ),
-    },
     {
       id: "home",
       label: "Home",
@@ -104,37 +94,14 @@ function AppSocialChrome() {
       ),
     },
     {
-      id: "live",
-      label: "Go Live",
-      accent: "#FF4D6D",
-      onClick: () => open("live"),
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" strokeWidth="2">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M7 12a5 5 0 0 1 10 0" />
-        </svg>
-      ),
-    },
-    {
-      id: "story",
-      label: "Story",
+      id: "create",
+      label: "Create",
+      variant: "create",
       accent,
-      onClick: () => open("story"),
+      onClick: () => social?.openSheet("create"),
       icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="9" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M12 8v8M8 12h8" />
-        </svg>
-      ),
-    },
-    {
-      id: "page",
-      label: "Page",
-      onClick: () => open("page"),
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="4" y="4" width="16" height="16" rx="2" />
-          <path d="M8 9h8M8 13h5" />
         </svg>
       ),
     },
@@ -146,17 +113,6 @@ function AppSocialChrome() {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      ),
-    },
-    {
-      id: "search",
-      label: "Search",
-      href: "/search",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
         </svg>
       ),
     },

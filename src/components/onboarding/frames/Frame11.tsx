@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { markOnboardingComplete } from "@/lib/session";
+import { markOnboardingComplete, WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import { consumePendingRoute } from "@/lib/welcomeNavigation";
 
 export default function Frame11() {
@@ -13,7 +13,7 @@ export default function Frame11() {
     markOnboardingComplete();
     const pending = consumePendingRoute();
     const timeout = setTimeout(() => {
-      router.replace(pending ?? "/pulse");
+      router.replace(pending ?? WELCOME_LOBBY_ROUTE);
     }, 900);
     return () => clearTimeout(timeout);
   }, [router]);

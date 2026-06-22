@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { isOnboardingComplete, resetAppSession } from "@/lib/session";
+import { isOnboardingComplete, resetAppSession, WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import Frame4 from "@/components/onboarding/frames/Frame4";
 import Frame5 from "@/components/onboarding/frames/Frame5";
 import Frame6 from "@/components/onboarding/frames/Frame6";
@@ -74,7 +74,7 @@ export default function OnboardingPage() {
     setMounted(true);
 
     if (isOnboardingComplete() && !isExploreHome && !isBackgroundPicker) {
-      window.location.replace("/pulse");
+      window.location.replace(WELCOME_LOBBY_ROUTE);
     }
   }, []);
 

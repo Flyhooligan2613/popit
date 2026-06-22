@@ -165,6 +165,20 @@
   border-color: color-mix(in srgb, #ff4d6d 40%, white);
 }
 
+.city-hub-rail__btn--create {
+  border-color: color-mix(in srgb, #ff4d6d 55%, white);
+  background: linear-gradient(145deg, rgba(255, 77, 109, 0.22), rgba(168, 85, 247, 0.18));
+  box-shadow: 0 0 18px rgba(255, 77, 109, 0.25);
+}
+
+.city-hub-rail__btn--create .city-hub-rail__label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.city-hub-rail__btn--create .city-hub-rail__icon {
+  color: #fff;
+}
+
 .city-hub-rail__icon {
   position: relative;
   display: grid;

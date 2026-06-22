@@ -11,7 +11,7 @@ import { getIdentityAccent } from "@/lib/identity/types";
 import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
 import { saveUserIdentity, saveUserProfile } from "@/lib/identity/userProfile";
 import { signUpWithEmail, signInWithIdentifier } from "@/lib/supabase/auth";
-import { markOnboardingComplete } from "@/lib/session";
+import { markOnboardingComplete, WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import type { LoginMethod } from "@/lib/auth/localAuth";
 
 const LOGIN_METHODS: { id: LoginMethod; label: string; placeholder: string }[] = [
@@ -104,7 +104,7 @@ export default function Frame7({
           password: form.password,
         });
         markOnboardingComplete();
-        router.push("/pulse");
+        router.push(WELCOME_LOBBY_ROUTE);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Sign in failed.");
       } finally {

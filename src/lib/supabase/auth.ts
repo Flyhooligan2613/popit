@@ -121,7 +121,7 @@ export async function signUpWithEmail({
           phone: normalizedPhone,
         },
         emailRedirectTo:
-          typeof window !== "undefined" ? `${window.location.origin}/pulse` : undefined,
+          typeof window !== "undefined" ? `${window.location.origin}/onboarding?skipIntro=1&explore=1` : undefined,
       },
     });
 

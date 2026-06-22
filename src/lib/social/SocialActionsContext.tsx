@@ -4,8 +4,10 @@ import { createContext, useCallback, useContext, useMemo, useState, type ReactNo
 import type { LicensedTrack, MusicUsage } from "./musicLibrary";
 
 export type SocialSheet =
+  | "create"
   | "live"
   | "story"
+  | "reel"
   | "page"
   | "thought"
   | "music"
