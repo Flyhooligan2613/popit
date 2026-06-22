@@ -11,6 +11,7 @@ import SocialActionSheets from "@/components/social/SocialActionSheets";
 import BackNavButton from "@/components/nav/BackNavButton";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
 import { isOnboardingComplete } from "@/lib/session";
+import { useResolvedCity } from "@/hooks/useResolvedCity";
 import AmbientField from "./AmbientField";
 import WelcomeBackgroundMark from "./WelcomeBackgroundMark";
 import CategoryCard from "./CategoryCard";
@@ -75,7 +76,8 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const [skipWelcomeIntro] = useState(shouldSkipWelcomeIntro);
   const [showIntro, setShowIntro] = useState(() => !shouldSkipWelcomeIntro());
   const [slide, setSlide] = useState(0);
-  const [city, setCity] = useState<string | null>("Miami");
+  const resolvedCity = useResolvedCity();
+  const city = resolvedCity;
   const [ctaLoading, setCtaLoading] = useState(false);
   const [surge, setSurge] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
@@ -124,41 +126,6 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
       img.src = SCENE_SLIDES[i].src;
     });
   }, [slide]);
-
-  useEffect(() => {
-    let cancelled = false;
-    async function detectCity() {
-      if (!navigator.geolocation) return;
-      try {
-        const perm = await navigator.permissions?.query({ name: "geolocation" });
-        if (perm?.state !== "granted") return;
-        navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            if (cancelled) return;
-            try {
-              const res = await fetch(
-                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&localityLanguage=en`
-              );
-              if (!res.ok) return;
-              const data = (await res.json()) as { city?: string; locality?: string };
-              const name = data.city || data.locality;
-              if (name) setCity(name);
-            } catch {
-              /* silent */
-            }
-          },
-          () => {},
-          { maximumAge: 900_000, timeout: 5000 }
-        );
-      } catch {
-        /* silent */
-      }
-    }
-    detectCity();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px) and (hover: hover)");

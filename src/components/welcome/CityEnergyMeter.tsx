@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { DEFAULT_CITY_LABEL } from "@/lib/location/cityDetection";
 import CityEnergyFlames from "./CityEnergyFlames";
 import type { EnergyTier } from "./types";
 
@@ -35,7 +36,7 @@ export default function CityEnergyMeter({
   reducedMotion,
   mobileLite = false,
   exploringCount = 3590,
-  cityName = "Miami",
+  cityName = DEFAULT_CITY_LABEL,
   onClick,
 }: CityEnergyMeterProps) {
   const rounded = Math.round(value);

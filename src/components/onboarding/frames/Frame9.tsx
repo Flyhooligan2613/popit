@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { MapPin, Camera, ImageIcon, Mic, Bell } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import BackNavButton from "@/components/nav/BackNavButton";
+import { detectAndSaveCity, markLocationPromptSeen, saveTimezoneFallbackCity } from "@/lib/location/cityDetection";
 
 const PERMISSIONS: {
   id: string;
@@ -62,6 +64,24 @@ const PERMISSIONS: {
 ];
 
 export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?: () => void }) {
+  const [busy, setBusy] = useState(false);
+
+  const handleAllow = async () => {
+    setBusy(true);
+    try {
+      await detectAndSaveCity({ prompt: true });
+    } finally {
+      setBusy(false);
+      onNext();
+    }
+  };
+
+  const handleSkip = () => {
+    markLocationPromptSeen();
+    saveTimezoneFallbackCity();
+    onNext();
+  };
+
   return (
     <div className="absolute inset-0 overflow-y-auto bg-[#050505]">
       {onBack && (
@@ -139,23 +159,25 @@ export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?
       <div className="fixed bottom-0 left-0 right-0 z-10 flex flex-col items-center gap-3 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent px-6 pb-9 pt-6">
         <div className="w-full max-w-[320px]">
           <motion.button
-            onClick={onNext}
+            onClick={handleAllow}
+            disabled={busy}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full cursor-pointer rounded-full border-none px-4 py-[17px] font-sans text-base font-bold text-white"
+            className="w-full cursor-pointer rounded-full border-none px-4 py-[17px] font-sans text-base font-bold text-white disabled:opacity-70"
             style={{
               background: "var(--gradient-primary)",
               boxShadow: "0 0 32px rgba(255,77,109,0.35)",
             }}
           >
-            Continue
+            {busy ? "Setting up location…" : "Allow Location & Continue"}
           </motion.button>
         </div>
         <button
-          onClick={onNext}
-          className="w-full max-w-[320px] cursor-pointer border-none bg-transparent px-2 py-2 font-sans text-[0.875rem] text-white/30"
+          onClick={handleSkip}
+          disabled={busy}
+          className="w-full max-w-[320px] cursor-pointer border-none bg-transparent px-2 py-2 font-sans text-[0.875rem] text-white/30 disabled:opacity-50"
         >
-          Maybe Later
+          Maybe Later — use time zone
         </button>
       </div>
     </div>

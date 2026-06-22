@@ -2,6 +2,7 @@ import { createClient, isSupabaseConfigured } from "./client";
 import type { IdentityType } from "@/lib/identity/types";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { saveUserProfile, saveUserIdentity } from "@/lib/identity/userProfile";
+import { DEFAULT_CITY_LABEL, LEGACY_DEFAULT_CITY } from "@/lib/location/constants";
 import { formatAuthError, isNetworkAuthError } from "@/lib/auth/formatAuthError";
 import {
   normalizePhone,
@@ -32,7 +33,8 @@ export function dbProfileToUser(row: DbProfile): UserProfile {
   return {
     username: row.username,
     name: row.name,
-    city: row.city ?? "Miami",
+    city:
+      row.city && row.city !== LEGACY_DEFAULT_CITY ? row.city : DEFAULT_CITY_LABEL,
     identity: row.identity as IdentityType,
     identityTopic: row.identity_topic ?? undefined,
     identityTopicLabel: row.identity_topic_label ?? undefined,

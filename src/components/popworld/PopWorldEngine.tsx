@@ -1,9 +1,9 @@
 "use client";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { loadUserProfile } from "@/lib/identity/userProfile";
+import { useResolvedCity } from "@/hooks/useResolvedCity";
 import { getCityWorld } from "@/lib/popworld/cityWorlds";
 import { rankBusinessesWithLookups } from "@/lib/popworld/cityBusinesses";
 import { getVerifiedBusinessesForCity } from "@/lib/popworld/cityBusinesses";
@@ -22,13 +22,9 @@ const PopWorldMap = dynamic(() => import("./PopWorldMap"), {
 function PopWorldEngine() {
   const searchParams = useSearchParams();
   const highlightSlug = searchParams.get("venue");
-  const [userCity, setUserCity] = useState("Miami");
   const [selectedVenueId, setSelectedVenueId] = useState<string | null>(highlightSlug);
   const [phase, setPhase] = useState<PopWorldCameraPhase>("satellite");
-
-  useEffect(() => {
-    loadUserProfile().then((u) => setUserCity(u.city || "Miami"));
-  }, []);
+  const userCity = useResolvedCity();
 
   const cityWorld = getCityWorld(userCity);
 

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import PopSearchBar from "@/components/nav/PopSearchBar";
 import PopitLens from "@/components/profile/PopitLens";
-import { loadUserProfile } from "@/lib/identity/userProfile";
+import { useResolvedCity } from "@/hooks/useResolvedCity";
 import { getLiveNearProfiles, type LiveNearFilter } from "@/lib/social/liveNearYou";
 import { formatCount } from "@/lib/social/socialStore";
 
@@ -18,18 +18,12 @@ const FILTERS: { id: LiveNearFilter; label: string }[] = [
 
 export default function PopitLiveHub() {
   const [filter, setFilter] = useState<LiveNearFilter>("near");
-  const [city, setCity] = useState("Miami");
-
-  useEffect(() => {
-    loadUserProfile().then((u) => setCity(u.city || "Miami"));
-  }, []);
+  const city = useResolvedCity();
 
   const profiles = useMemo(() => getLiveNearProfiles(city, filter), [city, filter]);
   const liveCount = profiles.filter((p) => p.live).length;
 
   const handleRefresh = async () => {
-    const u = await loadUserProfile();
-    setCity(u.city || "Miami");
     await new Promise((r) => window.setTimeout(r, 500));
   };
 

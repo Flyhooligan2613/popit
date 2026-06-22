@@ -21,7 +21,7 @@ type WhatsPoppingNowProps = {
 };
 
 export default function WhatsPoppingNow({
-  city = "Miami",
+  city = null,
   reducedMotion,
   mobileLite = false,
   energyNorm = 0.5,

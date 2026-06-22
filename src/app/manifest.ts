@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: "/",
     name: "POP'IT",
     short_name: "POP'IT",
-    description: "See What's Popping.",
+    description: "See What's Popping — live culture in your city. Location used to personalize your feed.",
     start_url: "/",
     scope: "/",
     display: "standalone",

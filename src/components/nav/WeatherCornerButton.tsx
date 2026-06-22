@@ -1,18 +1,14 @@
 "use client";
 
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import WeatherReportSheet from "@/components/welcome/WeatherReportSheet";
-import { loadUserProfile } from "@/lib/identity/userProfile";
 import { useTimeOfDay } from "@/components/welcome/useTimeOfDay";
+import { useResolvedCity } from "@/hooks/useResolvedCity";
 
 function WeatherCornerButton() {
   const [open, setOpen] = useState(false);
-  const [city, setCity] = useState<string | null>("Miami");
+  const city = useResolvedCity();
   const timePeriod = useTimeOfDay();
-
-  useEffect(() => {
-    loadUserProfile().then((user) => setCity(user.city));
-  }, []);
 
   const temp = city?.toLowerCase().includes("miami") ? 82 : 74;
 

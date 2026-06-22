@@ -139,6 +139,32 @@ export default function SettingsPage() {
       </div>
 
       <div className="profile-settings__section">
+        <p className="profile-settings__section-title">Location</p>
+        <div className="profile-settings__list">
+          <SettingsRow
+            label="Update My City"
+            hint="Re-detect from GPS or time zone"
+            onClick={() => {
+              void import("@/lib/location/cityDetection").then(({ detectAndSaveCity }) =>
+                detectAndSaveCity({ prompt: true })
+              );
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="profile-settings__section">
+        <p className="profile-settings__section-title">Legal</p>
+        <div className="profile-settings__list">
+          <SettingsRow label="Terms of Service" href="/legal/terms" />
+          <SettingsRow label="Privacy Policy" href="/legal/privacy" />
+          <SettingsRow label="Community Guidelines" href="/legal/community-guidelines" />
+          <SettingsRow label="Data Deletion" href="/legal/data-deletion" />
+          <SettingsRow label="All Policies" href="/legal" />
+        </div>
+      </div>
+
+      <div className="profile-settings__section">
         <p className="profile-settings__section-title">Privacy & Account</p>
         <div className="profile-settings__list">
           <SettingsRow label="Privacy" hint="Who can see your POP card" />

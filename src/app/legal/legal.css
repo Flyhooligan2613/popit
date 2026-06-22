@@ -1,0 +1,129 @@
+.legal-doc {
+  min-height: 100dvh;
+  background: #050505;
+  color: rgba(255, 255, 255, 0.88);
+  padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem max(2.5rem, env(safe-area-inset-bottom));
+}
+
+.legal-doc__header {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+
+.legal-doc__back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+
+.legal-doc__title {
+  margin: 0 0 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.legal-doc__updated {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.legal-doc__body {
+  max-width: 720px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.legal-doc__section {
+  margin-bottom: 1.75rem;
+}
+
+.legal-doc__section h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.legal-doc__section p,
+.legal-doc__section li {
+  margin: 0 0 0.75rem;
+}
+
+.legal-doc__section ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.legal-doc__link {
+  color: #ff4d6d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legal-doc__footer {
+  max-width: 720px;
+  margin: 2.5rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.legal-doc__disclaimer {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.legal-index {
+  min-height: 100dvh;
+  background: #050505;
+  padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem max(2.5rem, env(safe-area-inset-bottom));
+}
+
+.legal-index__title {
+  max-width: 720px;
+  margin: 0 auto 1.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 800;
+  color: #fff;
+}
+
+.legal-index__list {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.legal-index__item {
+  display: block;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+.legal-index__item span {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}

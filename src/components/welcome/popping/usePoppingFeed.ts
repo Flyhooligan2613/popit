@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { DEFAULT_CITY_LABEL } from "@/lib/location/cityDetection";
 import type { PoppingCard } from "./types";
 import { bumpCardStats, generateDeck, nextRotatedCard } from "./generator";
 
@@ -15,7 +16,7 @@ export function usePoppingFeed(
   reducedMotion: boolean,
   refreshKey = 0
 ) {
-  const cityLabel = city ?? "Miami";
+  const cityLabel = city ?? DEFAULT_CITY_LABEL;
   const [cards, setCards] = useState<PoppingCard[]>(() => generateDeck(cityLabel, DECK_SIZE));
 
   useEffect(() => {

@@ -1,4 +1,5 @@
 import type { IdentityType } from "./types";
+import { DEFAULT_CITY_LABEL } from "@/lib/location/constants";
 
 const IDENTITY_KEY = "popit:identity";
 const USER_KEY = "popit:user";
@@ -23,7 +24,7 @@ export type UserProfile = {
 export const DEFAULT_USER: UserProfile = {
   username: "flygoon",
   name: "Marcus",
-  city: "Miami",
+  city: DEFAULT_CITY_LABEL,
   identity: "personal",
   followers: 18420,
   following: 892,

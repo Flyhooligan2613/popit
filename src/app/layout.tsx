@@ -1,13 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import PwaRegister from "@/components/PwaRegister";
+import LocationBootstrap from "@/components/location/LocationBootstrap";
 
 export const metadata: Metadata = {
   title: "POP'IT",
-  description: "See What's Popping.",
+  description: "See What's Popping — discover live culture, creators, and venues in your city.",
   applicationName: "POP'IT",
   manifest: "/manifest.webmanifest",
   metadataBase: new URL("https://www.getpopit.com"),
+  alternates: {
+    canonical: "https://www.getpopit.com",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -52,6 +56,8 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
     "apple-mobile-web-app-title": "POP'IT",
+    "privacy-policy": "https://www.getpopit.com/legal/privacy",
+    "terms-of-service": "https://www.getpopit.com/legal/terms",
   },
 };
 
@@ -73,6 +79,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-body">
         <PwaRegister />
+        <LocationBootstrap />
         {children}
       </body>
     </html>

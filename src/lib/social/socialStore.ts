@@ -1,4 +1,5 @@
 import { SEED_SOCIAL_STATE } from "./seedData";
+import { getResolvedCity } from "@/lib/location/cityDetection";
 import type { PostKind, SocialPost, SocialState } from "./types";
 
 const STORAGE_KEY = "popit:social:v1";
@@ -177,7 +178,7 @@ export function createPost(input: CreatePostInput): SocialPost {
     text: input.text,
     title: input.title,
     venue: input.venue,
-    city: input.city ?? "Miami",
+    city: input.city ?? getResolvedCity(),
     mediaHue: input.authorAccent,
     createdAt: Date.now(),
     likes: 0,

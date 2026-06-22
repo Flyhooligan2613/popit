@@ -11,7 +11,7 @@ type IdentityPickerProps = {
 
 export default function IdentityPicker({ selected, onSelect }: IdentityPickerProps) {
   return (
-    <div className="grid max-h-[50vh] grid-cols-2 gap-2 overflow-y-auto pr-1">
+    <div className="grid grid-cols-2 gap-2">
       {IDENTITY_OPTIONS.map((option, i) => {
         const active = selected === option.id;
         return (

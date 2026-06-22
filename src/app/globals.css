@@ -657,3 +657,24 @@ html, body {
     }
   }
 }
+
+/* Password fields — show/hide toggle always visible on mobile */
+.password-input {
+  position: relative;
+  z-index: 1;
+}
+
+.password-input__field::-ms-reveal,
+.password-input__field::-ms-clear {
+  display: none;
+}
+
+.password-input__toggle {
+  position: relative;
+  z-index: 2;
+}
+
+.password-input__toggle svg {
+  display: block;
+  pointer-events: none;
+}

@@ -1,5 +1,7 @@
 /** City worlds — real street grids & verified venue anchors (not GPS tracking) */
 
+import { getResolvedCity, DEFAULT_CITY_LABEL } from "@/lib/location/cityDetection";
+
 export type CityWorldId = "miami" | "new-york" | "default";
 
 export type CityWorldConfig = {
@@ -39,15 +41,15 @@ const WORLDS: Record<CityWorldId, CityWorldConfig> = {
 };
 
 export function resolveCityWorldId(city?: string | null): CityWorldId {
-  const c = (city ?? "").trim().toLowerCase();
-  if (!c) return "miami";
+  const c = (city ?? getResolvedCity()).trim().toLowerCase();
+  if (!c || c === DEFAULT_CITY_LABEL.toLowerCase() || c === "your city") return "default";
   if (c.includes("new york") || c.includes("nyc") || c.includes("manhattan") || c.includes("brooklyn")) {
     return "new-york";
   }
   if (c.includes("miami") || c.includes("brickell") || c.includes("wynwood") || c.includes("south beach")) {
     return "miami";
   }
-  return "miami";
+  return "default";
 }
 
 export function getCityWorld(city?: string | null): CityWorldConfig {

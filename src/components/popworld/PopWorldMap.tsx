@@ -16,6 +16,7 @@ import {
 } from "@/lib/popworld/mapConfig";
 import { getOpeningCameraForCity } from "@/lib/popworld/cityWorlds";
 import { buildPopWorldVenues } from "@/lib/popworld/venues";
+import { getResolvedCity } from "@/lib/location/cityDetection";
 import type { PopWorldCameraPhase } from "@/lib/popworld/types";
 import "./popworld.css";
 
@@ -38,12 +39,13 @@ const PHASE_DELAYS: Record<PopWorldCameraPhase, number> = {
 };
 
 export default function PopWorldMap({
-  city = "Miami",
+  city: cityProp,
   selectedVenueId,
   onVenueSelect,
   onPhaseChange,
   onReady,
 }: PopWorldMapProps) {
+  const city = cityProp ?? getResolvedCity();
   const mapRef = useRef<MapRef>(null);
   const token = getMapboxToken();
   const openingCamera = getOpeningCameraForCity(city);
