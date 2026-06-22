@@ -9,6 +9,7 @@ import CityDistricts from "./CityDistricts";
 import CityProfileHero from "./CityProfileHero";
 import CommentThread from "@/components/comments/CommentThread";
 import StoriesStrip from "@/components/social/StoriesStrip";
+import CityLocalFeed from "@/components/social/CityLocalFeed";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { useSocialStore } from "@/lib/social/useSocialStore";
@@ -41,6 +42,7 @@ export default function ThePulse() {
       <div className="city-hub-main app-page-pad pulse-page-scroll__content">
         <StoriesStrip stories={state.stories} onView={refresh} />
         <CityProfileHero key={`hero-${feedKey}`} user={user} />
+        <CityLocalFeed city={user.city} />
         <CityDistricts key={`districts-${feedKey}`} />
         <div className="mt-5">
           <ProfileIdentityExtras user={user} template={template} />

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { INTEREST_SCENES } from "@/lib/city/personalizedCity";
 import AmbientParticles from "./AmbientParticles";
+import PlatformBackgroundOverlay from "./PlatformBackgroundOverlay";
 import { usePersonalizedCity } from "./usePersonalizedCity";
 import "./pulse.css";
 
@@ -162,6 +163,8 @@ function LivingCityBackground() {
           </motion.div>
         </motion.div>
       </AnimatePresence>
+
+      <PlatformBackgroundOverlay />
 
       <div
         className="absolute inset-0"

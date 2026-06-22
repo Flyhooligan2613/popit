@@ -91,7 +91,7 @@ export default function Frame9({ onNext, onBack }: { onNext: () => void; onBack?
           className="mb-10 text-center"
         >
           <p className="mb-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[#FF4D6D]">
-            Step 3 of 3
+            Step 4 of 4
           </p>
           <h2 className="mb-3 font-sans text-[clamp(1.8rem,5vw,2.4rem)] font-extrabold tracking-tight text-white">
             Make POP&apos;IT Yours

@@ -9,15 +9,18 @@ export function markOnboardingComplete() {
   localStorage.setItem(ONBOARDING_KEY, "true");
 }
 
-/** Landing / explore home — Frame 6 welcome overdrive (satellite landing) */
-export const EXPLORE_HOME_ROUTE = "/onboarding?skipIntro=1&explore=1";
+/** Signed-in Explore tab — worldwide discovery */
+export const EXPLORE_HOME_ROUTE = "/explore";
+
+/** Marketing lobby landing (Frame 6 welcome overdrive) */
+export const WELCOME_LOBBY_ROUTE = "/onboarding?skipIntro=1&explore=1";
 
 export async function logoutAndGoLanding() {
   await resetAppSession();
   if (typeof window === "undefined") return;
   sessionStorage.removeItem("popit:splashSeen");
   sessionStorage.removeItem("popit:welcomeIntroSeen");
-  window.location.replace(EXPLORE_HOME_ROUTE);
+  window.location.replace(WELCOME_LOBBY_ROUTE);
 }
 
 export function isOnboardingComplete(): boolean {

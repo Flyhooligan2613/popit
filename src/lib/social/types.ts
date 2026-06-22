@@ -71,7 +71,7 @@ export type SocialNotification = {
 
 export type FeedTab = "foryou" | "following" | "reels" | "thoughts";
 
-export type SearchTab = "people" | "posts" | "tags" | "places";
+export type SearchTab = "people" | "posts" | "tags" | "places" | "sections";
 
 export type SocialState = {
   posts: SocialPost[];

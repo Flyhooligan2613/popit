@@ -17,6 +17,7 @@ export type UserProfile = {
   verified: boolean;
   live: boolean;
   currentVibe: string;
+  platformBackgroundId?: string;
 };
 
 export const DEFAULT_USER: UserProfile = {

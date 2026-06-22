@@ -7,12 +7,14 @@ import PopitLens from "@/components/profile/PopitLens";
 import ThoughtCard from "@/components/social/ThoughtCard";
 import { searchDirectory } from "@/lib/identity/searchData";
 import { getSearchResultAccent } from "@/lib/identity/searchData";
+import { searchPlatformSections } from "@/lib/identity/platformSearch";
 import { IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { searchPosts } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
 import type { SearchTab } from "@/lib/social/types";
 
 const SEARCH_TABS: { id: SearchTab; label: string }[] = [
+  { id: "sections", label: "Sections" },
   { id: "people", label: "People" },
   { id: "posts", label: "Posts" },
   { id: "tags", label: "Tags" },
@@ -35,10 +37,11 @@ const TRENDING_PLACES = [
 
 function CitySearch() {
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<SearchTab>("people");
+  const [tab, setTab] = useState<SearchTab>("sections");
   const { like, repost, save, follow } = useSocialStore();
   const people = useMemo(() => searchDirectory(query), [query]);
   const posts = useMemo(() => searchPosts(query), [query]);
+  const sections = useMemo(() => searchPlatformSections(query), [query]);
   const tags = useMemo(() => {
     const q = query.trim().toLowerCase();
     return TRENDING_TAGS.filter((t) => !q || t.tag.toLowerCase().includes(q));
@@ -63,8 +66,8 @@ function CitySearch() {
           Your City
         </Link>
 
-        <h1 className="text-poster mb-1 text-3xl uppercase text-white">Search</h1>
-        <p className="font-body mb-4 text-sm text-white/40">People, posts, tags & places — same everywhere</p>
+        <h1 className="text-poster mb-1 text-3xl uppercase text-white">POP search</h1>
+        <p className="font-body mb-4 text-sm text-white/40">Users, tabs &amp; sections across the platform</p>
 
         <div className="search-hub__tabs">
           {SEARCH_TABS.map((t) => (
@@ -96,12 +99,25 @@ function CitySearch() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Restaurants, DJs, creators..."
+            placeholder="POP search — users, tabs, sections..."
             className="w-full rounded-2xl border border-white/10 bg-white/[0.04] py-3.5 pl-11 pr-4 font-body text-sm text-white outline-none placeholder:text-white/30 focus:border-[#FF4D6D]/40"
           />
         </div>
 
         <div className="flex flex-col gap-3">
+          {tab === "sections" &&
+            sections.map((section) => (
+              <Link key={section.id} href={section.href} className="search-hub__section">
+                <div>
+                  <strong>{section.label}</strong>
+                  <span>{section.hint}</span>
+                </div>
+                <span className="search-hub__section-arrow" aria-hidden>
+                  →
+                </span>
+              </Link>
+            ))}
+
           {tab === "people" &&
             people.map((result, i) => {
               const accent = getSearchResultAccent(result);

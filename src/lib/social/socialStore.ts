@@ -233,6 +233,21 @@ export function getPostsForFeed(tab: "foryou" | "following" | "reels" | "thought
   return sorted;
 }
 
+export function getExplorePosts(filter: "all" | "reels" | "photos" | "trending" = "all"): SocialPost[] {
+  const sorted = [...loadSocialState().posts].sort((a, b) => b.likes - a.likes || b.createdAt - a.createdAt);
+  if (filter === "reels") return sorted.filter((p) => p.kind === "reel");
+  if (filter === "photos") return sorted.filter((p) => p.kind === "page" || p.kind === "checkin");
+  if (filter === "trending") return sorted.filter((p) => p.likes >= 100);
+  return sorted;
+}
+
+export function getPostsForCity(city: string): SocialPost[] {
+  const normalized = city.trim().toLowerCase();
+  return loadSocialState()
+    .posts.filter((p) => p.city.toLowerCase() === normalized)
+    .sort((a, b) => b.createdAt - a.createdAt);
+}
+
 export function getPostsForUser(username: string): SocialPost[] {
   return loadSocialState()
     .posts.filter((p) => p.authorUsername === username)

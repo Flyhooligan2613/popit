@@ -1,0 +1,299 @@
+/* Side POP score docks */
+.pop-scores-dock {
+  position: fixed;
+  z-index: 38;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  pointer-events: none;
+}
+
+.pop-scores-dock--left {
+  left: max(0.35rem, env(safe-area-inset-left, 0px));
+  top: max(3.2rem, calc(env(safe-area-inset-top, 0px) + 2.5rem));
+}
+
+.pop-scores-dock--right {
+  right: max(3.35rem, calc(env(safe-area-inset-right, 0px) + 2.85rem));
+  top: max(3.2rem, calc(env(safe-area-inset-top, 0px) + 2.5rem));
+}
+
+.pop-scores-dock__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  transform: scale(0.72);
+  transform-origin: center top;
+}
+
+.pop-scores-dock__item.is-you .pop-score-ring {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--score-accent, #ff4d6d) 45%, transparent));
+}
+
+.pop-scores-dock__label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  max-width: 3.5rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pop-scores-dock__item.is-you .pop-scores-dock__label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* POP search bar */
+.pop-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.pop-search-bar:hover {
+  border-color: rgba(255, 77, 109, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pop-search-bar__icon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.pop-search-bar__text {
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.02em;
+}
+
+/* Explore hub — Instagram-style grid */
+.explore-hub {
+  min-height: 100%;
+  padding-bottom: 6rem;
+}
+
+.explore-hub__head {
+  padding-top: 1rem;
+}
+
+.explore-hub__title {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.explore-hub__sub {
+  margin: 0 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.explore-hub__filters {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 1rem;
+}
+
+.explore-hub__filter {
+  flex-shrink: 0;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.explore-hub__filter.is-active {
+  color: #fff;
+  border-color: rgba(255, 77, 109, 0.45);
+  background: rgba(255, 77, 109, 0.12);
+}
+
+.explore-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.explore-hub__tile {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.explore-hub__tile-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.explore-hub__tile-author {
+  font-family: system-ui, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.explore-hub__tile-stat {
+  font-family: system-ui, sans-serif;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.explore-hub__tile-badge {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+}
+
+.explore-hub__tile-caption {
+  margin: 0.25rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.52rem;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.55);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.explore-hub__section-title {
+  margin: 0 0 0.85rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.explore-hub__feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Your City local feed */
+.city-local-feed {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.city-local-feed__title {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.city-local-feed__sub {
+  margin: 0 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.city-local-feed__empty {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.city-local-feed__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.search-hub__section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.search-hub__section:hover {
+  border-color: rgba(255, 77, 109, 0.35);
+}
+
+.search-hub__section strong {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.search-hub__section span {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.search-hub__section-arrow {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.has-tab-bar.popit-home,
+.has-tab-bar .popit-home-content {
+  padding-bottom: 6rem;
+}

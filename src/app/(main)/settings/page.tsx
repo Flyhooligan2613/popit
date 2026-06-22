@@ -7,7 +7,7 @@ import PopitLens from "@/components/profile/PopitLens";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
-import { EXPLORE_HOME_ROUTE, logoutAndGoLanding } from "@/lib/session";
+import { EXPLORE_HOME_ROUTE, WELCOME_LOBBY_ROUTE, logoutAndGoLanding } from "@/lib/session";
 
 function SettingsRow({
   label,
@@ -73,7 +73,7 @@ export default function SettingsPage() {
     <div className="profile-settings">
       <div className="profile-settings__hero">
         <div className="flex items-center justify-between">
-          <Link href={EXPLORE_HOME_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
+          <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 10.5 12 3l9 7.5" />
               <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />
@@ -116,6 +116,11 @@ export default function SettingsPage() {
         <div className="profile-settings__list">
           <SettingsRow label="Edit Profile" hint="Photo, name, bio, identity lane" href="/pulse#profile" />
           <SettingsRow label="Identity & Specialty" hint="Update who you are in the city" href="/pulse#profile" />
+          <SettingsRow
+            label="Platform Background"
+            hint="Flags, identity vibes, city energy"
+            onClick={() => router.push("/onboarding?skipIntro=1&background=1")}
+          />
           <SettingsRow label="Interests" hint="Tune your city feed" onClick={() => router.push("/onboarding?skipIntro=1")} />
         </div>
       </div>
@@ -124,7 +129,8 @@ export default function SettingsPage() {
         <p className="profile-settings__section-title">Experience</p>
         <div className="profile-settings__list">
           <SettingsRow label="Social Feed" hint="For You, Reels, Thoughts" href="/feed" />
-          <SettingsRow label="Explore Home" hint="Back to the landing feed" href={EXPLORE_HOME_ROUTE} />
+          <SettingsRow label="Lobby Home" hint="Your city landing" href={WELCOME_LOBBY_ROUTE} />
+          <SettingsRow label="Explore Tab" hint="Worldwide discovery grid" href={EXPLORE_HOME_ROUTE} />
           <SettingsRow label="Your City" href="/pulse" />
           <SettingsRow label="POP WORLD" href="/map" />
           <SettingsRow label="Notifications" href="/notifications" />

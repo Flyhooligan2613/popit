@@ -25,7 +25,7 @@ export default function AppTabBar() {
         {TABS.map((tab) => {
           const active =
             tab.id === "home"
-              ? pathname.startsWith("/onboarding")
+              ? pathname === "/explore" || pathname.startsWith("/explore/")
               : tab.id === "pulse"
                 ? pathname === "/pulse" || pathname.startsWith("/pulse/")
                 : tab.id === "feed"

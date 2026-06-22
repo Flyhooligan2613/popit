@@ -1,0 +1,115 @@
+/* Platform background picker & overlay */
+.platform-bg-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.72;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.platform-bg-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.bg-picker__preview {
+  height: clamp(5.5rem, 18vw, 7rem);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.bg-picker__preview-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+}
+
+.bg-picker__categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
+
+@media (min-width: 480px) {
+  .bg-picker__categories {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.bg-picker__category {
+  padding: 0.55rem 0.45rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: system-ui, sans-serif;
+  font-size: clamp(0.62rem, 2.5vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.bg-picker__category.is-active {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--bg-accent, #ff4d6d) 50%, white);
+  background: color-mix(in srgb, var(--bg-accent, #ff4d6d) 14%, transparent);
+}
+
+.bg-picker__category-hint {
+  margin: 0 0 0.85rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.38);
+  text-align: center;
+}
+
+.bg-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.65rem;
+}
+
+.bg-picker__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 5.5rem;
+  padding: 0.65rem 0.4rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bg-picker__cell:active {
+  transform: scale(0.96);
+}
+
+.bg-picker__cell-emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.bg-picker__cell-label {
+  font-family: system-ui, sans-serif;
+  font-size: clamp(0.62rem, 2.4vw, 0.72rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+  line-height: 1.2;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+}

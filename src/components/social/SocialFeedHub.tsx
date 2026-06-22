@@ -15,7 +15,6 @@ const TABS: { id: FeedTab; label: string; sub: string }[] = [
   { id: "following", label: "Following", sub: "Posts & videos" },
   { id: "reels", label: "Reels", sub: "From people you follow" },
   { id: "thoughts", label: "Thoughts", sub: "From people you follow" },
-  { id: "foryou", label: "Discover", sub: "City-wide" },
 ];
 
 export default function SocialFeedHub() {
@@ -51,8 +50,8 @@ export default function SocialFeedHub() {
         <>
           <StoriesStrip stories={state.stories} onView={refresh} />
           <div className="social-feed-hub__composer">
-            <Link href="/map" className="social-feed-hub__map-chip">
-              📍 See what&apos;s live on the map
+            <Link href="/explore" className="social-feed-hub__map-chip">
+              🌍 Discover more on Explore
             </Link>
           </div>
         </>

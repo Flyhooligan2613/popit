@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import WelcomeBrandedIntro, { WELCOME_INTRO_SESSION_KEY } from "@/components/onboarding/frames/WelcomeBrandedIntro";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import AppSocialChrome from "@/components/nav/AppSocialChrome";
+import AppTabBar from "@/components/nav/AppTabBar";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import BackNavButton from "@/components/nav/BackNavButton";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
@@ -269,7 +270,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
   const home = (
     <PullToRefresh
       onRefresh={handleRefresh}
-      className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""} ${loggedInExplore ? "app-social-chrome-active" : ""}`}
+      className={`popit-home popit-mock-match popit-polish-v1 popit-hero-v2-root popit-living-city time-${timePeriod} ${state.isOverdrive ? "is-overdrive" : ""} ${state.isOnFire ? "is-on-fire" : ""} energy-${state.tier} ${surge ? "is-surging" : ""} ${loggedInExplore ? "app-social-chrome-active has-tab-bar" : ""}`}
       style={
         {
           "--city-energy": String(energyNorm),
@@ -388,13 +389,15 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
           onSectionClick={() => goTo(WELCOME_TAB_ROUTES.energy)}
         />
 
-        <WelcomeLandingFooter
-          loading={ctaLoading}
-          isOverdrive={state.isOverdrive}
-          signInBusy={signInBusy}
-          onPrimary={handleJoin}
-          onSignIn={handleSignIn}
-        />
+        {!loggedInExplore && (
+          <WelcomeLandingFooter
+            loading={ctaLoading}
+            isOverdrive={state.isOverdrive}
+            signInBusy={signInBusy}
+            onPrimary={handleJoin}
+            onSignIn={handleSignIn}
+          />
+        )}
       </motion.div>
 
       <WeatherReportSheet
@@ -412,6 +415,7 @@ export default function WelcomeOverdriveHome({ onJoin, onSignIn, onBack }: Welco
     <SocialActionsProvider>
       <AppSocialChrome />
       <SocialActionSheets />
+      <AppTabBar />
       {home}
     </SocialActionsProvider>
   );

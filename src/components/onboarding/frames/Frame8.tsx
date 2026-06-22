@@ -85,7 +85,7 @@ export default function Frame8({ onNext, onBack }: { onNext: () => void; onBack?
               fontFamily: "system-ui, sans-serif",
             }}
           >
-            Step 2 of 3 · {identityLabel}
+            Step 2 of 4 · {identityLabel}
           </p>
           <h2
             style={{

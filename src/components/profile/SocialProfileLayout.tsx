@@ -10,7 +10,7 @@ import { getPostsForUser } from "@/lib/social/socialStore";
 import { useSocialStore } from "@/lib/social/useSocialStore";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
-import { EXPLORE_HOME_ROUTE } from "@/lib/session";
+import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import { buildUserReputation, formatLifetimePopScore } from "@/lib/reputation/reputationEngine";
 
 export type ProfileMode = "pop" | "city" | "pulse";
@@ -66,7 +66,7 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
   return (
     <div className="profile-social" style={{ "--profile-accent": accent } as CSSProperties}>
       <div className="profile-social__topnav">
-        <Link href={EXPLORE_HOME_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
+        <Link href={WELCOME_LOBBY_ROUTE} className="profile-social__topnav-btn" aria-label="Home">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M3 10.5 12 3l9 7.5" />
             <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5" />

@@ -7,6 +7,7 @@ import Frame4 from "@/components/onboarding/frames/Frame4";
 import Frame5 from "@/components/onboarding/frames/Frame5";
 import Frame6 from "@/components/onboarding/frames/Frame6";
 import Frame7 from "@/components/onboarding/frames/Frame7";
+import FrameBackground from "@/components/onboarding/frames/FrameBackground";
 import Frame8 from "@/components/onboarding/frames/Frame8";
 import Frame9 from "@/components/onboarding/frames/Frame9";
 import Frame10 from "@/components/onboarding/frames/Frame10";
@@ -31,7 +32,7 @@ function resolveStartFrame(skipIntro: boolean): number {
 function nextIntroFrame(current: number): number {
   if (current === 4) return 5;
   if (current === 5) return 6;
-  return Math.min(current + 1, 11);
+  return Math.min(current + 1, 12);
 }
 
 function prevFrame(current: number): number {
@@ -39,6 +40,8 @@ function prevFrame(current: number): number {
   if (current === 5) return 4;
   return Math.max(current - 1, 4);
 }
+
+const MAX_FRAME = 12;
 
 const shellStyle = {
   position: "fixed" as const,
@@ -64,18 +67,19 @@ export default function OnboardingPage() {
     }
 
     const isExploreHome = params.get("explore") === "1";
+    const isBackgroundPicker = params.get("background") === "1";
     const skip = shouldSkipIntro();
     setSkipIntro(skip);
-    setFrame(resolveStartFrame(skip));
+    setFrame(isBackgroundPicker ? 9 : resolveStartFrame(skip));
     setMounted(true);
 
-    if (isOnboardingComplete() && !isExploreHome) {
+    if (isOnboardingComplete() && !isExploreHome && !isBackgroundPicker) {
       window.location.replace("/pulse");
     }
   }, []);
 
   const advance = useCallback(
-    () => setFrame((current) => (current <= 5 ? nextIntroFrame(current) : Math.min(current + 1, 11))),
+    () => setFrame((current) => (current <= 5 ? nextIntroFrame(current) : Math.min(current + 1, MAX_FRAME))),
     []
   );
   const goBack = useCallback(() => setFrame((current) => prevFrame(current)), []);
@@ -114,10 +118,24 @@ export default function OnboardingPage() {
       case 8:
         return <Frame8 onNext={advance} onBack={goBack} />;
       case 9:
-        return <Frame9 onNext={advance} onBack={goBack} />;
+        return (
+          <FrameBackground
+            onNext={() => {
+              const params = new URLSearchParams(window.location.search);
+              if (params.get("background") === "1") {
+                window.location.replace("/settings");
+                return;
+              }
+              advance();
+            }}
+            onBack={goBack}
+          />
+        );
       case 10:
-        return <Frame10 onNext={advance} />;
+        return <Frame9 onNext={advance} onBack={goBack} />;
       case 11:
+        return <Frame10 onNext={advance} />;
+      case 12:
         return <Frame11 />;
       default:
         return null;
@@ -130,6 +148,13 @@ export default function OnboardingPage() {
 
   if (skipIntro && frame === 6) {
     return <div style={shellStyle}>{renderFrame()}</div>;
+  }
+
+  if (skipIntro && frame === 9 && typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("background") === "1") {
+      return <div style={shellStyle}>{renderFrame()}</div>;
+    }
   }
 
   return (

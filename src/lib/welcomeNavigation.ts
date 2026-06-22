@@ -1,20 +1,20 @@
-import { isOnboardingComplete, EXPLORE_HOME_ROUTE } from "@/lib/session";
+import { isOnboardingComplete, EXPLORE_HOME_ROUTE, WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import type { CategoryKey } from "@/components/welcome/types";
 
 export const PENDING_ROUTE_KEY = "popit:pendingRoute";
 
 const CATEGORY_ROUTES: Record<CategoryKey, string> = {
-  restaurants: "/pulse?focus=restaurants",
-  events: "/map?focus=nightlife",
-  trending: "/pulse?focus=trending",
-  nearby: "/map?focus=nearby",
+  restaurants: "/pulse",
+  events: "/map",
+  trending: "/explore",
+  nearby: "/pulse",
 };
 
 const PULSE_CHANNEL_ROUTES: Record<string, string> = {
-  restaurants: "/pulse?focus=restaurants",
-  events: "/pulse?focus=events",
-  nightlife: "/map?focus=nightlife",
-  sports: "/pulse?focus=sports",
+  restaurants: "/pulse",
+  events: "/map",
+  nightlife: "/map",
+  sports: "/pulse",
 };
 
 export function categoryRoute(key: CategoryKey): string {
@@ -52,14 +52,14 @@ export function navigateFromWelcome(href: string, onJoin: () => void) {
 }
 
 export const WELCOME_TAB_ROUTES = {
-  home: EXPLORE_HOME_ROUTE,
-  explore: "/search",
+  home: WELCOME_LOBBY_ROUTE,
+  explore: EXPLORE_HOME_ROUTE,
   create: "/pulse",
   inbox: "/messages",
   profile: "/settings",
-  live: "/pulse?focus=live",
-  energy: "/pulse?focus=energy",
-  popping: "/pulse?focus=popping",
-  career: "/profile/me?focus=career",
+  live: "/pulse",
+  energy: "/pulse",
+  popping: "/feed",
+  career: "/pulse",
   signal: "/map",
 } as const;

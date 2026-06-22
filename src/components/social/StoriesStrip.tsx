@@ -1,6 +1,7 @@
 "use client";
 
 import PopitLens from "@/components/profile/PopitLens";
+import PopSearchBar from "@/components/nav/PopSearchBar";
 import { markStoryViewed } from "@/lib/social/socialStore";
 import type { StoryRing } from "@/lib/social/types";
 import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
@@ -25,17 +26,8 @@ export default function StoriesStrip({ stories, onView }: StoriesStripProps) {
   };
 
   return (
-    <div className="stories-zone" aria-label="Stories and thoughts">
-      <button
-        type="button"
-        className="stories-thought-bar"
-        onClick={() => social?.openSheet("thought")}
-      >
-        <span className="stories-thought-bar__icon" aria-hidden>
-          💭
-        </span>
-        <span className="stories-thought-bar__text">Share a thought with the city…</span>
-      </button>
+    <div className="stories-zone" aria-label="Stories and search">
+      <PopSearchBar />
 
       <div className="stories-strip">
         <div className="stories-strip__track">
