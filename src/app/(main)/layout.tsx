@@ -3,6 +3,7 @@
 import AppTabBar from "@/components/nav/AppTabBar";
 import AppSocialChrome from "@/components/nav/AppSocialChrome";
 import ProfileCornerButton from "@/components/nav/ProfileCornerButton";
+import PopitPageWatermark from "@/components/welcome/PopitPageWatermark";
 import PulseFAB from "@/components/pulse/PulseFAB";
 import SocialActionSheets from "@/components/social/SocialActionSheets";
 import { SocialActionsProvider } from "@/lib/social/SocialActionsContext";
@@ -36,6 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div
         className={`fixed inset-0 overflow-hidden bg-[#050505] ${showSocialChrome ? "app-social-chrome-active" : ""} ${showCornerProfile ? "app-corner-profile-active" : ""}`}
       >
+        {onboarded && <PopitPageWatermark />}
         {children}
         {showCornerProfile && <ProfileCornerButton />}
         {showSocialChrome && <AppSocialChrome />}

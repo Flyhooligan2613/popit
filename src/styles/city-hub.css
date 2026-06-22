@@ -160,7 +160,57 @@
 .city-hub-rail--right {
   right: max(0.45rem, env(safe-area-inset-right, 0px));
   top: 50%;
+  transform: translateY(-50%) translateX(0);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.city-hub-rail--right.is-collapsed {
+  transform: translateY(-50%) translateX(calc(100% + 1.25rem));
+  pointer-events: none;
+  opacity: 0;
+}
+
+.city-hub-rail--right.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.city-hub-rail__pull-tab {
+  position: fixed;
+  z-index: 39;
+  right: 0;
+  top: 50%;
   transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 3.25rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: none;
+  border-radius: 0.65rem 0 0 0.65rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.city-hub-rail__pull-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.city-hub-rail__pull-tab.is-open {
+  right: max(3.55rem, calc(env(safe-area-inset-right, 0px) + 3.1rem));
+}
+
+.city-hub-rail__pull-arrow {
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 700;
 }
 
 .city-hub-rail__btn {

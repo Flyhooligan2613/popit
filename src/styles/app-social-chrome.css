@@ -105,10 +105,27 @@
   padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
 }
 
+.app-social-chrome-active .profile-social__content {
+  padding-left: max(4.5rem, calc(env(safe-area-inset-left, 0px) + 4rem));
+  padding-right: max(4.5rem, calc(env(safe-area-inset-right, 0px) + 4rem));
+  max-width: min(680px, calc(100vw - 8rem));
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.popit-page-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 @media (max-width: 380px) {
   .app-social-chrome-active .app-page-pad,
   .app-page-pad.popit-home-content,
-  .app-social-chrome-active .city-hub-main.app-page-pad {
+  .app-social-chrome-active .city-hub-main.app-page-pad,
+  .app-social-chrome-active .profile-social__content {
     padding-left: 3.85rem;
     padding-right: 3.85rem;
     max-width: calc(100vw - 7.5rem);

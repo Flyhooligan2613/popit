@@ -81,6 +81,7 @@
 }
 
 .bg-picker__cell {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -112,4 +113,65 @@
   text-align: center;
   line-height: 1.2;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+}
+
+.bg-picker__cell-badge {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  font-family: system-ui, sans-serif;
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.bg-picker__variants {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bg-picker__variants-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.bg-picker__variants-title {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.bg-picker__variants-back {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.65);
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.bg-picker__grid--variants {
+  margin-bottom: 0;
+}
+
+.bg-picker__profile-note {
+  margin: 1rem 0 0;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
 }

@@ -60,6 +60,7 @@ function AppSocialChrome() {
   const social = useSocialActionsOptional();
   const { state } = useSocialStore();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [railOpen, setRailOpen] = useState(false);
 
   useEffect(() => {
     loadUserProfile().then(setUser);
@@ -136,7 +137,22 @@ function AppSocialChrome() {
       <WeatherCornerButton />
       <SidePopScoresDock user={user} />
 
-      <nav className="city-hub-rail city-hub-rail--right app-social-chrome__rail" aria-label="City actions">
+      <button
+        type="button"
+        className={`city-hub-rail__pull-tab ${railOpen ? "is-open" : ""}`}
+        aria-expanded={railOpen}
+        aria-label={railOpen ? "Hide actions menu" : "Show actions menu"}
+        onClick={() => setRailOpen((open) => !open)}
+      >
+        <span className="city-hub-rail__pull-arrow" aria-hidden>
+          {railOpen ? "›" : "‹"}
+        </span>
+      </button>
+
+      <nav
+        className={`city-hub-rail city-hub-rail--right app-social-chrome__rail ${railOpen ? "is-open" : "is-collapsed"}`}
+        aria-label="City actions"
+      >
         {rightActions.map((action) => (
           <SideRailButton key={action.id} action={action} />
         ))}

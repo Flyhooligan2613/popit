@@ -106,7 +106,7 @@ export default function FrameBackground({
               fontFamily: "system-ui, sans-serif",
             }}
           >
-            Flags, identity vibes, and city energy — yours across the platform.
+            Flags, identity vibes, and city energy — profile background only. Tap a style for more options.
           </p>
         </motion.div>
 
