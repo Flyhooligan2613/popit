@@ -7,14 +7,15 @@ import { useEffect, useRef, useState } from "react";
 import PopitIcon from "./PopitIcon";
 import { FAB_ACTIONS } from "./data";
 import { createModeRoute } from "@/lib/social/createRoutes";
+import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
 
-const RADIUS = 112;
+const RADIUS = 118;
 
 function radialPosition(angleDeg: number) {
   const rad = (angleDeg * Math.PI) / 180;
   return {
     x: Math.sin(rad) * RADIUS,
-    y: -Math.cos(rad) * RADIUS - 24,
+    y: -Math.cos(rad) * RADIUS - 20,
   };
 }
 
@@ -22,11 +23,12 @@ export default function PulseFAB() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const social = useSocialActionsOptional();
 
   const handleAction = (actionId: string) => {
     setOpen(false);
-    if (actionId === "checkin") {
-      router.push("/map");
+    if (actionId === "closeFriends") {
+      router.push("/close-friends");
       return;
     }
     if (actionId === "live") {
@@ -41,8 +43,8 @@ export default function PulseFAB() {
       router.push(createModeRoute("reel"));
       return;
     }
-    if (actionId === "event") {
-      router.push("/map");
+    if (actionId === "create") {
+      social?.openSheet("create");
     }
   };
 
@@ -60,8 +62,11 @@ export default function PulseFAB() {
   }, [open]);
 
   return (
-    <div ref={containerRef} className="pointer-events-none fixed bottom-8 right-6 z-50">
-      <div className="pointer-events-auto relative flex h-[60px] w-[60px] items-end justify-end">
+    <div
+      ref={containerRef}
+      className={`pulse-fab pointer-events-none fixed bottom-8 right-6 z-50 ${open ? "pulse-fab--open" : ""}`}
+    >
+      <div className="pulse-fab__stage pointer-events-auto">
         <AnimatePresence>
           {open && (
             <>
@@ -70,7 +75,7 @@ export default function PulseFAB() {
                 animate={{ scale: [1, 1.6, 1.4], opacity: [0, 0.5, 0.35] }}
                 exit={{ scale: 0.6, opacity: 0 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute bottom-0 right-0 h-[60px] w-[60px] rounded-full"
+                className="pulse-fab__glow absolute bottom-0 right-0 h-[60px] w-[60px] rounded-full"
                 style={{
                   background: "var(--gradient-primary)",
                   filter: "blur(28px)",
@@ -81,7 +86,7 @@ export default function PulseFAB() {
                 animate={{ scale: 2.2, opacity: 0.12 }}
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute bottom-[10px] right-[10px] h-10 w-10 rounded-full border border-white/20"
+                className="pulse-fab__ring absolute bottom-[10px] right-[10px] h-10 w-10 rounded-full border border-white/20"
               />
               {FAB_ACTIONS.map((action, i) => {
                 const pos = radialPosition(action.angle);
@@ -101,7 +106,7 @@ export default function PulseFAB() {
                     }}
                     whileHover={{ scale: 1.08, boxShadow: "0 0 28px rgba(255,77,109,0.35)" }}
                     whileTap={{ scale: 0.94 }}
-                    className="absolute bottom-[10px] right-[10px] flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.07] py-1.5 pl-3 pr-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+                    className="pulse-fab__action absolute bottom-[10px] right-[10px] z-20 flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.07] py-1.5 pl-3 pr-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
                   >
                     <span className="whitespace-nowrap font-body text-xs font-semibold text-white/90">
                       {action.label}
@@ -121,9 +126,10 @@ export default function PulseFAB() {
           whileTap={{ scale: 0.96 }}
           animate={{ scale: open ? 1.1 : 1 }}
           transition={{ type: "spring", stiffness: 340, damping: 20 }}
-          className="relative z-10 flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-full border border-white/[0.16] shadow-[0_0_48px_rgba(255,77,109,0.45)]"
+          className="pulse-fab__main relative z-30 flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-full border border-white/[0.16] shadow-[0_0_48px_rgba(255,77,109,0.45)]"
           style={{ background: "var(--gradient-primary)" }}
           aria-label={open ? "Close create menu" : "Open create menu"}
+          aria-expanded={open}
         >
           <motion.div
             animate={{ rotate: open ? 180 : 0, scale: open ? 0.9 : 1 }}

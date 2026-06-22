@@ -232,9 +232,9 @@ export const CITY_DISTRICTS: CityDistrict[] = [
 ];
 
 export const FAB_ACTIONS = [
-  { id: "photo", label: "Photo", angle: -90, icon: "camera" as PopitIconType },
-  { id: "video", label: "Video", angle: -45, icon: "creator" as PopitIconType },
+  { id: "photo", label: "Photo", angle: -108, icon: "camera" as PopitIconType },
+  { id: "video", label: "Video", angle: -54, icon: "creator" as PopitIconType },
   { id: "live", label: "Go Live", angle: 0, icon: "nightlife" as PopitIconType },
-  { id: "checkin", label: "Check In", angle: 45, icon: "travel" as PopitIconType },
-  { id: "event", label: "Create Event", angle: 90, icon: "music" as PopitIconType },
+  { id: "closeFriends", label: "Close Friends", angle: 54, icon: "friends" as PopitIconType },
+  { id: "create", label: "Create", angle: 108, icon: "music" as PopitIconType },
 ] as const;

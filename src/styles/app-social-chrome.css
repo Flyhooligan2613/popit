@@ -149,8 +149,13 @@
   overflow: hidden;
 }
 
-/* Weather sits below the top-left back button when profile corner is visible */
-.app-corner-profile-active .app-weather-corner {
+/* Weather sits below the top-left back button on pages with a back nav row */
+.app-page-has-back-nav .app-weather-corner {
+  top: max(3.85rem, calc(env(safe-area-inset-top, 0px) + 3.35rem));
+}
+
+/* Your City: keep weather lower so it clears the left profile dock */
+.app-your-city-route .app-weather-corner {
   top: max(3.85rem, calc(env(safe-area-inset-top, 0px) + 3.35rem));
 }
 

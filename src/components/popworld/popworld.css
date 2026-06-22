@@ -90,7 +90,8 @@
   z-index: 10;
   display: flex;
   flex-direction: column;
-  padding: 40px 16px 88px;
+  padding: max(2.5rem, calc(env(safe-area-inset-top, 0px) + 2rem)) 16px 88px;
+  padding-left: max(4.75rem, calc(env(safe-area-inset-left, 0px) + 4.25rem));
 }
 
 .popworld-hud__header {

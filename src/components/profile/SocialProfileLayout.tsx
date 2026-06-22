@@ -290,6 +290,9 @@ function SocialProfileLayout({ user: userProp, isOwnProfile = false, children }:
             <Link href="/feed" className="profile-social__action-btn">
               Open Feed
             </Link>
+            <Link href="/close-friends" className="profile-social__action-btn">
+              Close Friends
+            </Link>
           </div>
         )}
       </div>

@@ -19,6 +19,7 @@
 @import "../styles/platform-tabs.css";
 @import "../styles/permission-settings.css";
 @import "../styles/camera-studio.css";
+@import "../styles/pulse-fab.css";
 @import "tailwindcss";
 
 html {

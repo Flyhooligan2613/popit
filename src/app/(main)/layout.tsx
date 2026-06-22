@@ -29,6 +29,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, []);
 
   const yourCity = isYourCityRoute(pathname);
+  const hasBackNav =
+    pathname === "/feed" ||
+    pathname === "/explore" ||
+    pathname === "/live" ||
+    pathname === "/close-friends";
   const immersiveMedia =
     pathname.startsWith("/broadcast") ||
     pathname.startsWith("/create/") ||
@@ -47,7 +52,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <SocialActionsProvider>
       <div
-        className={`fixed inset-0 overflow-hidden bg-[#050505] ${showSocialChrome ? "app-social-chrome-active" : ""} ${showCornerProfile ? "app-corner-profile-active" : ""}`}
+        className={`fixed inset-0 overflow-hidden bg-[#050505] ${showSocialChrome ? "app-social-chrome-active" : ""} ${showCornerProfile ? "app-corner-profile-active" : ""} ${yourCity ? "app-your-city-route" : ""} ${hasBackNav ? "app-page-has-back-nav" : ""}`}
       >
         {onboarded && <PopitPageWatermark />}
         {children}

@@ -1,0 +1,186 @@
+/* Map camera FAB — radial create menu */
+.pulse-fab__stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 60px;
+  height: 60px;
+}
+
+.pulse-fab--open .pulse-fab__stage {
+  width: min(72vw, 300px);
+  height: min(58vh, 320px);
+}
+
+.pulse-fab__main {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.pulse-fab__action {
+  touch-action: manipulation;
+}
+
+@media (max-width: 420px) {
+  .pulse-fab--open .pulse-fab__stage {
+    width: min(78vw, 280px);
+    height: min(52vh, 290px);
+  }
+}
+
+/* Close Friends hub */
+.close-friends-hub {
+  min-height: 100%;
+  padding-bottom: 6rem;
+}
+
+.close-friends-hub__head {
+  padding-top: max(0.35rem, env(safe-area-inset-top, 0px));
+  position: relative;
+  z-index: 3;
+}
+
+.close-friends-hub__head-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.25rem;
+}
+
+.close-friends-hub__title {
+  margin: 0;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: clamp(1.45rem, 4.5vw, 1.85rem);
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.close-friends-hub__sub {
+  margin: 0 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.45;
+}
+
+.close-friends-hub__add {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.close-friends-hub__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.close-friends-hub__input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.close-friends-hub__add-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, #ff4d6d, #a855f7);
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.close-friends-hub__msg {
+  margin: 0.65rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 200, 210, 0.9);
+}
+
+.close-friends-hub__section-title {
+  margin: 0 0 0.75rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.close-friends-hub__empty {
+  margin: 0;
+  padding: 1.25rem 0.5rem;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.45;
+}
+
+.close-friends-hub__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.close-friends-hub__profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.close-friends-hub__profile strong {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.92rem;
+  color: #fff;
+}
+
+.close-friends-hub__profile span {
+  display: block;
+  margin-top: 0.1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.close-friends-hub__remove {
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.65);
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+}
