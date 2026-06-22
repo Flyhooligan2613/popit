@@ -88,10 +88,27 @@
 }
 
 .city-hub-rail__icon {
+  position: relative;
   display: grid;
   place-items: center;
   width: 2rem;
   height: 2rem;
+}
+
+.city-hub-rail__badge {
+  position: absolute;
+  top: -0.15rem;
+  right: -0.25rem;
+  min-width: 0.95rem;
+  height: 0.95rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 0.52rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
 }
 
 .city-hub-rail__label {

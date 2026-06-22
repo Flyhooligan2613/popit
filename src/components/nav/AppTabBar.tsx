@@ -8,6 +8,7 @@ import { EXPLORE_HOME_ROUTE } from "@/lib/session";
 
 const TABS = [
   { href: EXPLORE_HOME_ROUTE, label: "Explore", id: "home" },
+  { href: "/feed", label: "Feed", id: "feed" },
   { href: "/pulse", label: "Your City", id: "pulse" },
   { href: "/map", label: "POP WORLD", id: "map" },
 ] as const;
@@ -27,12 +28,14 @@ export default function AppTabBar() {
               ? pathname.startsWith("/onboarding")
               : tab.id === "pulse"
                 ? pathname === "/pulse" || pathname.startsWith("/pulse/")
-                : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+                : tab.id === "feed"
+                  ? pathname === "/feed" || pathname.startsWith("/feed/")
+                  : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
           return (
             <Link
               key={tab.id}
               href={tab.href}
-              className="relative rounded-full px-5 py-2.5 font-body text-xs font-semibold transition-colors"
+              className="relative rounded-full px-3.5 py-2.5 font-body text-[0.68rem] font-semibold transition-colors sm:px-5 sm:text-xs"
             >
               {active && (
                 <motion.span

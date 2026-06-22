@@ -8,6 +8,7 @@ import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
+import { useSocialStore } from "@/lib/social/useSocialStore";
 import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
 import type { MusicUsage } from "@/lib/social/musicLibrary";
 
@@ -18,13 +19,17 @@ type SideAction = {
   accent?: string;
   onClick?: () => void;
   icon: React.ReactNode;
+  badge?: number;
 };
 
 function SideRailButton({ action }: { action: SideAction }) {
   const className = `city-hub-rail__btn ${action.accent ? "city-hub-rail__btn--accent" : ""}`;
   const inner = (
     <>
-      <span className="city-hub-rail__icon">{action.icon}</span>
+      <span className="city-hub-rail__icon">
+        {action.icon}
+        {action.badge ? <span className="city-hub-rail__badge">{action.badge}</span> : null}
+      </span>
       <span className="city-hub-rail__label">{action.label}</span>
     </>
   );
@@ -46,6 +51,7 @@ function SideRailButton({ action }: { action: SideAction }) {
 
 function AppSocialChrome() {
   const social = useSocialActionsOptional();
+  const { state } = useSocialStore();
   const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -55,12 +61,27 @@ function AppSocialChrome() {
   if (!user) return null;
 
   const accent = getIdentityAccent(user.identity);
+  const msgBadge = state.conversations.reduce((sum, c) => sum + c.unread, 0);
+  const alertBadge = state.notifications.filter((n) => !n.read).length;
 
   const open = (sheet: "live" | "story" | "page" | "thought" | "music", musicUsage?: MusicUsage) => {
     social?.openSheet(sheet, musicUsage);
   };
 
   const rightActions: SideAction[] = [
+    {
+      id: "feed",
+      label: "Feed",
+      href: "/feed",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      ),
+    },
     {
       id: "home",
       label: "Home",
@@ -121,6 +142,7 @@ function AppSocialChrome() {
       id: "inbox",
       label: "Inbox",
       href: "/messages",
+      badge: msgBadge,
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -142,6 +164,7 @@ function AppSocialChrome() {
       id: "alerts",
       label: "Alerts",
       href: "/notifications",
+      badge: alertBadge,
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />

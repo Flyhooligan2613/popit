@@ -123,6 +123,7 @@ export default function SettingsPage() {
       <div className="profile-settings__section">
         <p className="profile-settings__section-title">Experience</p>
         <div className="profile-settings__list">
+          <SettingsRow label="Social Feed" hint="For You, Reels, Thoughts" href="/feed" />
           <SettingsRow label="Explore Home" hint="Back to the landing feed" href={EXPLORE_HOME_ROUTE} />
           <SettingsRow label="Your City" href="/pulse" />
           <SettingsRow label="POP WORLD" href="/map" />

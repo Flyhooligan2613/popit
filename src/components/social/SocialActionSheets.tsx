@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useSocialActions } from "@/lib/social/SocialActionsContext";
+import { loadUserProfile } from "@/lib/identity/userProfile";
+import { getIdentityAccent } from "@/lib/identity/types";
+import { createPost } from "@/lib/social/socialStore";
 import {
   LIVE_MUSIC_NOTICE,
   MUSIC_COPYRIGHT_NOTICE,
@@ -63,9 +67,32 @@ export default function SocialActionSheets() {
     selectTrack,
     confirmMusicSelection,
   } = useSocialActions();
+  const router = useRouter();
   const [copyrightAck, setCopyrightAck] = useState(false);
+  const [pageText, setPageText] = useState("");
+  const [liveTitle, setLiveTitle] = useState("");
 
   const resetCopyrightAck = () => setCopyrightAck(false);
+
+  const publish = async (kind: "thought" | "page" | "reel", text: string, title?: string) => {
+    const user = await loadUserProfile();
+    if (!user || !text.trim()) return;
+    const trackLabel = selectedTrack ? `${selectedTrack.title} · ${selectedTrack.artist}` : undefined;
+    createPost({
+      kind,
+      text: text.trim(),
+      title,
+      authorUsername: user.username,
+      authorName: user.name,
+      authorAccent: getIdentityAccent(user.identity),
+      city: user.city,
+      musicTrack: trackLabel,
+    });
+    setThoughtDraft("");
+    setPageText("");
+    closeSheet();
+    router.push("/feed");
+  };
 
   return (
     <AnimatePresence>
@@ -73,8 +100,17 @@ export default function SocialActionSheets() {
         <SheetShell title="Go Live" subtitle="Broadcast to the city" onClose={closeSheet}>
           <p className="social-sheet__notice">{LIVE_MUSIC_NOTICE}</p>
           <label className="social-sheet__label">Stream title</label>
-          <input className="social-sheet__input" placeholder="What's happening in the city?" />
-          <button type="button" className="social-sheet__primary" onClick={closeSheet}>
+          <input
+            className="social-sheet__input"
+            placeholder="What's happening in the city?"
+            value={liveTitle}
+            onChange={(e) => setLiveTitle(e.target.value)}
+          />
+          <button
+            type="button"
+            className="social-sheet__primary"
+            onClick={() => publish("reel", liveTitle || "Live in the city", "Go Live")}
+          >
             Start Live
           </button>
         </SheetShell>
@@ -103,7 +139,13 @@ export default function SocialActionSheets() {
 
       {activeSheet === "page" && (
         <SheetShell title="Post to Page" subtitle="Share on your POP card" onClose={closeSheet}>
-          <textarea className="social-sheet__textarea" placeholder="Write your city update…" rows={4} />
+          <textarea
+            className="social-sheet__textarea"
+            placeholder="Write your city update…"
+            rows={4}
+            value={pageText}
+            onChange={(e) => setPageText(e.target.value)}
+          />
           {selectedTrack && musicUsage === "page" && (
             <p className="social-sheet__track-pill">
               ♪ {selectedTrack.title} · {selectedTrack.artist}
@@ -112,7 +154,12 @@ export default function SocialActionSheets() {
           <button type="button" className="social-sheet__secondary" onClick={() => openSheet("music", "page")}>
             Add Licensed Music
           </button>
-          <button type="button" className="social-sheet__primary" onClick={closeSheet}>
+          <button
+            type="button"
+            className="social-sheet__primary"
+            onClick={() => publish("page", pageText)}
+            disabled={!pageText.trim()}
+          >
             Publish
           </button>
         </SheetShell>
@@ -132,7 +179,12 @@ export default function SocialActionSheets() {
               ♪ {selectedTrack.title} · {selectedTrack.artist}
             </p>
           )}
-          <button type="button" className="social-sheet__primary" onClick={closeSheet}>
+          <button
+            type="button"
+            className="social-sheet__primary"
+            onClick={() => publish("thought", thoughtDraft)}
+            disabled={!thoughtDraft.trim()}
+          >
             Post Thought
           </button>
         </SheetShell>

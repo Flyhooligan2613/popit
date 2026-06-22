@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, memo, useState, type ReactNode } from "react";
+import { type CSSProperties, memo, useMemo, useState, type ReactNode } from "react";
 import PopitLens from "@/components/profile/PopitLens";
+import FeedPostCard from "@/components/social/FeedPostCard";
+import ThoughtCard from "@/components/social/ThoughtCard";
+import { useSocialActionsOptional } from "@/lib/social/SocialActionsContext";
+import { getPostsForUser } from "@/lib/social/socialStore";
+import { useSocialStore } from "@/lib/social/useSocialStore";
 import type { UserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent, IDENTITY_OPTIONS } from "@/lib/identity/types";
 import { EXPLORE_HOME_ROUTE } from "@/lib/session";
@@ -30,6 +35,8 @@ function formatCount(n: number) {
 
 function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialProfileLayoutProps) {
   const [mode, setMode] = useState<ProfileMode>("pop");
+  const social = useSocialActionsOptional();
+  const { like, save, repost, follow, state } = useSocialStore();
   const accent = getIdentityAccent(user.identity);
   const identityLabel =
     IDENTITY_OPTIONS.find((option) => option.id === user.identity)?.label ?? "Personal";
@@ -42,22 +49,19 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
     communitySince: 2024,
   });
 
-  const popItems = Array.from({ length: 9 }, (_, i) => ({
-    id: `pop-${i}`,
+  const userPosts = useMemo(
+    () => getPostsForUser(user.username),
+    [user.username, state]
+  );
+
+  const popItems = userPosts.filter((p) => p.kind === "page" || p.kind === "checkin");
+  const cityPosts = userPosts.filter((p) => p.kind !== "reel");
+  const pulseClips = userPosts.filter((p) => p.kind === "reel");
+
+  const fallbackPop = Array.from({ length: Math.max(0, 9 - popItems.length) }, (_, i) => ({
+    id: `empty-${i}`,
     tint: i % 3 === 0 ? accent : i % 3 === 1 ? "#A855F7" : "#00D4FF",
   }));
-
-  const cityPosts = [
-    { title: "Checked in at Neon Lounge", body: user.currentVibe, time: "2h ago" },
-    { title: "Posted a moment in Wynwood", body: "City energy was unreal tonight.", time: "5h ago" },
-    { title: "Earned a new POP milestone", body: `Level ${reputation.level} unlocked in the city.`, time: "1d ago" },
-  ];
-
-  const pulseClips = [
-    { label: "Live from the district", hue: accent },
-    { label: "Behind the POP lens", hue: "#A855F7" },
-    { label: "City pulse recap", hue: "#00D4FF" },
-  ];
 
   return (
     <div className="profile-social" style={{ "--profile-accent": accent } as CSSProperties}>
@@ -83,7 +87,11 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
         {isOwnProfile && (
           <>
             <div className="profile-social__side-rail profile-social__side-rail--left">
-              <button type="button" className="profile-social__side-action profile-social__side-action--live">
+              <button
+                type="button"
+                className="profile-social__side-action profile-social__side-action--live"
+                onClick={() => social?.openSheet("live")}
+              >
                 <span className="profile-social__side-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" strokeWidth="2">
                     <circle cx="12" cy="12" r="3" />
@@ -94,7 +102,11 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
               </button>
             </div>
             <div className="profile-social__side-rail profile-social__side-rail--right">
-              <button type="button" className="profile-social__side-action profile-social__side-action--story">
+              <button
+                type="button"
+                className="profile-social__side-action profile-social__side-action--story"
+                onClick={() => social?.openSheet("story")}
+              >
                 <span className="profile-social__side-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="9" />
@@ -147,12 +159,12 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
 
         {isOwnProfile && (
           <div className="profile-social__actions-row">
-            <button type="button" className="profile-social__action-btn profile-social__action-btn--primary">
+            <Link href="/settings" className="profile-social__action-btn profile-social__action-btn--primary">
               Edit Profile
-            </button>
-            <button type="button" className="profile-social__action-btn">
-              Share POP Card
-            </button>
+            </Link>
+            <Link href="/feed" className="profile-social__action-btn">
+              Open Feed
+            </Link>
           </div>
         )}
       </div>
@@ -180,6 +192,15 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
               <div
                 key={item.id}
                 className="profile-social__pop-cell"
+                style={{
+                  background: `linear-gradient(145deg, ${item.mediaHue ?? accent}44, rgba(255,255,255,0.03))`,
+                }}
+              />
+            ))}
+            {fallbackPop.map((item) => (
+              <div
+                key={item.id}
+                className="profile-social__pop-cell profile-social__pop-cell--empty"
                 style={{ background: `linear-gradient(145deg, ${item.tint}33, rgba(255,255,255,0.03))` }}
               />
             ))}
@@ -188,35 +209,44 @@ function SocialProfileLayout({ user, isOwnProfile = false, children }: SocialPro
 
         {mode === "city" && (
           <div className="profile-social__city-feed">
-            {cityPosts.map((post) => (
-              <article key={post.title} className="profile-social__city-card">
-                <div className="profile-social__city-card-head">
-                  <PopitLens name={user.name} followers={user.followers} size={36} accent={accent} followersBeneath={false} />
-                  <div>
-                    <p className="font-body text-sm font-semibold text-white">{user.name}</p>
-                    <p className="font-body text-[0.65rem] text-white/38">{post.time}</p>
-                  </div>
-                </div>
-                <div className="profile-social__city-media" />
-                <div className="profile-social__city-card-body">
-                  <strong>{post.title}</strong>
-                  <p className="mt-1">{post.body}</p>
-                </div>
-              </article>
-            ))}
+            {cityPosts.length === 0 && (
+              <p className="font-body px-2 py-6 text-center text-sm text-white/40">No city posts yet.</p>
+            )}
+            {cityPosts.map((post) =>
+              post.kind === "thought" ? (
+                <ThoughtCard
+                  key={post.id}
+                  post={post}
+                  onLike={() => like(post.id)}
+                  onRepost={() => repost(post.id)}
+                  onSave={() => save(post.id)}
+                />
+              ) : (
+                <FeedPostCard
+                  key={post.id}
+                  post={post}
+                  onLike={() => like(post.id)}
+                  onRepost={() => repost(post.id)}
+                  onSave={() => save(post.id)}
+                />
+              )
+            )}
             {children}
           </div>
         )}
 
         {mode === "pulse" && (
           <div className="profile-social__pulse-stack">
+            {pulseClips.length === 0 && (
+              <p className="font-body px-2 py-6 text-center text-sm text-white/40">No Pulse clips yet.</p>
+            )}
             {pulseClips.map((clip) => (
               <div
-                key={clip.label}
+                key={clip.id}
                 className="profile-social__pulse-card"
-                style={{ background: `linear-gradient(160deg, ${clip.hue}44, #050505)` }}
+                style={{ background: `linear-gradient(160deg, ${clip.mediaHue ?? accent}44, #050505)` }}
               >
-                <span className="profile-social__pulse-card-label">{clip.label}</span>
+                <span className="profile-social__pulse-card-label">{clip.text}</span>
               </div>
             ))}
           </div>

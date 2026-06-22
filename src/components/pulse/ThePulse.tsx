@@ -8,12 +8,15 @@ import LivingCityBackground from "./LivingCityBackground";
 import CityDistricts from "./CityDistricts";
 import CityProfileHero from "./CityProfileHero";
 import CommentThread from "@/components/comments/CommentThread";
+import StoriesStrip from "@/components/social/StoriesStrip";
 import { loadUserProfile } from "@/lib/identity/userProfile";
 import type { UserProfile } from "@/lib/identity/userProfile";
+import { useSocialStore } from "@/lib/social/useSocialStore";
 
 export default function ThePulse() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [feedKey, setFeedKey] = useState(0);
+  const { state, refresh } = useSocialStore();
 
   useEffect(() => {
     loadUserProfile().then(setUser);
@@ -36,6 +39,7 @@ export default function ThePulse() {
     <PullToRefresh onRefresh={handleRefresh} className="absolute inset-0 overflow-y-auto">
       <LivingCityBackground />
       <div className="city-hub-main app-page-pad">
+        <StoriesStrip stories={state.stories} onView={refresh} />
         <CityProfileHero key={`hero-${feedKey}`} user={user} />
         <CityDistricts key={`districts-${feedKey}`} />
         <div className="mt-5">
