@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import { WELCOME_LOBBY_ROUTE } from "@/lib/session";
 import PopSearchBar from "@/components/nav/PopSearchBar";
 import FeedPostCard from "./FeedPostCard";
 import PostCommentsSheet from "./PostCommentsSheet";
@@ -33,7 +34,12 @@ export default function ExploreHub() {
   return (
     <PullToRefresh onRefresh={handleRefresh} className="explore-hub">
       <div className="explore-hub__head">
-        <h1 className="explore-hub__title">Explore</h1>
+        <div className="explore-hub__head-row">
+          <Link href={WELCOME_LOBBY_ROUTE} className="social-page__back" aria-label="Back">
+            ←
+          </Link>
+          <h1 className="explore-hub__title">Explore</h1>
+        </div>
         <p className="explore-hub__sub">Likes, searches &amp; creators from across the world</p>
         <PopSearchBar className="explore-hub__search" />
       </div>

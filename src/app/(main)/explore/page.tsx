@@ -1,9 +1,10 @@
+import MainPageScroll from "@/components/layout/MainPageScroll";
 import ExploreHub from "@/components/social/ExploreHub";
 
 export default function ExplorePage() {
   return (
-    <div className="main-page-scroll app-page-pad">
+    <MainPageScroll>
       <ExploreHub />
-    </div>
+    </MainPageScroll>
   );
 }

@@ -1,11 +1,12 @@
 "use client";
 
+import MainPageScroll from "@/components/layout/MainPageScroll";
 import SocialFeedHub from "@/components/social/SocialFeedHub";
 
 export default function FeedPage() {
   return (
-    <div className="main-page-scroll app-page-pad">
+    <MainPageScroll>
       <SocialFeedHub />
-    </div>
+    </MainPageScroll>
   );
 }

@@ -95,9 +95,15 @@
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #050505;
+  background: transparent;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+}
+
+.main-page-scroll__body {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
 }
 
 .help-scroll-shell .legal-index,
@@ -141,6 +147,11 @@
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+}
+
+/* Weather sits below the top-left back button when profile corner is visible */
+.app-corner-profile-active .app-weather-corner {
+  top: max(3.85rem, calc(env(safe-area-inset-top, 0px) + 3.35rem));
 }
 
 /* Mobile readability — full-width content, larger type */

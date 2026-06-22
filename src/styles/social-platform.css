@@ -88,7 +88,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
-  background: #050505;
+  background: transparent;
 }
 
 .social-feed-hub::-webkit-scrollbar {
@@ -98,17 +98,19 @@
 .social-feed-hub__top {
   display: flex;
   align-items: center;
-  padding: max(0.5rem, env(safe-area-inset-top, 0px)) 0 0;
+  padding: max(0.35rem, env(safe-area-inset-top, 0px)) 0 0;
   max-width: min(680px, 100%);
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 3;
 }
 
 .social-feed-hub__tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.35rem;
-  padding: max(0.65rem, env(safe-area-inset-top, 0px)) 0 0.5rem;
+  padding: 0.65rem 0 0.5rem;
   max-width: min(680px, 100%);
   width: 100%;
   margin: 0 auto;
@@ -116,7 +118,7 @@
   position: sticky;
   top: 0;
   z-index: 5;
-  background: rgba(5, 5, 5, 0.92);
+  background: rgba(5, 5, 5, 0.82);
   backdrop-filter: blur(12px);
 }
 

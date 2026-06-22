@@ -237,7 +237,9 @@
 }
 
 .explore-hub__head {
-  padding-top: 1rem;
+  padding-top: max(0.35rem, env(safe-area-inset-top, 0px));
+  position: relative;
+  z-index: 3;
 }
 
 .explore-hub__head-row {
