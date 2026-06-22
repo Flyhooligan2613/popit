@@ -14,6 +14,7 @@ import { loadUserProfile } from "@/lib/identity/userProfile";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { SOCIAL_UPDATE_EVENT } from "@/lib/social/socialStore";
 import type { PostComment, SocialPost } from "@/lib/social/types";
+import { usePlatformConfig } from "@/components/admin/PlatformBanner";
 
 type PostCommentsSheetProps = {
   post: SocialPost | null;
@@ -21,6 +22,7 @@ type PostCommentsSheetProps = {
 };
 
 export default function PostCommentsSheet({ post, onClose }: PostCommentsSheetProps) {
+  const { config: platformConfig } = usePlatformConfig();
   const [draft, setDraft] = useState("");
   const [replyTo, setReplyTo] = useState<PostComment | null>(null);
   const [tick, setTick] = useState(0);
@@ -92,10 +94,14 @@ export default function PostCommentsSheet({ post, onClose }: PostCommentsSheetPr
             </div>
 
             <div className="post-comments-sheet__list">
-              {topLevel.length === 0 && (
+              {!platformConfig.commentsEnabled && (
+                <p className="post-comments-sheet__empty">Comments are temporarily disabled.</p>
+              )}
+              {platformConfig.commentsEnabled && topLevel.length === 0 && (
                 <p className="post-comments-sheet__empty">Be the first to comment.</p>
               )}
-              {topLevel.map((comment) => (
+              {platformConfig.commentsEnabled &&
+                topLevel.map((comment) => (
                 <div key={comment.id} className="post-comments-sheet__thread">
                   <CommentRow
                     comment={comment}
@@ -121,7 +127,7 @@ export default function PostCommentsSheet({ post, onClose }: PostCommentsSheetPr
               ))}
             </div>
 
-            {replyTo && (
+            {platformConfig.commentsEnabled && replyTo && (
               <p className="post-comments-sheet__replying">
                 Replying to @{replyTo.authorUsername}
                 <button type="button" onClick={() => setReplyTo(null)}>
@@ -130,20 +136,22 @@ export default function PostCommentsSheet({ post, onClose }: PostCommentsSheetPr
               </p>
             )}
 
-            <div className="post-comments-sheet__composer">
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder={replyTo ? "Write a reply…" : "Add a comment…"}
-                className="post-comments-sheet__input"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") void submit();
-                }}
-              />
-              <button type="button" className="post-comments-sheet__send" onClick={() => void submit()}>
-                Post
-              </button>
-            </div>
+            {platformConfig.commentsEnabled && (
+              <div className="post-comments-sheet__composer">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder={replyTo ? "Write a reply…" : "Add a comment…"}
+                  className="post-comments-sheet__input"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void submit();
+                  }}
+                />
+                <button type="button" className="post-comments-sheet__send" onClick={() => void submit()}>
+                  Post
+                </button>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}

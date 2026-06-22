@@ -1,12 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PopitBrandLogo from "@/components/brand/PopitBrandLogo";
 import IdentityPicker from "@/components/onboarding/IdentityPicker";
 import IdentityTopicPicker from "@/components/onboarding/IdentityTopicPicker";
 import BackNavButton from "@/components/nav/BackNavButton";
 import PasswordInput from "@/components/ui/PasswordInput";
+import { usePlatformConfig } from "@/components/admin/PlatformBanner";
 import type { IdentityType } from "@/lib/identity/types";
 import { getIdentityAccent } from "@/lib/identity/types";
 import { getIdentityTopicLabel } from "@/lib/identity/identityTopics";
@@ -77,6 +78,13 @@ export default function Frame7({
   const [identityTopic, setIdentityTopic] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { config: platformConfig } = usePlatformConfig();
+
+  useEffect(() => {
+    if (!platformConfig.signupsEnabled && mode === "signup") {
+      setMode("signin");
+    }
+  }, [platformConfig.signupsEnabled, mode]);
 
   const handleIdentitySelect = (id: IdentityType) => {
     setIdentity(id);
@@ -213,6 +221,10 @@ export default function Frame7({
   };
 
   const switchToSignUp = () => {
+    if (!platformConfig.signupsEnabled) {
+      setError("New signups are temporarily paused.");
+      return;
+    }
     setMode("signup");
     setStep("account");
     setError(null);
@@ -571,7 +583,23 @@ export default function Frame7({
           )}
         </div>
 
+        {step === "account" && !platformConfig.signupsEnabled && mode === "signin" && (
+          <p
+            style={{
+              margin: "0 0 12px",
+              fontFamily: "system-ui, sans-serif",
+              fontSize: "0.8rem",
+              color: "rgba(255,255,255,0.45)",
+              textAlign: "center",
+              maxWidth: 320,
+            }}
+          >
+            New account registration is temporarily closed.
+          </p>
+        )}
+
         {step === "account" ? (
+          platformConfig.signupsEnabled || mode === "signin" ? (
           <button
             onClick={mode === "signin" ? switchToSignUp : switchToSignIn}
             style={{
@@ -588,6 +616,7 @@ export default function Frame7({
           >
             {mode === "signin" ? "Need an account? Create one" : "Already have an account? Sign In"}
           </button>
+          ) : null
         ) : (
           <button
             type="button"

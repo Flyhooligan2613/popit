@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import PwaRegister from "@/components/PwaRegister";
 import LocationBootstrap from "@/components/location/LocationBootstrap";
+import PlatformBanner from "@/components/admin/PlatformBanner";
+import MaintenanceGate from "@/components/admin/MaintenanceGate";
 
 export const metadata: Metadata = {
   title: "POP'IT",
@@ -80,7 +82,8 @@ export default function RootLayout({
       <body className="font-body">
         <PwaRegister />
         <LocationBootstrap />
-        {children}
+        <PlatformBanner />
+        <MaintenanceGate>{children}</MaintenanceGate>
       </body>
     </html>
   );

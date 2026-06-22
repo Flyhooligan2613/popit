@@ -1,0 +1,447 @@
+.admin-console-wrap {
+  min-height: 100dvh;
+  background: #030303;
+  color: #fff;
+}
+
+.admin-console {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100dvh;
+}
+
+.admin-console__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: #080808;
+}
+
+.admin-console__brand {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.25rem 0.35rem;
+}
+
+.admin-console__brand-mark {
+  font-size: 1.1rem;
+  color: #ff4d6d;
+}
+
+.admin-console__brand-title {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.admin-console__brand-sub {
+  margin: 0.1rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-console__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-console__nav-link {
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.55rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+}
+
+.admin-console__nav-link.is-active,
+.admin-console__nav-link:hover {
+  background: rgba(255, 77, 109, 0.12);
+  color: #fff;
+}
+
+.admin-console__sidebar-foot {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-console__user {
+  margin: 0 0 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-console__logout {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.55rem;
+  background: transparent;
+  padding: 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+}
+
+.admin-console__main {
+  padding: 1.5rem clamp(1rem, 3vw, 2rem) 2.5rem;
+  overflow-y: auto;
+}
+
+.admin-auth {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: radial-gradient(circle at top, rgba(255, 77, 109, 0.12), transparent 45%), #030303;
+}
+
+.admin-auth__card {
+  width: min(100%, 420px);
+  padding: 1.5rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-auth__eyebrow {
+  margin: 0 0 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ff4d6d;
+}
+
+.admin-auth__title {
+  margin: 0 0 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.admin-auth__sub {
+  margin: 0 0 1.25rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.admin-auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.admin-auth__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.admin-auth__input {
+  width: 100%;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.6rem 0.75rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.admin-auth__error {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.82rem;
+  color: #ff6b8a;
+}
+
+.admin-auth__hint {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-auth__hint code {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.admin-auth__submit {
+  margin-top: 0.25rem;
+  border: none;
+  border-radius: 0.55rem;
+  padding: 0.7rem;
+  background: #ff4d6d;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-auth__foot {
+  margin: 1rem 0 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.admin-panel__head h1 {
+  margin: 0 0 0.35rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.admin-panel__head p {
+  margin: 0 0 1.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.45);
+  max-width: 52ch;
+}
+
+.admin-panel__section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-panel__section h2 {
+  margin: 0 0 0.85rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.admin-toggle-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-toggle {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.admin-toggle input {
+  margin-top: 0.2rem;
+  accent-color: #ff4d6d;
+}
+
+.admin-toggle__copy strong {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+}
+
+.admin-toggle__copy small {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.admin-panel__textarea,
+.admin-panel__input,
+.admin-panel__select {
+  width: 100%;
+  margin-top: 0.35rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.6rem 0.75rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  color: #fff;
+}
+
+.admin-panel__select {
+  margin-top: 0.65rem;
+  max-width: 200px;
+}
+
+.admin-panel__meta {
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.admin-panel__message {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #7dd3a8;
+}
+
+.admin-panel__save {
+  border: none;
+  border-radius: 0.55rem;
+  padding: 0.7rem 1.1rem;
+  background: #ff4d6d;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-panel__loading {
+  font-family: system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-stat {
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-stat strong {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 1.25rem;
+}
+
+.admin-stat span {
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-checklist {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.admin-checklist code {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.platform-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  padding: max(0.45rem, env(safe-area-inset-top)) 0.75rem 0.45rem;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.platform-banner p {
+  margin: 0;
+}
+
+.platform-banner--info {
+  background: rgba(37, 99, 235, 0.92);
+  color: #fff;
+}
+
+.platform-banner--warning {
+  background: rgba(245, 158, 11, 0.92);
+  color: #111;
+}
+
+.platform-banner--critical {
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+}
+
+.platform-banner--maintenance {
+  background: rgba(15, 15, 15, 0.96);
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(255, 77, 109, 0.35);
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: 1rem;
+}
+
+.platform-maintenance-screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: #050505;
+  color: #fff;
+  text-align: center;
+}
+
+.platform-maintenance-screen__inner {
+  max-width: 420px;
+}
+
+.platform-maintenance-screen__eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #ff4d6d;
+}
+
+.platform-maintenance-screen h1 {
+  margin: 0 0 0.65rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.6rem;
+}
+
+.platform-maintenance-screen p {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 768px) {
+  .admin-console {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-console__sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .admin-console__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
